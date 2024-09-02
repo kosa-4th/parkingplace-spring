@@ -8,13 +8,16 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "tbl_parking_space")
+@EntityListeners(AuditingEntityListener.class)
 public class ParkingSpace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,16 +44,16 @@ public class ParkingSpace {
     private Integer nextSpaceNum;
 
     @Column(name = "next_space_date")
-    private Instant nextSpaceDate;
+    private LocalTime nextSpaceDate;
 
     @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

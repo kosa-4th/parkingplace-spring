@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "tbl_favorites")
+@EntityListeners(AuditingEntityListener.class)
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,7 @@ public class Favorite {
     @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
