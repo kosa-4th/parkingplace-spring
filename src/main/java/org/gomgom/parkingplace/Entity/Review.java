@@ -21,7 +21,6 @@ public class Review {
     @Column(name = "review_id", nullable = false)
     private Long id;
 
-
     @NotNull
     @Lob
     @Column(name = "review", nullable = false)
