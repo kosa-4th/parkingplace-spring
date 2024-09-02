@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.gomgom.parkingplace.enums.Bool;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
@@ -35,7 +36,7 @@ public class PlateNumber {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
     @Column(name = "usable", nullable = false)
-    private Character usable;
+    private Bool usable;
 
     @NotNull
     @CreatedDate

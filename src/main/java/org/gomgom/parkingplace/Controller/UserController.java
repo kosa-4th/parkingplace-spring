@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.UserDto;
 import org.gomgom.parkingplace.Entity.User;
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping()
-    public ResponseEntity<UserDto.responseSignupDto> createUser(@RequestBody UserDto.requsetUserDto user) {
+    public ResponseEntity<UserDto.responseSignupDto> createUser(@Valid @RequestBody UserDto.requsetUserDto user) {
         User userEntity = User.builder()
                 .name(user.getName())
                 .email(user.getEmail())

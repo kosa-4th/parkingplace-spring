@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 public class UserDto {
 
@@ -30,6 +29,6 @@ public class UserDto {
     @AllArgsConstructor
     @Getter
     public static class responseSignupDto {
-        private String result;
+        private String message;
     }
 }
