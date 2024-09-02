@@ -46,10 +46,6 @@ public class Reservation {
     @Column(name = "reservation_confirmed", nullable = false)
     private Character reservationConfirmed;
 
-    @Size(max = 9)
-    @NotNull
-    @Column(name = "plate_number", nullable = false, length = 9)
-    private String plateNumber;
 
     @NotNull
     @CreatedDate
@@ -72,9 +68,4 @@ public class Reservation {
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "car_type_id", nullable = false)
-    private CarType carType;
 }
