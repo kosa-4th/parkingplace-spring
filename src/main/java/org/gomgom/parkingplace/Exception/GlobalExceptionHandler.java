@@ -12,9 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/*
+작성자: 오지수
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    //@Data
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ExceptionResponse>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ExceptionResponse> exceptionResponses = new ArrayList<>();
@@ -24,6 +28,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionResponses, HttpStatus.BAD_REQUEST);
     }
 
+    //@Data
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<List<ExceptionResponse>> handleConstraintViolationException(ConstraintViolationException ex) {
         List<ExceptionResponse> exceptionResponses = new ArrayList<>();

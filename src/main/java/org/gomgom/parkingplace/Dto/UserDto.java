@@ -9,6 +9,10 @@ import lombok.Getter;
 
 public class UserDto {
 
+    /*
+    작성자: 오지수
+    회원가입 requestDto
+     */
     @Data
     public static class requsetUserDto {
         private long userId;
@@ -26,9 +30,44 @@ public class UserDto {
         private String password;
     }
 
+    /*
+    작성자: 오지수
+    로그인 requestDto
+     */
+    @AllArgsConstructor
+    @Data
+    public static class requestSignInDto {
+
+        @NotBlank(message = "이메일은 필수 입력 값입니다.")
+        @Email
+        private String email;
+
+        @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+        private String password;
+
+        private String membershipType;
+    }
+
+    /*
+    작성자: 오지수
+    회원가입 responseDto
+     */
     @AllArgsConstructor
     @Getter
     public static class responseSignupDto {
         private String message;
+    }
+
+    /*
+    작성자: 오지수
+    로그인 responseDto
+     */
+    @Getter
+    @AllArgsConstructor
+    public static class responseSignInDto {
+        private String name;
+        private String email;
+        private String token;
+        private String auth;
     }
 }

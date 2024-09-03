@@ -1,5 +1,8 @@
 package org.gomgom.parkingplace.Exception;
 
+/*
+작성자: 오지수
+ */
 public class CustomExceptions {
 
     public static class ValidationException extends RuntimeException {
