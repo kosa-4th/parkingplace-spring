@@ -3,18 +3,23 @@ package org.gomgom.parkingplace.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.enums.Role;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Entity
 @Table(name = "tbl_user")
+@DynamicInsert // default값이 있다면 사용
+@EntityListeners(AuditingEntityListener.class) // createdDate, LastModifiedDate 있다면 사용
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +33,7 @@ public class User {
 
     @Size(max = 50)
     @NotNull
-    @Column(name = "email", nullable = false, length = 50)
+    @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
 
     @Size(max = 100)
@@ -36,21 +41,38 @@ public class User {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'ROLE_USER'")
     @Column(name = "auth", nullable = false, length = 10)
     private Role auth;
 
-    @NotNull
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
     @Column(name = "usable", nullable = false)
-    private Character usable;
+    private Bool usable;
 
-    @NotNull
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
+
+    @Builder
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public void updatePassword(String encryptedPassword) {
+        this.password = encryptedPassword;
+    }
+
+    // 회원 정보 수정
+    public void update(String newPassword) {
+        this.password = password;
+    }
+
 }
