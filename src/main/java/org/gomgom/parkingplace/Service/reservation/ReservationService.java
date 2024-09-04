@@ -1,7 +1,5 @@
 package org.gomgom.parkingplace.Service.reservation;
-
 import org.gomgom.parkingplace.Dto.ReservationDto;
-import org.gomgom.parkingplace.Entity.Reservation;
 
 /**
  * ReservationService.java
@@ -11,8 +9,6 @@ import org.gomgom.parkingplace.Entity.Reservation;
  */
 public interface ReservationService {
 //    public List<Reservation> getReservationsByEmail(String email);
-
-
 
     boolean existsByReservationUuid(String uuid);
 

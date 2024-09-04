@@ -92,7 +92,7 @@ public class Reservation {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "parking_lot_id", nullable = false)
+    @JoinColumn(name = "parking_space_id", nullable = false)
     private ParkingSpace parkingSpace;
 
     // 필수 필드를 포함한 Builder 생성
