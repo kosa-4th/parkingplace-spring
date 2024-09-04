@@ -43,18 +43,20 @@ public class ParkingLot {
     private String address;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "wash", nullable = false)
-    private Character wash;
+    private Bool wash;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "maintenance", nullable = false)
-    private Character maintenance;
+    private Bool maintenance;
 
     @Column(name = "latitude")
-    private Integer latitude;
+    private Double latitude;
 
-    @Column(name = "longtitude")
-    private Integer longtitude;
+    @Column(name = "longitude")
+    private Double longitude;
 
     @Column(name = "weekdays_open_time")
     private LocalTime weekdaysOpenTime;
