@@ -15,12 +15,8 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PAYMENT_ID")
+    @Column(name = "payment_id")
     private Long paymentId;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RESERVATION_ID", nullable = false)
-    private Reservation reservation;
 
     @Column(name = "imp_uid", length = 255)
     private String impUid;
@@ -67,5 +63,8 @@ public class Payment {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RESERVATION_ID", nullable = false)
+    private Reservation reservation;
 
 }

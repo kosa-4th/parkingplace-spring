@@ -27,6 +27,11 @@ public class ParkingLot {
     @Column(name = "parking_lot_id", nullable = false)
     private Long id;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "parking_center_id")
+    private String parkingCenterId;
+
     @Size(max = 100)
     @NotNull
     @Column(name = "name", nullable = false, length = 100)

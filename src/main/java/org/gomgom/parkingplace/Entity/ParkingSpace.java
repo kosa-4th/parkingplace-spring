@@ -30,6 +30,12 @@ public class ParkingSpace {
     @Column(name = "weekend_price")
     private Integer weekendPrice;
 
+    @Column(name="week_all_day_price")
+    private Integer weekAllDayPrice;
+
+    @Column(name="weekend_all_day_price")
+    private Integer weekendAllDayPrice;
+
     @Column(name = "wash_price")
     private Integer washPrice;
 
@@ -39,12 +45,6 @@ public class ParkingSpace {
     @NotNull
     @Column(name = "available_space_num", nullable = false)
     private Integer availableSpaceNum;
-
-    @Column(name="week_all_day_price")
-    private Integer weekAllDayPrice;
-
-    @Column(name="weekend_all_day_price")
-    private Integer weekendAllDayPrice;
 
     @NotNull
     @CreatedDate

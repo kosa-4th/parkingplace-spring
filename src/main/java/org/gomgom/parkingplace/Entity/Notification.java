@@ -28,6 +28,10 @@ public class Notification {
     private String description;
 
     @NotNull
+    @Column(name = "notification_link")
+    private String notificationLink;
+
+    @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -35,11 +39,6 @@ public class Notification {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "parking_lot_id", nullable = false)
-    private ParkingLot parkingLot;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

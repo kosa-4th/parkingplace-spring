@@ -32,31 +32,41 @@ public class Reservation {
     @Column(name = "reservation_id", nullable = false)
     private Long id;
 
+    @NotNull
+    @Column(name = "lot_name", nullable = false)
+    private String lotName;
+
     @Column(name ="reservation_uuid", nullable = false)
     private String reservationUuid;
 
     @NotNull
+    @Column(name = "plate_number", nullable = false)
+    private String plateNumber;
+
+    @NotNull
     @Column(name = "start_time", nullable = false)
-    private Instant startTime;
+    private LocalDateTime startTime;
 
     @NotNull
     @Column(name = "end_time", nullable = false)
-    private Instant endTime;
+    private LocalDateTime endTime;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "wash", nullable = false)
-    private Character wash;
+    private Bool wash;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "maintenance", nullable = false)
-    private Character maintenance;
+    private Bool maintenance;
 
     @NotNull
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
+    @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
     @Column(name = "reservation_confirmed", nullable = false)
     private Bool reservationConfirmed;
@@ -70,28 +80,25 @@ public class Reservation {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plate_number_id", nullable = false)
-    private PlateNumber plateNumber;
-
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
 
-
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
+    @JoinColumn(name = "parking_lot_id", nullable = false)
+    private ParkingSpace parkingSpace;
 
     // 필수 필드를 포함한 Builder 생성
     @Builder
-    public Reservation(Instant startTime, Instant endTime, Character wash, Character maintenance, Integer totalPrice,
-                       Bool reservationConfirmed, PlateNumber plateNumber, ParkingLot parkingLot, String reservationUuid, User user) {
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, Bool wash, Bool maintenance, Integer totalPrice,
+                       Bool reservationConfirmed, String plateNumber, ParkingLot parkingLot, String reservationUuid, User user) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.wash = wash;

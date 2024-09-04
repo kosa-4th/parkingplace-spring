@@ -33,15 +33,15 @@ public class PlateNumber {
     private String plateNumber;
 
     @NotNull
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createAt;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
     @Column(name = "usable", nullable = false)
     private Bool usable;
-
-    @NotNull
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createAt;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

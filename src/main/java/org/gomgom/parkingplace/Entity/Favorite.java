@@ -34,5 +34,4 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
-
 }
