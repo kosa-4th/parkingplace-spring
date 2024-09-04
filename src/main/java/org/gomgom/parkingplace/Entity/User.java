@@ -46,11 +46,6 @@ public class User {
     @Column(name = "auth", nullable = false, length = 10)
     private Role auth;
 
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
-    @Column(name = "usable", nullable = false)
-    private Bool usable;
-
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -58,6 +53,11 @@ public class User {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
+    @Column(name = "usable", nullable = false)
+    private Bool usable;
 
     @Builder
     public User(String name, String email, String password) {
