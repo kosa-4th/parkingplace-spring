@@ -73,8 +73,8 @@ public class Reservation {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "plate_num_id", nullable = false)
-    private PlateNumber plateNum;
+    @JoinColumn(name = "plate_number_id", nullable = false)
+    private PlateNumber plateNumber;
 
 
     @NotNull
@@ -91,14 +91,14 @@ public class Reservation {
     // 필수 필드를 포함한 Builder 생성
     @Builder
     public Reservation(Instant startTime, Instant endTime, Character wash, Character maintenance, Integer totalPrice,
-                       Bool reservationConfirmed, PlateNumber plateNum, ParkingLot parkingLot, String reservationUuid, User user) {
+                       Bool reservationConfirmed, PlateNumber plateNumber, ParkingLot parkingLot, String reservationUuid, User user) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.wash = wash;
         this.maintenance = maintenance;
         this.totalPrice = totalPrice;
         this.reservationConfirmed = reservationConfirmed;
-        this.plateNum = plateNum;
+        this.plateNumber = plateNumber;
         this.parkingLot = parkingLot;
         this.reservationUuid = reservationUuid;
         this.user = user;

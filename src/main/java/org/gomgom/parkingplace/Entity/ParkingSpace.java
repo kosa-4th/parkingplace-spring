@@ -40,11 +40,11 @@ public class ParkingSpace {
     @Column(name = "available_space_num", nullable = false)
     private Integer availableSpaceNum;
 
-    @Column(name = "next_space_num")
-    private Integer nextSpaceNum;
+    @Column(name="week_all_day_price")
+    private Integer weekAllDayPrice;
 
-    @Column(name = "next_space_date")
-    private LocalTime nextSpaceDate;
+    @Column(name="weekend_all_day_price")
+    private Integer weekendAllDayPrice;
 
     @NotNull
     @CreatedDate

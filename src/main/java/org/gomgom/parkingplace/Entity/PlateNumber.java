@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 public class PlateNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "plate_num_id", nullable = false)
+    @Column(name = "plate_number_id", nullable = false)
     private Long id;
 
     @Size(max = 8)
@@ -40,7 +40,7 @@ public class PlateNumber {
 
     @NotNull
     @CreatedDate
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createAt;
 
     @NotNull
