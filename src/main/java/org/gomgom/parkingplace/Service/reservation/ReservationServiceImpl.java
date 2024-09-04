@@ -58,7 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .parkingLot(parkingLot)
-                .plateNumber(plateNumber)
+                .plateNumber(String.valueOf(plateNumber))
                 .startTime(requestReservationDto.getStartTime())
                 .endTime(requestReservationDto.getEndTime())
                 .reservationUuid(customUUID)
