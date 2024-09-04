@@ -12,6 +12,8 @@ import org.gomgom.parkingplace.Entity.Reservation;
 public interface ReservationService {
 //    public List<Reservation> getReservationsByEmail(String email);
 
+
+
     boolean existsByReservationUuid(String uuid);
 
     void insertReservationData(ReservationDto.RequestReservationDto requestReservationDto);
