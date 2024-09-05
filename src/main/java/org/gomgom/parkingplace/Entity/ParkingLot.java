@@ -51,10 +51,10 @@ public class ParkingLot {
     private Character maintenance;
 
     @Column(name = "latitude")
-    private Integer latitude;
+    private Double latitude;
 
     @Column(name = "longtitude")
-    private Integer longtitude;
+    private Double longtitude;
 
     @Column(name = "weekdays_open_time")
     private LocalTime weekdaysOpenTime;
