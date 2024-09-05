@@ -3,6 +3,7 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +27,13 @@ public class ParkingLotController {
      * 2024.09.05 양건모 | 기능 구현
      * */
     @GetMapping
-    public ParkingLotDto.ParkingLotMarkersDto getParkingLots(
+    public ResponseEntity<ParkingLotDto.ParkingLotMarkersDto> getParkingLots(
             @ModelAttribute ParkingLotDto.ParkingLotListRequestDto request) {
-        return parkingLotService.getParkingLots(request);
+        try {
+            return ResponseEntity.ok(parkingLotService.getParkingLots(request));
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /*
