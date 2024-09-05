@@ -1,4 +1,4 @@
-package org.gomgom.parkingplace.Service;
+package org.gomgom.parkingplace.Service.jwt;
 
 import io.jsonwebtoken.*;
 import org.gomgom.parkingplace.Entity.User;

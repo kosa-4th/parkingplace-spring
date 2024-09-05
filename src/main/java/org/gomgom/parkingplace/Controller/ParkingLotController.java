@@ -3,10 +3,8 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,4 +29,14 @@ public class ParkingLotController {
 //            @RequestBody ParkingLotDto.ParkingLotListRequestDto request) {
 //        parkingLotService.getParkingLots();
 //    }
+
+    /*
+    작성자: 오지수
+    주차장 정보 가져오기
+     */
+    @GetMapping("/{parkinglotId}")
+    public ResponseEntity<ParkingLotDto.ParkingLotDetailResponseDto> getParkingLot(@PathVariable("parkinglotId") Long parkinglotId) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotDetail(parkinglotId));
+    }
+
 }

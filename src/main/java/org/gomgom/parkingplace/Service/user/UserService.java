@@ -1,4 +1,4 @@
-package org.gomgom.parkingplace.Service;
+package org.gomgom.parkingplace.Service.user;
 
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;

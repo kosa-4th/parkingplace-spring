@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
 import org.gomgom.parkingplace.Entity.User;
-import org.gomgom.parkingplace.Service.UserService;
+import org.gomgom.parkingplace.Service.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package org.gomgom.parkingplace.Service;
+package org.gomgom.parkingplace.Service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
@@ -8,6 +8,7 @@ import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.RefreshTokenRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
+import org.gomgom.parkingplace.Service.jwt.JwtService;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
