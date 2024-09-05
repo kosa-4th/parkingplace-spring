@@ -23,16 +23,25 @@ public class ParkingLotDto {
 
     @Getter
     @AllArgsConstructor
-    public static class ParkingLotListResponseDto {
-        private double latitude;
-        private double longitude;
-        private String name;
-        private String address;
-        private LocalTime weekOpenTime;
-        private LocalTime weekCloseTime;
-        private LocalTime weekendOpenTime;
-        private LocalTime weekendCloseTime;
-        private List<Object> parkingSpaces;
+    public static class ParkingLotMarkersDto {
+        private final List<ParkingLotMarkerDto> lots;
+    }
+
+    @Getter
+    public static class ParkingLotMarkerDto {
+        private final long id;
+        private final double latitude;
+        private final double longitude;
+        private final String name;
+        private final String address;
+
+        ParkingLotMarkerDto(ParkingLot parkingLot) {
+            this.id = parkingLot.getId();
+            this.latitude = parkingLot.getLatitude();
+            this.longitude = parkingLot.getLongitude();
+            this.name = parkingLot.getName();
+            this.address = parkingLot.getAddress();
+        }
     }
 
     /*

@@ -24,11 +24,11 @@ public class ParkingLotController {
     private final ParkingLotService parkingLotService;
 
     //특정 위도 경도 범위 내의 주차장 목록 조회
-//    @GetMapping
-//    public List<ParkingLotDto.ParkingLotListResponseDto> getParkingLots(
-//            @RequestBody ParkingLotDto.ParkingLotListRequestDto request) {
-//        parkingLotService.getParkingLots();
-//    }
+    @GetMapping
+    public ParkingLotDto.ParkingLotMarkersDto getParkingLots(
+            @ModelAttribute ParkingLotDto.ParkingLotListRequestDto request) {
+        return parkingLotService.getParkingLots(request);
+    }
 
     /*
     작성자: 오지수
