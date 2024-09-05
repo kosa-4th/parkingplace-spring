@@ -24,6 +24,9 @@ public class ParkingSpace {
     @Column(name = "parking_space_id", nullable = false)
     private Long id;
 
+    @Column(name = "space_name")
+    private String spaceName;
+
     @Column(name = "weekdays_price")
     private Integer weekdaysPrice;
 
