@@ -23,7 +23,7 @@ public class ParkingLotController {
      * @param request 최소 위도, 최대 위도, 최소 경도, 최대 경도
      * @return List 형태로 id, 이름, 위도, 경도, 주소
      *  ---------------------
-     * 2024.09.03 양건모 | 기능 구현
+     * 2024.09.05 양건모 | 기능 구현
      * */
     @GetMapping
     public ParkingLotDto.ParkingLotMarkersDto getParkingLots(

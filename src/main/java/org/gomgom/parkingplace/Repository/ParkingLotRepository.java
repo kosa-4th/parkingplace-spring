@@ -17,6 +17,15 @@ import java.util.Optional;
  */
 public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.02
+     * 설명 : 위도 경도 범위 내의 주차장들의 위도, 경도를 포함한 정보 제공
+     * @param minLat, maxLat, minLon, maxLon 최소 위도, 최대 위도, 최소 경도, 최대 경도
+     * @return List 형태로 id, 이름, 위도, 경도, 주소
+     *  ---------------------
+     * 2024.09.05 양건모 | 기능 구현
+     * */
     @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotMarkerDto(pl)" +
             "FROM ParkingLot pl " +
             "WHERE pl.latitude BETWEEN :minLat AND :maxLat " +
