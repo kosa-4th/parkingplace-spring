@@ -10,8 +10,6 @@ import org.gomgom.parkingplace.Dto.ReservationDto;
 public interface ReservationService {
 //    public List<Reservation> getReservationsByEmail(String email);
 
-   public boolean existsByReservationUuid(String uuid);
-
 
 
 }

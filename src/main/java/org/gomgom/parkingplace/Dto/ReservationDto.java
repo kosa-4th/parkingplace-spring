@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 import org.gomgom.parkingplace.Entity.CarType;
+import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.enums.Bool;
 
 import java.time.LocalDateTime;
@@ -24,18 +25,18 @@ public class ReservationDto {
     @ToString
     public static class RequestReservationDto {
         private Long parkingLotId;
-        private Long userId;
-        private Long plateNumberId;
+        private Long parkingSpaceId;
+        private String userEmail;
+        private String plateNumber;
         private LocalDateTime startTime;
         private LocalDateTime endTime;
         private Integer totalPrice;
-        private Bool wash;
-        private Bool maintenance;
+        private Bool washService;
+        private Bool maintenanceService;
     }
 
     @Data
     @AllArgsConstructor
-
     public static class RequestAvailableDto {
         private Long parkingLotId;
         private CarType carType;
@@ -59,13 +60,37 @@ public class ReservationDto {
         private Bool wash;
         private Bool maintenance;
         private String parkingLotName;
+        private String parkingSpaceName;
         private String userEmail;
+        private String userName;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        // Reservation 엔티티로부터 DTO를 생성하는 생성자 추가
+        public ResponseReservationDto(Reservation reservation) {
+            this.reservationId = reservation.getId();
+            this.reservationUuid = reservation.getReservationUuid();
+            this.startTime = reservation.getStartTime();
+            this.endTime = reservation.getEndTime();
+            this.totalPrice = reservation.getTotalPrice();
+            this.reservationConfirmed = reservation.getReservationConfirmed();
+            this.plateNumber = reservation.getPlateNumber();
+            this.wash = reservation.getWash();
+            this.maintenance = reservation.getMaintenance();
+            this.parkingLotName = reservation.getParkingLot().getName();  // 주차장 이름
+            this.parkingSpaceName = reservation.getParkingSpace().getId().toString();  // 주차 공간 이름 (예시)
+            this.userEmail = reservation.getUser().getEmail();  // 사용자 이메일
+            this.userName = reservation.getUser().getName();    // 사용자 이름
+            this.createdAt = reservation.getCreatedAt();
+            this.updatedAt = reservation.getUpdatedAt();
+        }
     }
     @AllArgsConstructor
     @Getter
     public static class ReservationAvailableResponseDto{
         private boolean available;
         private int totalFee;
+        private Long parkingSpaceId;
 
     }
 

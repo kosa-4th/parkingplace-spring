@@ -3,7 +3,6 @@ package org.gomgom.parkingplace.Service.reservation;
 import lombok.RequiredArgsConstructor;
 import static org.gomgom.parkingplace.Dto.ReservationDto.RequestAvailableDto;
 
-import org.apache.tomcat.util.net.openssl.OpenSSLUtil;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.Repository.CarTypeRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import static org.gomgom.parkingplace.Dto.ReservationDto.ReservationAvailableResponseDto;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +40,6 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             Long carTypeId = (Long) row[0];         // 첫 번째 값
             Long availableSpaceNum = (Long) row[1]; // 두 번째 값
 
-            // 출력
-            System.out.println("Index: " + i + " | CarTypeId: " + carTypeId + " | AvailableSpaceNum: " + availableSpaceNum);
         }
         // 빈 ParkingSpace 리스트 생성
         List<ParkingSpace> availableSpaces = new ArrayList<>();
@@ -56,7 +52,6 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             // ParkingSpace 객체 생성
             ParkingSpace parkingSpace = parkingSpaceRepository.findByParkingLotAndCarType(parkingLotId, carTypeId)
                     .orElse(null);  // 먼저 주차장과 차량 타입에 맞는 ParkingSpace를 조회
-            System.out.println("ParkingSpace객체 생성...한다."+parkingSpace.toString());
             // 차량 타입(CarType)을 carTypeId를 통해 조회
             CarType carType = carTypeRepository.findById(carTypeId).orElse(null);
 
@@ -101,16 +96,18 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             if (space.getCarType().equals(carType.getId()) && space.getAvailableSpaceNum() > 0) {
                 System.out.println("차종에 맞는 자리 : " + space.getAvailableSpaceNum());
                 totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
-                return new ReservationAvailableResponseDto(true, totalFee);
+                System.out.println("space정보 : "+space.toString());
+
+                return new ReservationAvailableResponseDto(true, totalFee, space.getId());
 
             }else if(space.getCarType().getId().equals(carType.getId()) && space.getAvailableSpaceNum()>0){
                 System.out.println("맞는 자리 :"+ space.getAvailableSpaceNum());
                 totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
-
-                return new ReservationAvailableResponseDto(true, totalFee);
+                System.out.println("space정보 : "+space.toString());
+                return new ReservationAvailableResponseDto(true, totalFee, space.getId());
             }
         }
         System.out.println("남은 자리 없음.");
-        return new ReservationAvailableResponseDto(false, totalFee);
+        return new ReservationAvailableResponseDto(false, totalFee, null);
     }
 }

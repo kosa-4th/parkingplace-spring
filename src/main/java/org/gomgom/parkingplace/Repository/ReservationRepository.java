@@ -34,4 +34,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Object[]> findAvailableSpaces(@Param("parkingLotId") Long parkingLotId,
                                        @Param("startDate") LocalDateTime startDate,
                                        @Param("endDate") LocalDateTime endDate);
+
+    
 }
