@@ -33,14 +33,6 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long
                                            @Param("startTime") LocalDateTime startTime,
                                            @Param("endTime") LocalDateTime endTime);
 
-    @Query("SELECT ps FROM ParkingSpace ps LEFT JOIN Reservation r " +
-            "ON ps.id = r.parkingSpace.id " +
-            "AND r.startTime < :endTime AND r.endTime > :startTime " +
-            "WHERE ps.parkingLot.id = :parkingLotId AND r.id IS NULL")
-    List<ParkingSpace> findAvailableSpaces(@Param("parkingLotId") Long parkingLotId,
-                                           @Param("startTime") LocalDateTime startTime,
-                                           @Param("endTime") LocalDateTime endTime);
-
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.07
@@ -51,7 +43,7 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long
      * 2024.09.07 양건모 | 기능 구현
      * */
     @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingSpaceDto$ParkingSpacesPreviewDto(" +
-            "ps.carType.carType, ps.weekdaysPrice, ps.weekendPrice, ps.weekAllDayPrice, ps.weekendAllDayPrice) " +
+            "ps.carType.carTypeEnum, ps.weekdaysPrice, ps.weekendPrice, ps.weekAllDayPrice, ps.weekendAllDayPrice) " +
             "FROM ParkingSpace ps " +
             "WHERE ps.parkingLot.id = :parkingLotId " +
             "ORDER BY ps.carType.id")

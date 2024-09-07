@@ -28,6 +28,7 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
 
     @Query("select p.name from ParkingLot p where p.id = :parkingLotId")
     String findByParkingLotName (Long parkingLotId);
+
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.02
