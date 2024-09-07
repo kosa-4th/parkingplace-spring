@@ -12,6 +12,6 @@ public interface JwtService {
 
     boolean validateToken(String token);
 
-    String getUserIdFromToken(String token);
+    Long getUserIdFromToken(String token);
 
 }

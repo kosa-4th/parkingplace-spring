@@ -1,61 +1,36 @@
 package org.gomgom.parkingplace.Service.jwt;
 
-import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.Jwt.JWTUtil;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.util.Date;
 /*
 작성자: 오지수
  */
 @Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
-    private final String secretKey = "parple-secret-key-dkafjlekgjiej##Gdgklfaj25395!59786";
-    private final String refreshSecretKey = "parple-refresh-secret-key-djkgh39@flkg!#5u29tgdklg#238ilk";
+
+    private final JWTUtil jwtUtil;
 
     @Override
     public String createAccessToken(User user) {
-        return createToken(user, secretKey, 1000 * 60 * 15); //15분 유효
+        return jwtUtil.createAccessToken(user);
     }
 
     @Override
     public String createRefreshToken(User user) {
-        return createToken(user, refreshSecretKey, 1000 * 60 * 60 * 24);
-    }
-
-    private String createToken(User user, String key, Integer duration) {
-        Date expTime = new Date(System.currentTimeMillis() + duration);
-        Key signKey = new SecretKeySpec(key.getBytes(), SignatureAlgorithm.HS256.getJcaName());
-
-        return Jwts.builder()
-                .setSubject(user.getId().toString())
-                .claim("username", user.getName())
-                .claim("email", user.getEmail())
-                .claim("auth", user.getAuth().name())
-                .setExpiration(expTime)
-                .signWith(signKey, SignatureAlgorithm.HS256)
-                .compact();
+        return jwtUtil.createToken(user, 60 * 60 * 24); //하루
     }
 
     @Override
     public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(refreshSecretKey.getBytes()).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
+        return jwtUtil.validateToken(token);
     }
 
     @Override
-    public String getUserIdFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(refreshSecretKey.getBytes())
-                .build()
-                .parseClaimsJws(token).getBody();
-        return claims.getSubject();
+    public Long getUserIdFromToken(String token) {
+        return jwtUtil.getUserId(token);
     }
-
 }
