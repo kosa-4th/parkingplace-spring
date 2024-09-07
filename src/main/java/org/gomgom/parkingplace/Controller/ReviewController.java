@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/api/protected/parkinglots/{parkinglotId}/reviews")
+@RequestMapping("/api/parkinglots/{parkinglotId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -24,7 +24,7 @@ public class ReviewController {
     리뷰 등록
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/api/protected/parkinglots/{parkinglotId}/reviews")
+    @PostMapping("/protected")
     public ResponseEntity<?> registerReview(@PathVariable("parkinglotId") Long parkinglotId,
                                          @RequestBody ReviewDto.ReviewRegisterRequestDto reviewDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -37,7 +37,7 @@ public class ReviewController {
     작성자: 오지수
     리뷰 가져오기
      */
-    @GetMapping("/api/parkinglots/{parkinglotId}/reviews")
+    @GetMapping()
     public ResponseEntity<?> getReviews(@PathVariable("parkinglotId") Long parkinglotId) {
         return ResponseEntity.ok(reviewService.getReviews(parkinglotId));
     }
