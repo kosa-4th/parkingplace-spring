@@ -31,7 +31,7 @@ public class ReviewController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/api/open/parkinglots/{parkinglotId}/reviews")
+    @GetMapping("/api/parkinglots/{parkinglotId}/reviews")
     public ResponseEntity<?> getReviews(@PathVariable("parkinglotId") Long parkinglotId) {
         return ResponseEntity.ok(reviewService.getReviews(parkinglotId));
     }
