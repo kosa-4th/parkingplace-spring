@@ -104,7 +104,7 @@ public class Reservation {
         this.wash = wash;
         this.maintenance = maintenance;
         this.totalPrice = totalPrice;
-        this.reservationConfirmed = Bool.N;
+        this.reservationConfirmed = reservationConfirmed;
         this.plateNumber = plateNumber;
         this.parkingLot = parkingLot;
         this.reservationUuid = reservationUuid;

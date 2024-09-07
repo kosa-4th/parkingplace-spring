@@ -74,10 +74,8 @@ public class ReservationController {
     public ResponseEntity<ResponseReservationDto> createReservation(@RequestBody RequestReservationDto requestReservationDto) {
 
         Reservation reservation = reservationService.createReservation(requestReservationDto);
-        System.out.println(reservation.getReservationConfirmed() +"컨트롤단1");
 
         ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation);
-        System.out.println(responseReservationDto.getReservationConfirmed() +"컨트롤단2");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReservationDto);
     }
 

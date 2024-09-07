@@ -48,31 +48,25 @@ public class ReservationServiceImpl implements ReservationService {
     public Reservation createReservation(RequestReservationDto requestReservationDto){
         Reservation reservation = new Reservation();
 
-        System.out.println("parkingLotName 여기인가?");
 
         String parkingLotName = parkingLotRepository.findByParkingLotName(requestReservationDto.getParkingLotId());
 
-        System.out.println("UUID 여기인가?");
 
         String reservationUuid = customUUIDGenerator.generateUniqueUUID();
 
-        System.out.println("parkingSPace 여기인가?");
 
         ParkingSpace parkingSpace = parkingSpaceRepository.findById(requestReservationDto.getParkingSpaceId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Parking Space ID"));
 
-        System.out.println("USER 여기인가?");
 
         User user = userRepository.findByEmail(requestReservationDto.getUserEmail())
                 .orElseThrow(() ->new IllegalArgumentException("Email 존재 안함"));
 
-        System.out.println("parkingLot 여기인가?");
 
         ParkingLot parkingLot = parkingLotRepository.findById(requestReservationDto.getParkingLotId())
                         .orElseThrow(()->new IllegalArgumentException("parkingLot 존재 안함."));
 
 
-        System.out.println("===============변수");
         String plateNumber = requestReservationDto.getPlateNumber();
         LocalDateTime startTime =requestReservationDto.getStartTime();
         LocalDateTime endTime =requestReservationDto.getEndTime();
@@ -80,7 +74,6 @@ public class ReservationServiceImpl implements ReservationService {
         Bool maintenance =  requestReservationDto.getMaintenanceService();
         int totalPrice = requestReservationDto.getTotalPrice();
 
-        System.out.println("=============Set");
         reservation.setLotName(parkingLotName);
         reservation.setReservationUuid(reservationUuid);
         reservation.setPlateNumber(plateNumber);
@@ -93,7 +86,6 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setParkingLot(parkingLot);
         reservation.setParkingSpace(parkingSpace);
         reservation.setReservationConfirmed(Bool.N);
-        System.out.println("reservation : " +reservation.toString());
         return reservationRepository.save(reservation);
 
     }
