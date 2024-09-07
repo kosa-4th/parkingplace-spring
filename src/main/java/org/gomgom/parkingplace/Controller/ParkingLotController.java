@@ -3,18 +3,12 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/*
- * 생성 일자: 2024.09.05
- * 설명 : 주차장 관련 api 컨트롤러
- * ---------------------
- * 2024.09.05 양건모 | getParkingLots(): 특정 위도 경도 범위 내의 주차장 목록 조회
- *
- * */
 
 @RestController
 @RequiredArgsConstructor
@@ -23,11 +17,21 @@ public class ParkingLotController {
 
     private final ParkingLotService parkingLotService;
 
-    //특정 위도 경도 범위 내의 주차장 목록 조회
-    @GetMapping
-    public ParkingLotDto.ParkingLotMarkersDto getParkingLots(
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.02
+     * 설명 : 위도 경도 범위 내의 주차장들의 위도, 경도를 포함한 정보 제공
+     * @param request 최소 위도, 최대 위도, 최소 경도, 최대 경도
+     * @return List 형태로 id, 이름, 위도, 경도, 주소
+     *  ---------------------
+     * 2024.09.05 양건모 | 기능 구현
+     * 2024.09.07 양건모 | 반환 DTO 이름 변경에 대한 적용
+     * 2024.09.07 양건모 | 매핑 url api 문서에 맞게 변환
+     * */
+    @GetMapping("/list")
+    public ResponseEntity<ParkingLotDto.ParkingLotMarkersResponseDto> getParkingLots(
             @ModelAttribute ParkingLotDto.ParkingLotListRequestDto request) {
-        return parkingLotService.getParkingLots(request);
+        return ResponseEntity.ok(parkingLotService.getParkingLots(request));
     }
 
     /*
@@ -37,6 +41,20 @@ public class ParkingLotController {
     @GetMapping("/{parkinglotId}")
     public ResponseEntity<ParkingLotDto.ParkingLotDetailResponseDto> getParkingLot(@PathVariable("parkinglotId") Long parkinglotId) {
         return ResponseEntity.ok(parkingLotService.getParkingLotDetail(parkinglotId));
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.07
+     * 설명 : 주차장의 간략한 정보 제공
+     * @param parkingLotId 주차장 id
+     * @return 주차장명, 주소, 가격, 리뷰 개수, 가장 최신 리뷰, 주차 구역 목록
+     *  ---------------------
+     * 2024.09.07 양건모 | 기능 구현
+     * */
+    @GetMapping("/preview/{parkingLotId}")
+    public ResponseEntity<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreview(@PathVariable Long parkingLotId) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotPreview(parkingLotId));
     }
 
 }

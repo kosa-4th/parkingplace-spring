@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.gomgom.parkingplace.enums.CarTypeEnum;
 
 @Getter
 @Setter
@@ -18,7 +19,8 @@ public class CarType {
 
     @Size(max = 20)
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "car_type", nullable = false, length = 20)
-    private String carType;
+    private CarTypeEnum carTypeEnum;
 
 }

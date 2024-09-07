@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 @Setter
 @Entity
 @Table(name = "tbl_parking_space")
+@ToString(exclude = {"parkingLot"})  // 순환 참조를 방지하기 위해 제외
 @EntityListeners(AuditingEntityListener.class)
 public class ParkingSpace {
     @Id

@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /*
@@ -17,6 +19,30 @@ import java.util.Set;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.07
+     * 설명 : 요청 데이터가 올바른 타입이 아닌 경우 처리하는 ExceptionHandler
+     *  ---------------------
+     * 2024.09.07 양건모 | 기능 구현
+     * */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionResponse> handleNoSuchElementException(MethodArgumentTypeMismatchException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse("입력 값이 올바른 형태가 아닙니다."));
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.07
+     * 설명 : 원하는 데이터가 없는 경우 처리하는 ExceptionHandler
+     *  ---------------------
+     * 2024.09.07 양건모 | 기능 구현
+     * */
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ExceptionResponse> handleNoSuchElementException(NoSuchElementException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse("해당 결과를 찾을 수 없습니다."));
+    }
 
     //@Data
     @ExceptionHandler(MethodArgumentNotValidException.class)
