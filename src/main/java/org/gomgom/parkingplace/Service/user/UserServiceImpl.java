@@ -30,19 +30,14 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserDto.responseSignupDto join(User user) {
-        try {
-            Optional<User> vailUser = userRepository.findByEmail(user.getEmail());
-            if(vailUser.isPresent()) {
-                throw new CustomExceptions.ValidationException("이미 가입된 사용자입니다.");
-            }
-            user.updatePassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-            return new UserDto.responseSignupDto("success");
-        } catch (CustomExceptions.ValidationException e) {
-            throw e; //예외 다시 던지기
-        } catch (Exception e) {
-            throw new RuntimeException("알 수 없는 오류가 발생했습니다.", e);
+        Optional<User> validUser = userRepository.findByEmail(user.getEmail());
+        if (validUser.isPresent()) {
+            throw new CustomExceptions.ValidationException("이미 가입된 사용자입니다.");
         }
+        // 비밀번호 인코딩
+        user.updatePassword(encoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return new UserDto.responseSignupDto("success");
     }
 
     /*
@@ -64,17 +59,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public AuthDto.AuthResponseDto refreshToken(String refreshToken) {
-        if (jwtService.validateToken(refreshToken)) {
-            String userId = jwtService.getUserIdFromToken(refreshToken);
-            User user = userRepository.findById(Long.parseLong(userId))
-                    .orElseThrow(() -> new CustomExceptions.UserNotFoundException("사용자 정보가 존재하지 않습니다."));
-
-            String newAccessToken = jwtService.createAccessToken(user);
-            return new AuthDto.AuthResponseDto(newAccessToken, refreshToken);
-        } else {
-            throw new CustomExceptions.ValidationException("유효한 토큰값이 아닙니다." );
-
+        if (!jwtService.validateToken(refreshToken)) {
+            throw new CustomExceptions.ValidationException("유효한 토큰값이 아닙니다.");
         }
+
+        Long userId = jwtService.getUserIdFromToken(refreshToken);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomExceptions.UserNotFoundException("사용자 정보가 존재하지 않습니다."));
+
+        String newAccessToken = jwtService.createAccessToken(user);
+        return new AuthDto.AuthResponseDto(newAccessToken, refreshToken);
     }
 
     private User authenticate(UserDto.requestSignInDto user) {

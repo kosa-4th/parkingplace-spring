@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 작성자: 오지수
     // 회원가입, 로그인
     Optional<User> findByEmail(String email);
+
 }
