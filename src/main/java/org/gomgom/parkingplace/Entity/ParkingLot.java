@@ -99,4 +99,8 @@ public class ParkingLot {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "parking_space_id")
     private List<ParkingSpace> parkingSpaces = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id")
+    private List<Review> reviews;
 }
