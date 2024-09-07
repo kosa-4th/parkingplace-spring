@@ -14,6 +14,27 @@ public class UserDto {
     회원가입 requestDto
      */
     @Data
+    public static class smtpRequestDto {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email
+        private String email;
+    }
+
+    @Getter
+    public static class smtpCodeRequestDto {
+        @NotBlank(message = "이메일은 필수 입력값입니다.")
+        @Email
+        private String email;
+        private String code;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class smtpResponseDto {
+        private String message;
+    }
+
+    @Data
     public static class requsetUserDto {
         private long userId;
 

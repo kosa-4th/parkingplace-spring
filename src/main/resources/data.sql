@@ -1,4 +1,6 @@
 INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'ALL' );
+INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('테스터', 'test@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_USER');
+INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('주차장', 'parking@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_PARKING_MANAGER');
 
 INSERT INTO tbl_parking_lot (latitude,longitude,maintenance,wash,weekdays_close_time,weekdays_open_time,weekend_close_time,weekend_open_time,created_at,updated_at,user_id,parking_center_id,name,address,usable) VALUES (126.5241062448,37.510818,'N','N','22:00:00','08:00:00','23:00:00','09:00:00','2024-09-05 09:02:06',NULL,NULL,'10000-11191-00001-00-1','영종역일원(노상) 공영주차장','인천광역시 중구 운북동  464','N');
 INSERT INTO tbl_parking_lot (latitude,longitude,maintenance,wash,weekdays_close_time,weekdays_open_time,weekend_close_time,weekend_open_time,created_at,updated_at,user_id,parking_center_id,name,address,usable) VALUES (126.4818469914,37.4942885427,'N','N','22:00:00','08:00:00','23:00:00','09:00:00','2024-09-05 09:02:06',NULL,NULL,'10000-11191-00002-00-1','공항신도시 공영주차장','인천광역시 중구 운서동  2818','N');
