@@ -6,8 +6,10 @@ import org.gomgom.parkingplace.Service.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -28,6 +30,8 @@ import java.util.List;
 
  */
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) // 메서드 수준의 보안 활성화
 public class SecurityConfiguration {
 
     private final JwtProperties jwtProperties;
@@ -45,7 +49,8 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/protected/**").authenticated()
+//                        .requestMatchers("/api/parking/**").hasRole("PARKING_MANAGER")
+//                        .requestMatchers("/api/protected/**").hasRole("USER")
                         .requestMatchers("/api/**").permitAll()
 
                         .anyRequest().denyAll()
