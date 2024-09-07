@@ -35,4 +35,21 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
             @Param("maxLat") double maxLat,
             @Param("minLon") double minLon,
             @Param("maxLon") double maxLon);
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.07
+     * 설명 : id 값이 일치하는 주차장에 대한 간략한 정보 제공
+     * @param parkingLotId 주차장 id
+     * @return 주차장명, 주소, 가격, 리뷰 개수
+     *  ---------------------
+     * 2024.09.07 | 기능 구현
+     * */
+    @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotPreviewResponseDto(" +
+            "p.name, p.address, COALESCE(COUNT(r), 0), r.review) " +
+            "FROM ParkingLot p " +
+            "LEFT JOIN p.reviews r " +
+            "WHERE p.id = :parkingLotId " +
+            "GROUP BY p.id")
+    Optional<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreviewById(Long parkingLotId);
 }
