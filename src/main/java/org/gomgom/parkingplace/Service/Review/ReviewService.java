@@ -2,11 +2,15 @@ package org.gomgom.parkingplace.Service.Review;
 
 import org.gomgom.parkingplace.Dto.ReviewDto;
 import org.gomgom.parkingplace.Entity.User;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface ReviewService {
-    List<ReviewDto.ReviewsResponseDto> getReviews(Long parkingplaceId);
+    ReviewDto.ReviewsResponseDto getReviews(Long parkingplotId, Pageable pageable);
 
     String saveReview(User user, Long parkinglotId, String review);
+
+    void deleteReview(Long userId, Long parkinglotId, Long reviewId);
+
+    void modifyReview(Long userId, Long parkinglotId, Long reviewId, String review);
 }
