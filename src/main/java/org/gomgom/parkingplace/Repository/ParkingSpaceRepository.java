@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Repository;
 
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Dto.ParkingSpaceDto;
+import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,4 +50,5 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long
             "ORDER BY ps.carType.id")
     List<ParkingSpaceDto.ParkingSpacesPreviewDto> getSpacesPreviewsByParkingLotId(Long parkingLotId);
 
+    Optional<ParkingSpace> findByParkingLot(ParkingLot parkingLot);
 }

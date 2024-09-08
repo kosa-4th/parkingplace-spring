@@ -2,7 +2,7 @@ package org.gomgom.parkingplace.Service.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Entity.User;
-import org.gomgom.parkingplace.Jwt.JWTUtil;
+import org.gomgom.parkingplace.util.JWTUtil;
 import org.springframework.stereotype.Service;
 
 /*

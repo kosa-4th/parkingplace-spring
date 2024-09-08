@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Random;
 
+/*
+작성자: 오지수
+메일 인증
+ */
 @Service
 @RequiredArgsConstructor
 public class SMTPService {

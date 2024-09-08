@@ -1,7 +1,7 @@
 package org.gomgom.parkingplace.Configure;
 
 import io.jsonwebtoken.security.Keys;
-import org.gomgom.parkingplace.Jwt.JWTUtil;
+import org.gomgom.parkingplace.util.JWTUtil;
 import org.gomgom.parkingplace.Service.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

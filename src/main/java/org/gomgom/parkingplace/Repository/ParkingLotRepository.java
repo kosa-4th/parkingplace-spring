@@ -24,6 +24,8 @@ import java.util.List;
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
 
+    Optional<ParkingLot> findByParkingCenterId(String parkingCenterId);
+
     List<ParkingLot> findByUsable (Bool usable);
 
     @Query("select p.name from ParkingLot p where p.id = :parkingLotId")

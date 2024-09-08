@@ -1,9 +1,12 @@
 package org.gomgom.parkingplace.Entity;
 
+import jakarta.annotation.Resource;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gomgom.parkingplace.enums.Bool;
 import org.hibernate.annotations.ColumnDefault;
@@ -23,6 +26,7 @@ import java.util.List;
 @Table(name = "tbl_parking_lot")
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class ParkingLot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,13 +48,19 @@ public class ParkingLot {
     @Column(name = "address", nullable = false, length = 300)
     private String address;
 
-    @NotNull
+    @Column(name = "tel")
+    private String tel;
+
+    @Column(name = "parking_type")
+    private String parkingType;
+
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
     @Column(name = "wash", nullable = false)
     private Bool wash;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
     @Column(name = "maintenance", nullable = false)
     private Bool maintenance;
 
@@ -72,13 +82,11 @@ public class ParkingLot {
     @Column(name = "weekend_close_time")
     private LocalTime weekendCloseTime;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
     @Column(name = "usable", nullable = false)
     private Bool usable;
 
-    @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -103,4 +111,24 @@ public class ParkingLot {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private List<Review> reviews;
+
+    @Builder
+    public ParkingLot(String name, String address, String tel,String parkingType, String parkingCenterId,
+                      double longitude, double latitude,
+                      LocalTime weekdaysOpenTime, LocalTime weekdaysCloseTime,
+                      LocalTime weekendOpenTime, LocalTime weekendCloseTime) {
+        this.name = name;
+        this.address = address;
+        this.tel = tel;
+        this.parkingType = parkingType;
+        this.parkingCenterId = parkingCenterId;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.weekdaysOpenTime = weekdaysOpenTime;
+        this.weekdaysCloseTime = weekdaysCloseTime;
+        this.weekendOpenTime = weekendOpenTime;
+        this.weekendCloseTime = weekendCloseTime;
+
+    }
+
 }
