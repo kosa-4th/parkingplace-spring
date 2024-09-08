@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Repository.CarTypeRepository;
@@ -19,7 +20,8 @@ import java.util.Optional;
 import static org.gomgom.parkingplace.Dto.ReservationDto.*;
 
 @RestController
-@RequestMapping("/api/parkingLots/{parkingLotId}/reservation")
+@RequestMapping("/api/parkingLots/reservation")
+//@RequestMapping("/api/parkingLots/{parkingLotId}/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
 
@@ -68,8 +70,6 @@ public class ReservationController {
      * @Date 2024.09.07
      * 주차자리 예약하기
      */
-
-
     @PostMapping("/reservation")
     public ResponseEntity<ResponseReservationDto> createReservation(@RequestBody RequestReservationDto requestReservationDto) {
 
@@ -77,6 +77,24 @@ public class ReservationController {
 
         ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReservationDto);
+    }
+
+    /*
+    *@Author 김경민
+    * @Date 2024.09.08
+    * 예약 페이지 접근
+    * */
+    @GetMapping("")
+    public ResponseEntity<?> getParkingLotReservation(@RequestParam Long parkingLotId, @RequestParam String userEmail) {
+//    public ResponseEntity<?> getParkingLotReservation(@PathVariable Long parkingLotId, @RequestParam String userEmail) {
+        try {
+            // 주차장 및 사용자 차량 정보 가져오기
+            ParkingLotAndCarInfoDto.ParkingLotAndCarInfoResponseDto reservationInfo = reservationService.getParkingLotReservation(parkingLotId, userEmail);
+            return ResponseEntity.ok(reservationInfo);
+        } catch (IllegalArgumentException e) {
+            // 주차장 정보가 없는 경우, 오류 메시지와 함께 403 FORBIDDEN 상태 반환
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("접근 불가한 페이지입니다.");
+        }
     }
 
 }

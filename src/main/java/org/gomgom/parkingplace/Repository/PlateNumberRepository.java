@@ -1,10 +1,14 @@
 package org.gomgom.parkingplace.Repository;
 
+import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.PlateNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
 
 public interface PlateNumberRepository extends JpaRepository<PlateNumber, Long> {
 
@@ -12,4 +16,7 @@ public interface PlateNumberRepository extends JpaRepository<PlateNumber, Long> 
     @Query("SELECT p.carType FROM PlateNumber p WHERE p.plateNumber = :plateNumber")
     CarType findCarTypeByPlateNumberId(@Param("plateNumber") String plateNumber);
 
+
+    @Query("SELECT pn FROM PlateNumber pn WHERE pn.user.id = (SELECT u.id FROM User u WHERE u.email = :email)")
+    List<PlateNumber> getPlateNumbersByUserEmail(String email);
 }
