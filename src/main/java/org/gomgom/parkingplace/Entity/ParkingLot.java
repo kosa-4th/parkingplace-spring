@@ -109,7 +109,7 @@ public class ParkingLot {
     private List<ParkingSpace> parkingSpaces = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "parking_lot_id")
     private List<Review> reviews;
 
     @Builder
