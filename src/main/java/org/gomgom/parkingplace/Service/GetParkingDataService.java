@@ -219,7 +219,6 @@ import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Repository.CarTypeRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
-import org.gomgom.parkingplace.Service.GeocodingService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
@@ -245,100 +244,99 @@ public class GetParkingDataService {
     private final CarTypeRepository carTypeRepository;
 
 //    @EventListener(ApplicationReadyEvent.class)
-    @Transactional
-    public void getParkingApi() {
-        GeocodingService geocodingService = new GeocodingService(); //지오코딩
-        try {
-            log.info("add parking api data ===========================================================================");
-            ClassPathResource resource = new ClassPathResource("SeoulParkingInfo.json");
-            InputStream inputStream = resource.getInputStream();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-            CarType cartype = carTypeRepository.findById(1L)
-                    .orElseThrow(() -> new RuntimeException("Car type not found"));
-            LocalTime localTime = LocalTime.parse("0000", formatter);
-
-            Map<String, Object> jsonData  = objectMapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
-            List<Map<String, Object>> data = (List<Map<String, Object>>) jsonData.get("DATA");
-            int num = 0;
-
-            for (Map<String, Object> entry : data) {
-                log.info("진행중: " + ++num);
-                log.info(entry.toString());
-
-                String parkingCode = Optional.ofNullable(entry.get("pklt_cd"))
-                        .map(Object::toString)
-                        .orElse(null).trim();
-                if (parkingCode == null) {
-                    continue;
-                }
-
-                String parkingName = Optional.ofNullable(entry.get("pklt_nm"))
-                        .map(Object::toString)
-                        .orElse("").trim();
-                String address = Optional.ofNullable(entry.get("addr"))
-                        .map(Object::toString)
-                        .orElse("").trim();
-                String parkingType = Optional.ofNullable(entry.get("pklt_knd_nm"))
-                        .map(Object::toString)
-                        .orElse("").trim();
-                String parkingTel = Optional.ofNullable(entry.get("telno"))
-                        .map(Object::toString)
-                        .orElse("").trim();
-                int availability = Optional.ofNullable(entry.get("tpkct"))
-                        .map(Object::toString)
-                        .map(Integer::parseInt)
-                        .orElse(0);
-
-                // 시간 변환 코드 생략...
-
-                Double lat = Optional.ofNullable(entry.get("lat"))
-                        .map(Object::toString)
-                        .map(Double::parseDouble)
-                        .orElse(0.0); // 기본값 0.0
-                Double lon = Optional.ofNullable(entry.get("lot"))
-                        .map(Object::toString)
-                        .map(Double::parseDouble)
-                        .orElse(0.0); // 기본값 0.0
-
-                // 위도와 경도가 0.0이거나 null일 경우 지오코딩 수행
-                if (lat == 0.0 || lon == 0.0) {
-                    try {
-                        log.info(" =======위도 경도 없음========== " +address);
-                        double[] coordinates = geocodingService.getCoordinates(address);
-                        lat = coordinates[0];
-                        lon = coordinates[1];
-                        log.info("Geocoding successful: lat=" + lat + ", lon=" + lon);
-                    } catch (IOException e) {
-                        log.error("Geocoding failed for address: " + address);
-                    }
-                }
-
-                // 주차장 코드로 기존 데이터 조회후 저장
-                Double finalLon = lon;
-                Double finalLat = lat;
-                ParkingLot parkingLot = parkingLotRepository.findByParkingCenterId(parkingCode)
-                        .orElseGet(() -> {
-                            ParkingLot newLot = ParkingLot.builder()
-                                    .name(parkingName)
-                                    .address(address)
-                                    .tel(parkingTel)
-                                    .parkingType(parkingType)
-                                    .parkingCenterId(parkingCode)
-                                    .longitude(finalLon)
-                                    .latitude(finalLat)
-                                    .weekdaysOpenTime(localTime)
-                                    .weekdaysCloseTime(localTime)
-                                    .weekendOpenTime(localTime)
-                                    .weekendCloseTime(localTime)
-                                    .build();
-                            return parkingLotRepository.save(newLot);
-                        });
-
-                // 주차 공간 정보 처리 생략...
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Transactional
+//    public void getParkingApi() {
+//        try {
+//            log.info("add parking api data ===========================================================================");
+//            ClassPathResource resource = new ClassPathResource("SeoulParkingInfo.json");
+//            InputStream inputStream = resource.getInputStream();
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
+//            CarType cartype = carTypeRepository.findById(1L)
+//                    .orElseThrow(() -> new RuntimeException("Car type not found"));
+//            LocalTime localTime = LocalTime.parse("0000", formatter);
+//
+//            Map<String, Object> jsonData  = objectMapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {});
+//            List<Map<String, Object>> data = (List<Map<String, Object>>) jsonData.get("DATA");
+//            int num = 0;
+//
+//            for (Map<String, Object> entry : data) {
+//                log.info("진행중: " + ++num);
+//                log.info(entry.toString());
+//
+//                String parkingCode = Optional.ofNullable(entry.get("pklt_cd"))
+//                        .map(Object::toString)
+//                        .orElse(null).trim();
+//                if (parkingCode == null) {
+//                    continue;
+//                }
+//
+//                String parkingName = Optional.ofNullable(entry.get("pklt_nm"))
+//                        .map(Object::toString)
+//                        .orElse("").trim();
+//                String address = Optional.ofNullable(entry.get("addr"))
+//                        .map(Object::toString)
+//                        .orElse("").trim();
+//                String parkingType = Optional.ofNullable(entry.get("pklt_knd_nm"))
+//                        .map(Object::toString)
+//                        .orElse("").trim();
+//                String parkingTel = Optional.ofNullable(entry.get("telno"))
+//                        .map(Object::toString)
+//                        .orElse("").trim();
+//                int availability = Optional.ofNullable(entry.get("tpkct"))
+//                        .map(Object::toString)
+//                        .map(Integer::parseInt)
+//                        .orElse(0);
+//
+//                // 시간 변환 코드 생략...
+//
+//                Double lat = Optional.ofNullable(entry.get("lat"))
+//                        .map(Object::toString)
+//                        .map(Double::parseDouble)
+//                        .orElse(0.0); // 기본값 0.0
+//                Double lon = Optional.ofNullable(entry.get("lot"))
+//                        .map(Object::toString)
+//                        .map(Double::parseDouble)
+//                        .orElse(0.0); // 기본값 0.0
+//
+//                // 위도와 경도가 0.0이거나 null일 경우 지오코딩 수행
+//                if (lat == 0.0 || lon == 0.0) {
+//                    try {
+//                        log.info(" =======위도 경도 없음========== " +address);
+//                        double[] coordinates = geocodingService.getCoordinates(address);
+//                        lat = coordinates[0];
+//                        lon = coordinates[1];
+//                        log.info("Geocoding successful: lat=" + lat + ", lon=" + lon);
+//                    } catch (IOException e) {
+//                        log.error("Geocoding failed for address: " + address);
+//                    }
+//                }
+//
+//                // 주차장 코드로 기존 데이터 조회후 저장
+//                Double finalLon = lon;
+//                Double finalLat = lat;
+//                ParkingLot parkingLot = parkingLotRepository.findByParkingCenterId(parkingCode)
+//                        .orElseGet(() -> {
+//                            ParkingLot newLot = ParkingLot.builder()
+//                                    .name(parkingName)
+//                                    .address(address)
+//                                    .tel(parkingTel)
+//                                    .parkingType(parkingType)
+//                                    .parkingCenterId(parkingCode)
+//                                    .longitude(finalLon)
+//                                    .latitude(finalLat)
+//                                    .weekdaysOpenTime(localTime)
+//                                    .weekdaysCloseTime(localTime)
+//                                    .weekendOpenTime(localTime)
+//                                    .weekendCloseTime(localTime)
+//                                    .build();
+//                            return parkingLotRepository.save(newLot);
+//                        });
+//
+//                // 주차 공간 정보 처리 생략...
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
