@@ -39,8 +39,12 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
      * @return List 형태로 id, 이름, 위도, 경도, 주소
      *  ---------------------
      * 2024.09.05 양건모 | 기능 구현
+     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
      * */
-    @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotMarkerDto(pl)" +
+    @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotMarkerDto(" +
+            "pl.id, pl.latitude, pl.longitude, pl.name, pl.address, " +
+            "CASE WHEN pl.user IS NOT NULL THEN true ELSE false END" +
+            ")" +
             "FROM ParkingLot pl " +
             "WHERE pl.latitude BETWEEN :minLat AND :maxLat " +
             "AND pl.longitude BETWEEN :minLon AND :maxLon")
@@ -59,19 +63,23 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
      *  ---------------------
      * 2024.09.07 양건모 | 기능 구현
      * 2024.09.07 양건모 | 가장 최신 리뷰를 전달하기 위해 서브쿼리 추가
+     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
      * */
+
     @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotPreviewResponseDto(" +
             "p.name, p.address, COALESCE(COUNT(r), 0), " +
             "(SELECT r2.review " +
             "FROM Review r2 " +
             "WHERE r2.parkingLot.id = p.id " +
-            "ORDER BY r2.createdAt DESC" +
-            " LIMIT 1)" +
+            "ORDER BY r2.createdAt DESC " +
+            "LIMIT 1), " +
+            "CASE WHEN p.user IS NOT NULL THEN true ELSE false END" +
             ") " +
             "FROM ParkingLot p " +
             "LEFT JOIN p.reviews r " +
             "WHERE p.id = :parkingLotId " +
             "GROUP BY p.id ")
+
     Optional<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreviewById(Long parkingLotId);
 
 

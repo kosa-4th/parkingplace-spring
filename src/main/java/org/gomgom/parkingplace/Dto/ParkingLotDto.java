@@ -51,6 +51,7 @@ public class ParkingLotDto {
      * 설명 : 주차장 마커 DTO
      * ---------------------
      * 2024.09.05 양건모 | 기능 구현
+     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
      */
     @Getter
     public static class ParkingLotMarkerDto {
@@ -59,13 +60,15 @@ public class ParkingLotDto {
         private final double longitude;
         private final String name;
         private final String address;
+        private final boolean hasUser;
 
-        ParkingLotMarkerDto(ParkingLot parkingLot) {
-            this.id = parkingLot.getId();
-            this.latitude = parkingLot.getLatitude();
-            this.longitude = parkingLot.getLongitude();
-            this.name = parkingLot.getName();
-            this.address = parkingLot.getAddress();
+        ParkingLotMarkerDto(long id, double latitude, double longitude, String name, String address, boolean hasUser) {
+            this.id = id;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.name = name;
+            this.address = address;
+            this.hasUser = hasUser;
         }
     }
 
@@ -109,6 +112,7 @@ public class ParkingLotDto {
      * 설명 : 주차장 간략 정보 제공을 위한 응답 DTO
      * ---------------------
      * 2024.09.07 양건모 | 기능 구현
+     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
      */
     @Getter
     public static class ParkingLotPreviewResponseDto {
@@ -116,13 +120,15 @@ public class ParkingLotDto {
         private final String address;
         private final long reviewCount;
         private final String recentReview;
+        private final boolean hasUser;
         private List<ParkingSpaceDto.ParkingSpacesPreviewDto> parkingSpaces;
 
-        public ParkingLotPreviewResponseDto(String name, String address, long reviewCount, String recentReview) {
+        public ParkingLotPreviewResponseDto(String name, String address, long reviewCount, String recentReview, boolean hasUser) {
             this.name = name;
             this.address = address;
             this.reviewCount = reviewCount;
             this.recentReview = recentReview;
+            this.hasUser = hasUser;
         }
 
         public void setParkingSpaces(List<ParkingSpaceDto.ParkingSpacesPreviewDto> parkingSpaces) {
