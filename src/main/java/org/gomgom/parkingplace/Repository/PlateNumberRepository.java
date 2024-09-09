@@ -6,10 +6,11 @@ import org.gomgom.parkingplace.Entity.PlateNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface PlateNumberRepository extends JpaRepository<PlateNumber, Long> {
 
     // plate_number_id로 PlateNumber 엔티티 조회 후 CarType 반환

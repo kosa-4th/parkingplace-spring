@@ -4,36 +4,49 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
-import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Service.user.UserService;
+import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/open/users")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+
+    /*
+    작성자: 오지수
+    회원 가입 페이지 로드 시 carType
+     */
+    @GetMapping()
+    public ResponseEntity<?> getUsers() {
+        record CarTypeResponse(String carType) {}
+        try {
+            List<CarTypeResponse> response = CarTypeEnum.getFilteredCarTypes().stream()
+                    .map(CarTypeResponse::new)
+                    .toList();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /*
     작성자: 오지수
     회원가입
      */
     @PostMapping()
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.requsetUserDto user) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.requsetUserDto userDto) {
         try {
-            User userEntity = User.builder()
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .password(user.getPassword())
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(userService.join(userEntity));
-        } catch (CustomExceptions.ValidationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            userService.join(userDto);
+            return ResponseEntity.status(HttpStatus.OK).body(new UserDto.responseSignupDto("success"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
