@@ -13,11 +13,12 @@ public class ParkingSpaceDto {
      *  ---------------------
      * 2024.09.07 양건모 | 기능 구현
      * 2024.09.07 양건모 | CarType.carType 타입 변경에 대한 수정
+     * 2024.09.09 양건모 | carType 반환타입 carTypeEnum -> String 변경
      * */
     @Getter
     public static class ParkingSpacesPreviewDto {
         //private final String spaceName;
-        private final CarTypeEnum carType;
+        private final String carType;
         private final int weekdaysPrice;
         private final int weekendPrice;
         private final int weekAllDayPrice;
@@ -25,7 +26,7 @@ public class ParkingSpaceDto {
 
         public ParkingSpacesPreviewDto(CarTypeEnum carType, int weekdaysPrice, int weekendPrice, int weekAllDayPrice, int weekendAllDayPrice) {
             //this.spaceName = parkingSpace.getSpaceName();
-            this.carType = carType;
+            this.carType = carType.getKor();
             this.weekdaysPrice = weekdaysPrice;
             this.weekendPrice = weekendPrice;
             this.weekAllDayPrice = weekAllDayPrice;
