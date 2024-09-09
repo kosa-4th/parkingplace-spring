@@ -4,10 +4,12 @@ package org.gomgom.parkingplace.Service.reservation;
 import lombok.RequiredArgsConstructor;
 import static org.gomgom.parkingplace.Dto.ReservationDto.RequestReservationDto;
 
-import org.gomgom.parkingplace.Entity.ParkingLot;
-import org.gomgom.parkingplace.Entity.ParkingSpace;
-import org.gomgom.parkingplace.Entity.Reservation;
-import org.gomgom.parkingplace.Entity.User;
+import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.PlateNumberDto;
+import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotReservationResponseDto;
+import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotAndCarInfoResponseDto;
+
+import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
+import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.util.CustomUUIDGenerator;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,7 +39,6 @@ public class ReservationServiceImpl implements ReservationService {
     private final PlateNumberRepository plateNumberRepository;
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
-
 
     /**
      * @Author 김경민
@@ -91,5 +94,48 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
+    /**
+     * @Author 김경민
+     * @Date 2024.09.07 주차장예약페이지 데이터 조회
+     * */
+    public ParkingLotAndCarInfoResponseDto getParkingLotReservation(Long parkingLotId, String userEmail) {
+        // 주차장 정보 가져오기
+        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주차장을 찾을 수 없습니다."));
+
+        // 주차장에 연결된 사용자 정보가 null이거나 ID가 null일 경우 예외 처리
+        if (parkingLot.getUser() == null || parkingLot.getUser().getId() == null) {
+            throw new IllegalStateException("해당 주차장의 사용자 정보가 유효하지 않습니다. 페이지 접근이 불가합니다.");
+        }
+
+        // 주차장 정보 DTO로 변환
+        ParkingLotReservationResponseDto parkingLotInfo = new ParkingLotReservationResponseDto(
+                parkingLot.getName(),
+                parkingLot.getWash(),
+                parkingLot.getMaintenance(),
+                parkingLot.getWeekdaysOpenTime(),
+                parkingLot.getWeekendOpenTime(),
+                parkingLot.getWeekdaysCloseTime(),
+                parkingLot.getWeekendCloseTime(),
+                parkingLot.getUser().getId()
+        );
+
+        // 사용자 이메일로 차량 정보 가져오기
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+
+        // 사용자 이메일로 차량 정보 가져오기
+        List<PlateNumberDto> userCarDtos = new ArrayList<>();
+        for (PlateNumber plateNumber : plateNumberRepository.getPlateNumbersByUserEmail(userEmail)) {
+            PlateNumberDto plateNumberDto = new PlateNumberDto(
+                    plateNumber.getPlateNumber(),
+                    plateNumber.getCarType().getId()
+            );
+            userCarDtos.add(plateNumberDto);
+        }
+
+        // DTO 반환
+        return new ParkingLotAndCarInfoResponseDto(parkingLotInfo, userCarDtos);
+    }
 
 }

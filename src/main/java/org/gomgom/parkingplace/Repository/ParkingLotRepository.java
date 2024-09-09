@@ -66,4 +66,14 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
             "WHERE p.id = :parkingLotId " +
             "GROUP BY p.id")
     Optional<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreviewById(Long parkingLotId);
+
+
+    /*
+    * @Author 김경민
+    * @Date 2024.09.07
+    *
+    * 주차정보 가져오는 쿼리
+    * */
+    @Query("SELECT pl FROM ParkingLot pl WHERE pl.id = :parkingLotId")
+    Optional<ParkingLot> getParkingLotReservationData(Long parkingLotId);
 }

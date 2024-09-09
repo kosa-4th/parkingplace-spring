@@ -60,4 +60,5 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         preview.setParkingSpaces(parkingSpaceRepository.getSpacesPreviewsByParkingLotId(parkingLotId));
         return preview;
     }
+
 }
