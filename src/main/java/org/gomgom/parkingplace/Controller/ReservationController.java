@@ -38,21 +38,30 @@ public class ReservationController {
      */
     @GetMapping("/parkingCheck")
     public ResponseEntity<ReservationAvailableResponseDto> checkParkingSpaceSealAndTotalFee(
-            @PathVariable Long parkingLotId,
+            @RequestParam Long parkingLotId,
+           // @PathVariable Long parkingLotId,
             @RequestParam String plateNumber,
             @RequestParam String startTimeStr,
             @RequestParam String endTimeStr,
-            @RequestParam Bool washService,
-            @RequestParam Bool maintenanceService) {
+            @RequestParam boolean wash,
+            @RequestParam boolean maintenance) {
 
         // 문자열로 받은 시작/종료 시간을 LocalDateTime으로 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr, formatter);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
+
+
         CarType carType = plateNumberRepository.findCarTypeByPlateNumberId(plateNumber);
         Optional<CarType> optionalCarType = carTypeRepository.findById(carType.getId());
-
-
+        Bool washService = Bool.N;
+        Bool maintenanceService = Bool.N;
+        if(wash == true){
+            washService = Bool.Y;
+        }
+        if(maintenance == true){
+            maintenanceService = Bool.Y;
+        }
         if (optionalCarType.isPresent()) {
             carType = optionalCarType.get();
         } else {
