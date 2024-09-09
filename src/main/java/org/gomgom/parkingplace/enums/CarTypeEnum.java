@@ -13,6 +13,7 @@ import java.util.List;
  *  ---------------------
  * 2024.09.05 김경민 | 기능 구현
  * 2024.09.09 양건모 | 한국어 값을 가져올 수 있도록 kor 필드 생성
+ * 2024.09.09 오지수 | 한국어 값을 가져올 수 있도록 getKorName 메서드 생성, carEnum-한국어명 매핑
  * */
 
 public enum CarTypeEnum {
