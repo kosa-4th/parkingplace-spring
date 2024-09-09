@@ -1,20 +1,24 @@
 package org.gomgom.parkingplace.Service.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
+import org.gomgom.parkingplace.Entity.CarType;
+import org.gomgom.parkingplace.Entity.PlateNumber;
 import org.gomgom.parkingplace.Entity.RefreshToken;
 import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
+import org.gomgom.parkingplace.Repository.CarTypeRepository;
+import org.gomgom.parkingplace.Repository.PlateNumberRepository;
 import org.gomgom.parkingplace.Repository.RefreshTokenRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
 import org.gomgom.parkingplace.Service.jwt.JwtService;
+import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,21 +27,38 @@ public class UserServiceImpl implements UserService{
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder encoder;
+    private final PlateNumberRepository plateNumberRepository;
+    private final CarTypeRepository carTypeRepository;
 
     /*
     작성자: 오지수
     회원가입
      */
     @Override
-    public UserDto.responseSignupDto join(User user) {
-        Optional<User> validUser = userRepository.findByEmail(user.getEmail());
-        if (validUser.isPresent()) {
-            throw new CustomExceptions.ValidationException("이미 가입된 사용자입니다.");
-        }
-        // 비밀번호 인코딩
-        user.updatePassword(encoder.encode(user.getPassword()));
+    @Transactional
+    public void join(UserDto.requsetUserDto userDto) {
+        userRepository.findByEmail(userDto.getEmail())
+                .ifPresent(user -> {
+                    throw new CustomExceptions.ValidationException("이미 가입된 사용자입니다.");
+                });
+
+        User user = User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .password(encoder.encode(userDto.getPassword()))
+                .build();
         userRepository.save(user);
-        return new UserDto.responseSignupDto("success");
+
+        CarType carType = carTypeRepository.findByCarTypeEnum(CarTypeEnum.fromKorName(userDto.getSelectedCar()));
+        if (carType == null) {
+            throw new CustomExceptions.ValidationException("잘못된 차량 정보입니다.");
+        }
+        PlateNumber plateNumber = PlateNumber.builder()
+                                    .user(user)
+                                    .carType(carType)
+                                    .plateNumber(userDto.getCarNum())
+                                    .build();
+        plateNumberRepository.save(plateNumber);
     }
 
     /*

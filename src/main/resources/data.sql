@@ -1,6 +1,14 @@
 INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'ALL' );
-INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('테스터', 'test@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_USER');
-INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('주차장', 'parking@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_PARKING_MANAGER');
+INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'SMALL' );
+INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'SEDAN' );
+INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'SUV' );
+INSERT INTO TBL_CAR_TYPE (CAR_TYPE) VALUES ( 'ELECTRIC' );
+INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('테스터1', 'test@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_USER');
+INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('테스터2', 'test2@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_USER');
+INSERT INTO TBL_USER (NAME, EMAIL, PASSWORD, AUTH) VALUES ('주차장1', 'parking@test.com', '$2a$10$N5dXID/OZUD6CimN2gdKmOKGbMk6xH9d.G8d4Xzt/21VkXatLr8Qy', 'ROLE_PARKING_MANAGER');
+INSERT INTO TBL_PLATE_NUMBER (PLATE_NUMBER, USER_ID, CAR_TYPE_ID, CREATED_AT) VALUES ( '123가4567', 1, 1, '2024-09-08 05:29:57.880036' );
+INSERT INTO TBL_PLATE_NUMBER (PLATE_NUMBER, USER_ID, CAR_TYPE_ID, CREATED_AT) VALUES ( '987가4567', 2, 1, '2024-09-08 05:29:57.880036' );
+INSERT INTO TBL_PLATE_NUMBER (PLATE_NUMBER, USER_ID, CAR_TYPE_ID, CREATED_AT) VALUES ( '123가9876', 2, 2, '2024-09-08 05:29:57.880036');
 
 INSERT INTO tbl_parking_lot (latitude,longitude,weekdays_close_time,weekdays_open_time,weekend_close_time,weekend_open_time,created_at,updated_at,user_id,parking_center_id,name,address,parking_type,tel,maintenance,usable,wash) VALUES (-1.0,-1.0,'19:00:00','09:00:00','19:00:00','09:00:00','2024-09-08 05:29:57.880036','2024-09-08 05:29:57.880036',NULL,'1010089','초안산근린공원주차장(구)','도봉구 창동 24-0','노외 주차장','','N','N','N');
 INSERT INTO tbl_parking_lot (latitude,longitude,weekdays_close_time,weekdays_open_time,weekend_close_time,weekend_open_time,created_at,updated_at,user_id,parking_center_id,name,address,parking_type,tel,maintenance,usable,wash) VALUES (-1.0,-1.0,'00:00:00','00:00:00','00:00:00','00:00:00','2024-09-08 05:29:57.940718','2024-09-08 05:29:57.940718',NULL,'1012254','마들스타디움(근린공원)(구)','노원구 상계동 770-2','노외 주차장','02-2289-6735','N','N','N');

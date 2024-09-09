@@ -3,7 +3,9 @@ package org.gomgom.parkingplace.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gomgom.parkingplace.enums.Bool;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tbl_plate_number")
 @DynamicInsert
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class PlateNumber {
     @Id
@@ -32,12 +35,10 @@ public class PlateNumber {
     @Column(name = "plate_number", nullable = false, length = 8)
     private String plateNumber;
 
-    @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createAt;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
     @Column(name = "usable", nullable = false)
@@ -53,4 +54,11 @@ public class PlateNumber {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "car_type_id", nullable = false)
     private CarType carType;
+
+    @Builder
+    public PlateNumber(User user, CarType carType, String plateNumber) {
+        this.user = user;
+        this.carType = carType;
+        this.plateNumber = plateNumber;
+    }
 }
