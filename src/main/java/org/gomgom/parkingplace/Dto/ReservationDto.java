@@ -9,6 +9,7 @@ import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.enums.Bool;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @Author 김경민
@@ -28,11 +29,12 @@ public class ReservationDto {
         private Long parkingSpaceId;
         private String userEmail;
         private String plateNumber;
-        private LocalDateTime startTime;
-        private LocalDateTime endTime;
+        private String startTime;
+        private String endTime;
         private Integer totalPrice;
         private Bool washService;
         private Bool maintenanceService;
+
     }
 
     @Data

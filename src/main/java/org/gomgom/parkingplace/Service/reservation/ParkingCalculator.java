@@ -27,6 +27,8 @@ public class ParkingCalculator {
 
         long halfHourUnits = (long) Math.ceil((double) parkingMinutes / 30);
 
+        System.out.println(requestAvailableDto.getStartTime());
+        System.out.println(requestAvailableDto.getEndTime());
         System.out.println(parkingSpace.toString());
         System.out.println(halfHourUnits + "halfHourUnits");
 

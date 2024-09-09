@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,8 +72,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         String plateNumber = requestReservationDto.getPlateNumber();
-        LocalDateTime startTime =requestReservationDto.getStartTime();
-        LocalDateTime endTime =requestReservationDto.getEndTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startTime = LocalDateTime.parse(requestReservationDto.getStartTime(), formatter);
+        LocalDateTime endTime = LocalDateTime.parse(requestReservationDto.getEndTime(), formatter);
         Bool wash = requestReservationDto.getWashService();
         Bool maintenance =  requestReservationDto.getMaintenanceService();
         int totalPrice = requestReservationDto.getTotalPrice();
