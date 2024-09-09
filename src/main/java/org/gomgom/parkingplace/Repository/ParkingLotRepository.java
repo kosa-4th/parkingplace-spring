@@ -57,14 +57,21 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
      * @param parkingLotId 주차장 id
      * @return 주차장명, 주소, 가격, 리뷰 개수
      *  ---------------------
-     * 2024.09.07 | 기능 구현
+     * 2024.09.07 양건모 | 기능 구현
+     * 2024.09.07 양건모 | 가장 최신 리뷰를 전달하기 위해 서브쿼리 추가
      * */
     @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotPreviewResponseDto(" +
-            "p.name, p.address, COALESCE(COUNT(r), 0), r.review) " +
+            "p.name, p.address, COALESCE(COUNT(r), 0), " +
+            "(SELECT r2.review " +
+            "FROM Review r2 " +
+            "WHERE r2.parkingLot.id = p.id " +
+            "ORDER BY r2.createdAt DESC" +
+            " LIMIT 1)" +
+            ") " +
             "FROM ParkingLot p " +
             "LEFT JOIN p.reviews r " +
             "WHERE p.id = :parkingLotId " +
-            "GROUP BY p.id")
+            "GROUP BY p.id ")
     Optional<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreviewById(Long parkingLotId);
 
 
