@@ -2,6 +2,8 @@ package org.gomgom.parkingplace.Repository;
 
 import org.gomgom.parkingplace.Dto.FavoriteDto;
 import org.gomgom.parkingplace.Entity.Favorite;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -33,6 +35,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
      * @return 주차장 id, 주차장 이름, 주차장 주소 dto 객체로 반환
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
+     * 2024.09.10 양건모 | 정렬 순서 변경
      * */
     @Query("SELECT new org.gomgom.parkingplace.Dto.FavoriteDto$FavoriteParkingLotDto(" +
                 "p.id, p.name, p.address" +
@@ -41,8 +44,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
             "JOIN f.parkingLot p " +
             "JOIN f.user u " +
             "where u.id = :userId " +
-            "ORDER BY f.createdAt")
-    List<FavoriteDto.FavoriteParkingLotDto> findFavoritesById(long userId);
+            "ORDER BY f.createdAt DESC")
+    Page<FavoriteDto.FavoriteParkingLotDto> findFavoritesById(Pageable pageable, long userId);
 
 
 }

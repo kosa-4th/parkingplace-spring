@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.FavoriteDto;
 import org.gomgom.parkingplace.Service.favorite.FavoriteService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -58,7 +61,7 @@ public class FavoriteController {
      * 작성자: 양건모
      * 시작 일자: 2024.09.10
      * 설명 : 즐겨찾기한 주차장 목록 조회
-     * @param userId 사용자 id
+     * @param page 페이지 번호
      * @return 주차장 id, 주차장 이름, 주차장 주소
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
@@ -66,10 +69,11 @@ public class FavoriteController {
     @GetMapping("/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.MyFavoritesResponseDto myFavorites(
-            @RequestParam long userId,
+            @RequestParam long page,
+            @PageableDefault(page=0, size=2) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return favoriteService.myFavorites(userDetails.getUser().getId());
+        return favoriteService.myFavorites(pageable, userDetails.getUser().getId());
     }
 
 }

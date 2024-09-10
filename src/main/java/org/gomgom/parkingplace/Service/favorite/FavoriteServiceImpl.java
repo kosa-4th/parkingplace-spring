@@ -7,6 +7,7 @@ import org.gomgom.parkingplace.Entity.Favorite;
 import org.gomgom.parkingplace.Repository.FavoriteRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class FavoriteServiceImpl implements FavoriteService {
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
      * */
-    public FavoriteDto.MyFavoritesResponseDto myFavorites(long userId) {
-        return new FavoriteDto.MyFavoritesResponseDto(favoriteRepository.findFavoritesById(userId));
+    public FavoriteDto.MyFavoritesResponseDto myFavorites(Pageable pageable, long userId) {
+        return new FavoriteDto.MyFavoritesResponseDto(favoriteRepository.findFavoritesById(pageable, userId));
     }
 }
