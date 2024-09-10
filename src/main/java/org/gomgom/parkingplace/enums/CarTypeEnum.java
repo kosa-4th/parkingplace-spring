@@ -36,10 +36,10 @@ public enum CarTypeEnum {
     public String getKorName() {
         switch (this) {
             case SMALL -> {
-                return "승용차";
+                return "경차";
             }
             case SEDAN -> {
-                return "세단";
+                return "승용차";
             }
             case SUV -> {
                 return "SUV";
