@@ -9,6 +9,7 @@ import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,8 +58,13 @@ public class FavoriteServiceImpl implements FavoriteService {
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
      * */
-    public FavoriteDto.hasFavoriteResponseDto hasFavorite(long userId, long parkingLotId) {
+    public FavoriteDto.HasFavoriteResponseDto hasFavorite(long userId, long parkingLotId) {
         Optional<Favorite> favoriteOpt = favoriteRepository.findFavorite(userId, parkingLotId);
-        return new FavoriteDto.hasFavoriteResponseDto(parkingLotId, favoriteOpt.isPresent());
+        return new FavoriteDto.HasFavoriteResponseDto(parkingLotId, favoriteOpt.isPresent());
+    }
+
+
+    public FavoriteDto.MyFavoritesResponseDto myFavorites(long userId) {
+        return new FavoriteDto.MyFavoritesResponseDto(favoriteRepository.findFavoritesById(userId));
     }
 }

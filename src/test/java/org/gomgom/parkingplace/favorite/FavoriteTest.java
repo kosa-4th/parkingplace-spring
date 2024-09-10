@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.favorite;
 
+import jakarta.validation.constraints.AssertTrue;
 import org.gomgom.parkingplace.Dto.FavoriteDto;
 import org.gomgom.parkingplace.Service.favorite.FavoriteService;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,7 @@ public class FavoriteTest {
     private FavoriteService favoriteService;
 
     @Test
-    @DisplayName("즐겨찾기 토글 동작 테스트")
+    @DisplayName("즐겨찾기 토글 정상 동작 테스트")
     public void favoriteToggleTest() {
         FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(1, 4);
         FavoriteDto.FavoriteToggleResponseDto dto2 = favoriteService.toggleFavorite(1, 4);
@@ -50,5 +51,20 @@ public class FavoriteTest {
         Assertions.assertThrowsExactly(NoSuchElementException.class, () -> {
             FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(Long.MAX_VALUE, Long.MAX_VALUE);
         });
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 한 주차장 목록 조회 정상 동작 테스트")
+    public void findFavoritesTest() {
+        for (int i = 1; i < 10; i++) {
+            FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(1, i);
+        }
+
+        for (int i = 1; i < 10; i++) {
+            FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(3, i);
+        }
+
+        System.out.println(favoriteService.myFavorites(3).getFavorites().size());
+        Assertions.assertTrue(favoriteService.myFavorites(3).getFavorites().size() == 9);
     }
 }

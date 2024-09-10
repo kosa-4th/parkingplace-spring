@@ -47,7 +47,7 @@ public class FavoriteController {
      * */
     @GetMapping("/check")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public FavoriteDto.hasFavoriteResponseDto hasFavorite(
+    public FavoriteDto.HasFavoriteResponseDto hasFavorite(
             @RequestParam long parkingLotId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
