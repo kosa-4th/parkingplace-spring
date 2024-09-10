@@ -3,6 +3,8 @@ package org.gomgom.parkingplace.Dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 public class FavoriteDto {
 
     /**
@@ -32,13 +34,27 @@ public class FavoriteDto {
      */
     @RequiredArgsConstructor
     @Getter
-    public static class hasFavoriteResponseDto {
+    public static class HasFavoriteResponseDto {
         private final long parkingLotId;
         private final boolean hasFavorite;
 
         public boolean getHasFavorite() {
             return hasFavorite;
         }
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class FavoriteParkingLotDto {
+        private final long id;
+        private final String name;
+        private final String address;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class MyFavoritesResponseDto {
+        private final List<FavoriteDto.FavoriteParkingLotDto> favorites;
     }
 
 }

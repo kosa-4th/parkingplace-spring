@@ -27,8 +27,9 @@ public class ParkingLotController {
      * 2024.09.05 양건모 | 기능 구현
      * 2024.09.07 양건모 | 반환 DTO 이름 변경에 대한 적용
      * 2024.09.07 양건모 | 매핑 url api 문서에 맞게 변환
+     * 2024.09.10 양건모 | api 문서 수저에 따라 매핑 url 변경
      * */
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<ParkingLotDto.ParkingLotMarkersResponseDto> getParkingLots(
             @ModelAttribute ParkingLotDto.ParkingLotListRequestDto request) {
         return ResponseEntity.ok(parkingLotService.getParkingLots(request));
