@@ -2,7 +2,9 @@ package org.gomgom.parkingplace.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "tbl_favorites")
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Favorite {
     @Id
@@ -34,4 +37,9 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
+
+    public Favorite(User user, ParkingLot parkingLot) {
+        this.user = user;
+        this.parkingLot = parkingLot;
+    }
 }
