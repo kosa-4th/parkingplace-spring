@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/protected/favorite")
+@RequestMapping("/api/favorites")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -26,7 +26,7 @@ public class FavoriteController {
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
      * */
-    @PostMapping("/toggle")
+    @PostMapping("/toggle/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.FavoriteToggleResponseDto toggleFavorite(
             @RequestParam long parkingLotId,
@@ -45,7 +45,7 @@ public class FavoriteController {
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
      * */
-    @GetMapping("/check")
+    @GetMapping("/check/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.HasFavoriteResponseDto hasFavorite(
             @RequestParam long parkingLotId,
