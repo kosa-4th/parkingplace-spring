@@ -3,7 +3,6 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.PlateNumberDto;
-import org.gomgom.parkingplace.Entity.PlateNumber;
 import org.gomgom.parkingplace.Service.plateNumber.PlateNumberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
