@@ -49,11 +49,11 @@ public class ReservationServiceImpl implements ReservationService {
      *
      * */
     @Transactional
-    public Reservation createReservation(RequestReservationDto requestReservationDto){
+    public Reservation createReservation(Long parkingLotId, String userEmail, RequestReservationDto requestReservationDto){
         Reservation reservation = new Reservation();
 
 
-        String parkingLotName = parkingLotRepository.findByParkingLotName(requestReservationDto.getParkingLotId());
+        String parkingLotName = parkingLotRepository.findByParkingLotName(parkingLotId);
 
 
         String reservationUuid = customUUIDGenerator.generateUniqueUUID();
@@ -63,11 +63,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Parking Space ID"));
 
 
-        User user = userRepository.findByEmail(requestReservationDto.getUserEmail())
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() ->new IllegalArgumentException("Email 존재 안함"));
 
 
-        ParkingLot parkingLot = parkingLotRepository.findById(requestReservationDto.getParkingLotId())
+        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
                         .orElseThrow(()->new IllegalArgumentException("parkingLot 존재 안함."));
 
 

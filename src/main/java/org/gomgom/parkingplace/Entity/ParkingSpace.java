@@ -19,7 +19,7 @@ import java.time.LocalTime;
 @ToString(exclude = {"parkingLot"})  // 순환 참조를 방지하기 위해 제외
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
-public class ParkingSpace {
+public class ParkingSpace extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "parking_space_id", nullable = false)
@@ -50,14 +50,6 @@ public class ParkingSpace {
     @Column(name = "available_space_num", nullable = false)
     private Integer availableSpaceNum;
 
-    @NotNull
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
