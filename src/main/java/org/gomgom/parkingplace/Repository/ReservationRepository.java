@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -18,6 +19,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     //예약번호 UUID가 존재하는지 확인
     boolean existsByReservationUuid(String uuid);
 
+    @Query("SELECT r FROM Reservation r WHERE r.id = :reservationId")
+    Optional<Reservation> findReservationById(@Param("reservationId") Long reservationId);
     @Query(value = "SELECT p.car_type_id, " +
             "(p.available_space_num - " +
             "(SELECT COUNT(*) FROM TBL_RESERVATION r " +

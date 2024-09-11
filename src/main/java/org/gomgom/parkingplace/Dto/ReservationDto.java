@@ -25,9 +25,7 @@ public class ReservationDto {
     @AllArgsConstructor
     @ToString
     public static class RequestReservationDto {
-        private Long parkingLotId;
         private Long parkingSpaceId;
-        private String userEmail;
         private String plateNumber;
         private String startTime;
         private String endTime;
@@ -51,7 +49,7 @@ public class ReservationDto {
     // 서버가 예약 정보를 응답할 때 사용하는 DTO
     @AllArgsConstructor
     @Getter
-    public static class ResponseReservationDto {
+    public static class  ResponseReservationDto {
         private Long reservationId;
         private String reservationUuid;
         private LocalDateTime startTime;
