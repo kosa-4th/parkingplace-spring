@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
@@ -11,6 +12,8 @@ import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,8 +23,7 @@ import java.util.Optional;
 import static org.gomgom.parkingplace.Dto.ReservationDto.*;
 
 @RestController
-@RequestMapping("/api/parkingLots/reservation")
-//@RequestMapping("/api/parkingLots/{parkingLotId}/reservation")
+@RequestMapping("/api/parkingLots/{parkingLotId}/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
 
@@ -32,14 +34,14 @@ public class ReservationController {
 
     /**
      * @Author 김경민
-     * @DATE 2024.09.07
+     * @DATE 2024.09.07 -> 컨트롤단 설정
+     * @DATE 2024.09.09 -> VUE에 맞는 DTO 변경
      * <p>
      * 주차 조회 및 요금 조회 컨트롤단.
      */
     @GetMapping("/parkingCheck")
     public ResponseEntity<ReservationAvailableResponseDto> checkParkingSpaceSealAndTotalFee(
-            @RequestParam Long parkingLotId,
-           // @PathVariable Long parkingLotId,
+           @PathVariable Long parkingLotId,
             @RequestParam String plateNumber,
             @RequestParam String startTimeStr,
             @RequestParam String endTimeStr,
@@ -79,10 +81,14 @@ public class ReservationController {
      * @Date 2024.09.07
      * 주차자리 예약하기
      */
-    @PostMapping("/reservation")
-    public ResponseEntity<ResponseReservationDto> createReservation(@RequestBody RequestReservationDto requestReservationDto) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/protected")
+    public ResponseEntity<ResponseReservationDto> createReservation(
+            @PathVariable("parkingLotId") Long parkingLotId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody RequestReservationDto requestReservationDto) {
 
-        Reservation reservation = reservationService.createReservation(requestReservationDto);
+        Reservation reservation = reservationService.createReservation(parkingLotId, userDetails.getUser().getEmail(), requestReservationDto);
 
         ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReservationDto);
@@ -93,10 +99,13 @@ public class ReservationController {
     * @Date 2024.09.08
     * 예약 페이지 접근
     * */
-    @GetMapping("")
-    public ResponseEntity<?> getParkingLotReservation(@RequestParam Long parkingLotId, @RequestParam String userEmail) {
-//    public ResponseEntity<?> getParkingLotReservation(@PathVariable Long parkingLotId, @RequestParam String userEmail) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/protected")
+    public ResponseEntity<?> getParkingLotReservation(
+            @PathVariable("parkingLotId") Long parkingLotId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
+            String userEmail = userDetails.getUser().getEmail();
             // 주차장 및 사용자 차량 정보 가져오기
             ParkingLotAndCarInfoDto.ParkingLotAndCarInfoResponseDto reservationInfo = reservationService.getParkingLotReservation(parkingLotId, userEmail);
             return ResponseEntity.ok(reservationInfo);
