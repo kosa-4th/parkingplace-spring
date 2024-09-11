@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -43,18 +44,24 @@ public class FavoriteDto {
         }
     }
 
-    @RequiredArgsConstructor
     @Getter
     public static class FavoriteParkingLotDto {
         private final long id;
         private final String name;
         private final String address;
+        private final boolean toggleResult = true;
+
+        public FavoriteParkingLotDto(long id, String name, String address) {
+            this.id = id;
+            this.name = name;
+            this.address = address;
+        }
     }
 
     @RequiredArgsConstructor
     @Getter
     public static class MyFavoritesResponseDto {
-        private final List<FavoriteDto.FavoriteParkingLotDto> favorites;
+        private final Page<FavoriteParkingLotDto> favorites;
     }
 
 }

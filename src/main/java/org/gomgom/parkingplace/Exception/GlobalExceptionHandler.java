@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -19,6 +20,18 @@ import java.util.Set;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.10
+     * 설명 : request 파라미터가 충분하지 않은경우 처리하는 ExceptionHandler
+     *  ---------------------
+     * 2024.09.10 양건모 | 기능 구현
+     * */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ExceptionResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse("요청 파라미터가 충분하지 않습니다"));
+    }
 
     /**
      * 작성자: 양건모

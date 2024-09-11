@@ -7,6 +7,7 @@ import org.gomgom.parkingplace.Entity.Favorite;
 import org.gomgom.parkingplace.Repository.FavoriteRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,8 +64,16 @@ public class FavoriteServiceImpl implements FavoriteService {
         return new FavoriteDto.HasFavoriteResponseDto(parkingLotId, favoriteOpt.isPresent());
     }
 
-
-    public FavoriteDto.MyFavoritesResponseDto myFavorites(long userId) {
-        return new FavoriteDto.MyFavoritesResponseDto(favoriteRepository.findFavoritesById(userId));
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.10
+     * 설명 : 즐겨찾기한 주차장 목록 조회
+     * @param userId 사용자 id
+     * @return 주차장 id, 주차장 이름, 주차장 주소
+     *  ---------------------
+     * 2024.09.10 양건모 | 기능 구현
+     * */
+    public FavoriteDto.MyFavoritesResponseDto myFavorites(Pageable pageable, long userId) {
+        return new FavoriteDto.MyFavoritesResponseDto(favoriteRepository.findFavoritesById(pageable, userId));
     }
 }

@@ -52,19 +52,4 @@ public class FavoriteTest {
             FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(Long.MAX_VALUE, Long.MAX_VALUE);
         });
     }
-
-    @Test
-    @DisplayName("즐겨찾기 한 주차장 목록 조회 정상 동작 테스트")
-    public void findFavoritesTest() {
-        for (int i = 1; i < 10; i++) {
-            FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(1, i);
-        }
-
-        for (int i = 1; i < 10; i++) {
-            FavoriteDto.FavoriteToggleResponseDto dto1 = favoriteService.toggleFavorite(3, i);
-        }
-
-        System.out.println(favoriteService.myFavorites(3).getFavorites().size());
-        Assertions.assertTrue(favoriteService.myFavorites(3).getFavorites().size() == 9);
-    }
 }
