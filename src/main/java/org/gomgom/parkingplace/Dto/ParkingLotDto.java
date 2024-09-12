@@ -72,9 +72,18 @@ public class ParkingLotDto {
         }
     }
 
-    /*
-    작성자: 오지수
-    주차장 상세 페이지 : 메인, 주차장 정보
+    /**
+     * 작성자: 오지수
+     * ? : 주차장 상세 페이지에 전달할 주차장 정보
+     * String parkingLotName: 주차장 이름
+     * String parkingLotType: 주차장 유형
+     * String address: 주차장 주소
+     * String phone: 주차장 전화번호
+     * String weekdayTime: 평일 주차장 운영시간
+     * String weekendTime: 주말 주차장 운영시간
+     * int weekdayPrice: 평일 가격
+     * int weekendPrice: 주말 가격
+     * List<String> images: 주차장 이미지
      */
     @Getter
     public static class ParkingLotDetailResponseDto {
@@ -91,9 +100,9 @@ public class ParkingLotDto {
 
         public ParkingLotDetailResponseDto(ParkingLot parkingLot) {
             this.parkingLotName = parkingLot.getName();
-            this.parkingLotType = "주차장 종류";
+            this.parkingLotType = parkingLot.getParkingType();
             this.address = parkingLot.getAddress();
-            this.phone = "02-0000-0000";
+            this.phone = parkingLot.getTel();
             this.weekdayTime = parkingLot.getWeekdaysOpenTime().format(DateTimeFormatter.ofPattern("HH:mm")) +
                     " ~ " + parkingLot.getWeekdaysCloseTime().format(DateTimeFormatter.ofPattern("HH:mm"));
             this.weekendTime = parkingLot.getWeekendOpenTime().format(DateTimeFormatter.ofPattern("HH:mm")) +

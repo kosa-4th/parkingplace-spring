@@ -24,13 +24,14 @@ public class PlateNumberServiceImpl implements PlateNumberService{
     private final PlateNumberRepository plateNumberRepository;
     private final CarTypeRepository carTypeRepository;
 
-    /*
-    작성자: 오지수
-    내 차량 정보 불러오기
+    /**
+     * 작성자: 오지수
+     * 2024.09.10 : 마이페이지에서 사용자의 차량 정보
+     * @param user 사용자 정보
+     * @return carTypes: 차량 종류 목록, myCars: 사용자가 등록한 차 목록
      */
     @Override
     public Map<String, Object> getPlateNumber(User user) {
-        log.info("getPlateNumber service!!!");
         Map<String, Object> map = new HashMap<>();
         record CarTypeResponse(String carType) {}
         map.put("carTypes", CarTypeEnum.getFilteredCarTypes().stream()
@@ -46,9 +47,11 @@ public class PlateNumberServiceImpl implements PlateNumberService{
         return map;
     }
 
-    /*
-    작성자: 오지수
-    내 차량 번호 등록하기
+    /**
+     * 작성자: 오지수
+     * 2024.09.10 : 마이페이지에서 차량 등록
+     * @param user
+     * @param carDto
      */
     @Override
     public void registerPlateNumber(User user, PlateNumberDto.RequestMyCarDto carDto) {
@@ -68,8 +71,11 @@ public class PlateNumberServiceImpl implements PlateNumberService{
         plateNumberRepository.save(plateNumber);
     }
 
-    /*
-    내 차량 삭제하기
+    /**
+     * 작성자: 오지수
+     * 2024.09.10 : 차량 삭제
+     * @param user
+     * @param carDto
      */
     @Override
     public void deletePlateNumber(User user, PlateNumberDto.RequestMyCarDto carDto) {
@@ -88,6 +94,7 @@ public class PlateNumberServiceImpl implements PlateNumberService{
             throw new IllegalArgumentException("차량 종류가 일치하지 않습니다.");
         }
 
+        //삭제하지 말고  N Y 처리해야하나
         plateNumberRepository.delete(targetCar);
     }
 }

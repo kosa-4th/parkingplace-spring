@@ -19,9 +19,10 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    /*
-    작성자: 오지수
-    회원 가입 페이지 로드 시 carType
+    /**
+     * 작성자: 오지수
+     * ? : 회원가입 페이지 로드시 차 종류 전달
+     * @return 차량 종류
      */
     @GetMapping()
     public ResponseEntity<?> getUsers() {
@@ -36,9 +37,11 @@ public class UserController {
         }
     }
 
-    /*
-    작성자: 오지수
-    회원가입
+    /**
+     * 작성자: 오지수
+     * ? : 회원 가입
+     * @param userDto 회원가입 정보
+     * @return /
      */
     @PostMapping()
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.requsetUserDto userDto) {
@@ -50,9 +53,11 @@ public class UserController {
         }
     }
 
-    /*
-    작성자: 오지수
-    로그인
+    /**
+     * 작성자: 오지수
+     * ? : 로그인
+     * @param user / 이메일, 비밀번호
+     * @return
      */
     @PostMapping("/authorize")
     public ResponseEntity<?> signInUser(@Valid @RequestBody UserDto.requestSignInDto user) {
@@ -68,9 +73,12 @@ public class UserController {
 
     }
 
-    /*
-    작성자: 오지수
-    리프레시 토큰
+    /**
+     * 작성자: 오지수
+     * ? : 리프레시 토큰
+     * @param request
+     * @return
+     * 수정 필요
      */
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody AuthDto.RefreshTokenRequestDto request) {

@@ -1,13 +1,16 @@
 package org.gomgom.parkingplace.Repository;
 
 import org.gomgom.parkingplace.Entity.Reservation;
-import org.gomgom.parkingplace.enums.Bool;
+import org.gomgom.parkingplace.Entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.gomgom.parkingplace.Entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +27,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r FROM Reservation r WHERE r.id = :reservationId")
     Optional<Reservation> findReservationById(@Param("reservationId") Long reservationId);
+
     @Query(value = "SELECT p.car_type_id, " +
             "(p.available_space_num - " +
             "(SELECT COUNT(*) FROM TBL_RESERVATION r " +
@@ -67,4 +71,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     //생성시간 기준 5분마다 N인거 찾음.
     @Query("SELECT r FROM Reservation r WHERE r.reservationConfirmed = :reservationConfirmed AND r.createdAt < :time")
     List<Reservation> findByReservationConfirmedAndCreatedAtBefore(@Param("reservationConfirmed") Bool reservationConfirmed, @Param("time") LocalDateTime time);
+
+/**
+ * 작성자: 오지수
+ * 2024.09.11 : 입력한 날짜 사이에 있는 예약 목록 반환
+ * @param user
+ * @param startTime
+ * @param endTime
+ * @param pageable
+ * @return
+ */
+Page<Reservation> findByUserAndStartTimeGreaterThanEqualAndEndTimeLessThan(User user, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }

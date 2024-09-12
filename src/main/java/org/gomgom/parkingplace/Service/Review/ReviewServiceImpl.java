@@ -21,7 +21,13 @@ public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
     private final ParkingLotRepository parkingLotRepository;
 
-
+    /**
+     * 작성자: 오지수
+     * 2024.09.08 : 주차장 상세페이지에 작성된 리뷰 목록
+     * @param parkingplotId 주차장 id
+     * @param pageable 페이지 정보
+     * @return
+     */
     @Override
     public ReviewDto.ReviewsResponseDto getReviews(Long parkingplotId, Pageable pageable) {
         Page<Review> reviewPage = reviewRepository.findByParkingLotId(parkingplotId, pageable);
@@ -30,9 +36,14 @@ public class ReviewServiceImpl implements ReviewService{
                 reviewPage.stream().map(ReviewDto.ReviewsDto::new).toList());
     }
 
-    /*
-            작성자: 오지수
-             */
+    /**
+     * 작성자: 오지수
+     * 2024.09.07 : 주차장 페이지에 사용자가 리뷰 작성
+     * @param user 사용자 정보
+     * @param parkinglotId 주차장 id
+     * @param review 작성한 리뷰
+     * @return
+     */
     @Override
     public String saveReview(User user, Long parkinglotId, String review) {
         // 주차장 정보
@@ -50,10 +61,16 @@ public class ReviewServiceImpl implements ReviewService{
         return "리뷰가 성공적으로 등록되었습니다.";
     }
 
+    /**
+     * 작성자: 오지수
+     * 2024.09.08 : 리뷰삭제
+     * @param userId 사용자 id
+     * @param parkinglotId 주차장 id
+     * @param reviewId 삭제할 리뷰 id
+     */
     @Override
     @Transactional
     public void deleteReview(Long userId, Long parkinglotId, Long reviewId) {
-        // 유효성 검사 필요
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
@@ -67,6 +84,14 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.delete(review);
     }
 
+    /**
+     * 작성자: 오지수
+     * 2024.09.08 : 리뷰 수정
+     * @param userId 사용자id
+     * @param parkinglotId 주차장 id
+     * @param reviewId 리뷰 id
+     * @param newReview 수정할 리뷰
+     */
     @Override
     @Transactional
     public void modifyReview(Long userId, Long parkinglotId, Long reviewId, String newReview) {

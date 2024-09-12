@@ -45,6 +45,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
             "JOIN f.user u " +
             "where u.id = :userId " +
             "ORDER BY f.createdAt DESC")
+
     Page<FavoriteDto.FavoriteParkingLotDto> findFavoritesById(Pageable pageable, long userId);
 
 

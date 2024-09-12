@@ -28,8 +28,9 @@ public class FavoriteController {
      * @return 주차장 번호와 토글 결과 반환
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
+     * 2024.09.11 양건모 | api 명세 변경에 따른 매핑 url 변경
      * */
-    @PostMapping("/toggle/protected")
+    @PostMapping("/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.FavoriteToggleResponseDto toggleFavorite(
             @RequestParam long parkingLotId,
@@ -47,11 +48,12 @@ public class FavoriteController {
      * @return 주차장 번호와 즐겨찾기 등록 여부 반환
      *  ---------------------
      * 2024.09.10 양건모 | 기능 구현
+     * 2024.09.11 양건모 | api 명세 변경에 따른 매핑 url 변경
      * */
-    @GetMapping("/check/protected")
+    @GetMapping("/parkingLot/{parkingLotId}/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.HasFavoriteResponseDto hasFavorite(
-            @RequestParam long parkingLotId,
+            @PathVariable long parkingLotId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return favoriteService.hasFavorite(userDetails.getUser().getId(), parkingLotId);

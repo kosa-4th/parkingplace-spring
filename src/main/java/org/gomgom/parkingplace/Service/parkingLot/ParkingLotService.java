@@ -1,10 +1,6 @@
 package org.gomgom.parkingplace.Service.parkingLot;
 
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
-import org.gomgom.parkingplace.Dto.ParkingLotDto.ParkingLotPreviewResponseDto;
-
-import java.util.Optional;
-
 
 public interface ParkingLotService {
 

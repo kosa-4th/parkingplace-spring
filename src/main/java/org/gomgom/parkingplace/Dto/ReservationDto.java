@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Dto;
 
+import com.google.api.client.util.DateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -8,8 +9,11 @@ import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.enums.Bool;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * @Author 김경민
