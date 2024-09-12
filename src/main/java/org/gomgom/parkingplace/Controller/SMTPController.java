@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class SMTPController {
     private final SMTPService smtpService;
 
+    /**
+     * 작성자: 오지수
+     * ? : 이메일 인증을 위한 요청
+     * @param dto / 이메일 정보
+     * @return
+     */
     @PostMapping("/verification")
     public ResponseEntity<?> email(@RequestBody UserDto.smtpRequestDto dto) {
         try {
@@ -26,6 +32,12 @@ public class SMTPController {
 
     }
 
+    /**
+     * 작성자: 오지수
+     * ? : 메일 인증 번호 인증
+     * @param dto
+     * @return
+     */
     @PostMapping("verify")
     public ResponseEntity<?> verify(@RequestBody UserDto.smtpCodeRequestDto dto) {
         try {

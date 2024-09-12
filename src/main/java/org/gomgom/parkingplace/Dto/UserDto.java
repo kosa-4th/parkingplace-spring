@@ -13,6 +13,11 @@ public class UserDto {
     작성자: 오지수
     회원가입 requestDto
      */
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.07 : 회원가입 메일 인증 요청시 사용 dto
+     */
     @Data
     public static class smtpRequestDto {
         @NotBlank(message = "이메일은 필수 입력값입니다.")
@@ -20,11 +25,16 @@ public class UserDto {
         private String email;
     }
 
+    /**
+     * 작성자: 오지수
+     * 2024.09.07 : 회원가입 메일 인증시 사용 dto
+     */
     @Getter
     public static class smtpCodeRequestDto {
         @NotBlank(message = "이메일은 필수 입력값입니다.")
         @Email
         private String email;
+        @NotBlank(message = "인증번호를 입력해주세요.")
         private String code;
     }
 
@@ -34,6 +44,10 @@ public class UserDto {
         private String message;
     }
 
+    /**
+     * 작성자: 오지수
+     * ? : 회원가입 dto
+     */
     @Data
     public static class requsetUserDto {
         private long userId;
@@ -55,9 +69,9 @@ public class UserDto {
         private String carNum;
     }
 
-    /*
-    작성자: 오지수
-    로그인 requestDto
+    /**
+     * 작성자: 오지수
+     * ? : 로그인 requestDto
      */
     @AllArgsConstructor
     @Data
@@ -83,16 +97,15 @@ public class UserDto {
         private String message;
     }
 
-    /*
-    작성자: 오지수
-    로그인 responseDto
+    /**
+     * 이거 사용하나?
      */
-    @Getter
-    @AllArgsConstructor
-    public static class responseSignInDto {
-        private String name;
-        private String email;
-        private String token;
-        private String auth;
-    }
+//    @Getter
+//    @AllArgsConstructor
+//    public static class responseSignInDto {
+//        private String name;
+//        private String email;
+//        private String token;
+//        private String auth;
+//    }
 }

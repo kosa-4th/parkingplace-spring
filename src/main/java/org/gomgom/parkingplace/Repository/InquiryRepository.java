@@ -9,5 +9,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+    /**
+     * 작성자: 오지수
+     * 2024.09.12 : parkingLot으로 문의 목록 불러오기
+     * @param parkingLot
+     * @param pageable
+     * @return Page로 문의 반환
+     */
     Page<Inquiry> findByParkingLot(ParkingLot parkingLot, Pageable pageable);
 }

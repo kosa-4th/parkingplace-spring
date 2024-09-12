@@ -24,7 +24,7 @@ import java.util.List;
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
 
-    Optional<ParkingLot> findByParkingCenterId(String parkingCenterId);
+//    Optional<ParkingLot> findByParkingCenterId(String parkingCenterId);
 
     List<ParkingLot> findByUsable (Bool usable);
 

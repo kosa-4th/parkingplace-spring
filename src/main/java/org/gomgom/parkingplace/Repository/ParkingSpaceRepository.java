@@ -50,5 +50,4 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long
             "ORDER BY ps.carType.id")
     List<ParkingSpaceDto.ParkingSpacesPreviewDto> getSpacesPreviewsByParkingLotId(Long parkingLotId);
 
-    Optional<ParkingSpace> findByParkingLot(ParkingLot parkingLot);
 }

@@ -1,6 +1,9 @@
 package org.gomgom.parkingplace.Repository;
 
 import org.gomgom.parkingplace.Entity.Reservation;
+import org.gomgom.parkingplace.Entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT r FROM Reservation r WHERE r.id = :reservationId")
     Optional<Reservation> findReservationById(@Param("reservationId") Long reservationId);
+
     @Query(value = "SELECT p.car_type_id, " +
             "(p.available_space_num - " +
             "(SELECT COUNT(*) FROM TBL_RESERVATION r " +
@@ -38,5 +42,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                        @Param("startDate") LocalDateTime startDate,
                                        @Param("endDate") LocalDateTime endDate);
 
-    
+    /**
+     * 작성자: 오지수
+     * 2024.09.11 : 입력한 날짜 사이에 있는 예약 목록 반환
+     * @param user
+     * @param startTime
+     * @param endTime
+     * @param pageable
+     * @return
+     */
+    Page<Reservation> findByUserAndStartTimeGreaterThanEqualAndEndTimeLessThan(User user, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }

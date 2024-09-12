@@ -1,12 +1,12 @@
 package org.gomgom.parkingplace.Controller;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.InquiryDto;
 import org.gomgom.parkingplace.Service.inquriy.InquiryService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,31 +19,28 @@ public class InquiryController {
     /**
      * 작성자: 오지수
      * 2024.09.11 : 문의 목록 불러오기
-     * @PathVariable: parkinglotId
-     * @ModelAttribute: pageable / page, size
+     * @param parkingLotId
+     * @param pageable / page, size
      *
-     * @return : InquiryDto.getInquiries
-     *            - boolean nextPage,
-     *            - List<Inquiries> :
-     *                  - Long id
-     *                  - String inquirer : 문의 작성자 이름
-     *                  - String inquiry : 문의 내용
-     *                  - String answer : 답변 내용
-     *                  - LocalDate inquiryDate : 문의 날짜
-     *                  - LocalDate answerDate : 답변 날짜
+     * @return 다음 페이지 여부와 문의 내용 / InquiryDto.getInquiries
+     * ---------------------------------
      */
     @GetMapping()
     public ResponseEntity<?> getInquiries(@PathVariable Long parkingLotId,
                                           Pageable pageable) {
-        System.out.println("inquiry Controller-------------");
-        System.out.println("parkingLotId: " + parkingLotId);
         return ResponseEntity.ok(inquiryService.getInquiries(parkingLotId, pageable));
     }
 
     /**
-     * 문의 요청하기
+     * 작성자: 오지수
+     * 2024.09.11 : 사용자가 문의 작성하기
+     * @param parkingLotId
+     * @param requestDto / 문의 내용
+     * @param userDetails / 사용자 정보
+     * @return 성공, 에러 여부
      */
     @PostMapping("/protected")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> registerInquiry(@PathVariable Long parkingLotId,
                                              @RequestBody InquiryDto.RequestInquiriesDto requestDto,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {

@@ -2,14 +2,12 @@ package org.gomgom.parkingplace.Service.parkingLot;
 
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
-import org.gomgom.parkingplace.Dto.ParkingSpaceDto;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +30,12 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         return new ParkingLotDto.ParkingLotMarkersResponseDto(markers);
     }
 
-    /*
-        작성자: 오지수
-         */
+    /**
+     * 작성자: 오지수
+     * 2024.09.05 : 주차장 상세 페이지에 전달할 정보
+     * @param parkingLotId 주차장 id
+     * @return
+     */
     @Override
     public ParkingLotDto.ParkingLotDetailResponseDto getParkingLotDetail(Long parkingLotId) {
         ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
