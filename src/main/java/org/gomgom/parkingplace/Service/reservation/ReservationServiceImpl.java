@@ -13,6 +13,7 @@ import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.util.CustomUUIDGenerator;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,7 +96,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-
     /**
      * @Author 김경민
      * @Date 2024.09.07 주차장예약페이지 데이터 조회
@@ -140,4 +140,23 @@ public class ReservationServiceImpl implements ReservationService {
         return new ParkingLotAndCarInfoResponseDto(parkingLotInfo, userCarDtos);
     }
 
+    /**
+     * @Author 김경민
+     * @Date 2024.09.11
+     * 예약 생성 후 5분 후까지 결제가 되지 않을 시 예약 삭제
+     * */
+    // 1분마다 실행
+    @Scheduled(fixedRate = 60000) // 60초 = 1분
+    @Transactional
+    public void checkUnpaidReservations() {
+        // 5분 이전에 생성된 결제되지 않은 예약(N 상태)를 조회
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(5);
+        List<Reservation> unpaidReservations = reservationRepository.findByReservationConfirmedAndCreatedAtBefore(Bool.N, cutoffTime);
+
+        // 상태를 'D'로 변경
+        unpaidReservations.forEach(reservation -> {
+            reservationRepository.updateExpiredReservations(Bool.D, Bool.N, cutoffTime);
+            System.out.println("미결제된 예약이 'D'로 변경되었습니다. 예약 ID: " + reservation.getId());
+        });
+    }
 }
