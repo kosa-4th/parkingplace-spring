@@ -1,10 +1,13 @@
 package org.gomgom.parkingplace.Repository;
 
 import org.gomgom.parkingplace.Entity.Reservation;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,5 +41,30 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                        @Param("startDate") LocalDateTime startDate,
                                        @Param("endDate") LocalDateTime endDate);
 
-    
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.11*/
+    //예약 여부 수정
+    @Modifying
+    @Transactional
+    @Query("UPDATE Reservation r SET r.reservationConfirmed = :status WHERE r.id = :reservationId")
+    int updateReservationStatus(@Param("reservationId") Long reservationId, @Param("status") Bool status);
+
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.11*/
+    //생성시간 기준 5분마다 삭제.
+    @Modifying
+    @Transactional
+    @Query("UPDATE Reservation r SET r.reservationConfirmed = :status WHERE r.reservationConfirmed = :currentStatus AND r.createdAt < :time")
+    int updateExpiredReservations(@Param("status") Bool status, @Param("currentStatus") Bool currentStatus, @Param("time") LocalDateTime time);
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.11*/
+    //생성시간 기준 5분마다 N인거 찾음.
+    @Query("SELECT r FROM Reservation r WHERE r.reservationConfirmed = :reservationConfirmed AND r.createdAt < :time")
+    List<Reservation> findByReservationConfirmedAndCreatedAtBefore(@Param("reservationConfirmed") Bool reservationConfirmed, @Param("time") LocalDateTime time);
 }

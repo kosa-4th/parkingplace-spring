@@ -4,5 +4,7 @@ public enum Bool {
     N,
     Y,
 
-    C
+    C,
+
+    D,
 }

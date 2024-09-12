@@ -88,6 +88,7 @@ public class ReservationController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody RequestReservationDto requestReservationDto) {
 
+
         Reservation reservation = reservationService.createReservation(parkingLotId, userDetails.getUser().getEmail(), requestReservationDto);
 
         ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation);
