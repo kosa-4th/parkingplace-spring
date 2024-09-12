@@ -96,9 +96,7 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             CarType carType = requestAvailableDto.getCarType();
 
             if ((space.getCarType().getId().equals(carType.getId()) || space.getCarType().getId() == 1) && space.getAvailableSpaceNum() > 0) {
-                System.out.println("맞는 자리 :"+ space.getAvailableSpaceNum());
                 totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
-                System.out.println("space정보 : "+space.toString());
                 return new ReservationAvailableResponseDto(true, totalFee, space.getId());
             }
         }

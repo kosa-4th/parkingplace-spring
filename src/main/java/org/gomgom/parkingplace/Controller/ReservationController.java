@@ -41,7 +41,7 @@ public class ReservationController {
      */
     @GetMapping("/parkingCheck")
     public ResponseEntity<ReservationAvailableResponseDto> checkParkingSpaceSealAndTotalFee(
-           @PathVariable Long parkingLotId,
+            @PathVariable Long parkingLotId,
             @RequestParam String plateNumber,
             @RequestParam String startTimeStr,
             @RequestParam String endTimeStr,
@@ -53,6 +53,7 @@ public class ReservationController {
         LocalDateTime startTime = LocalDateTime.parse(startTimeStr, formatter);
         LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
 
+        System.out.println(parkingLotId +" "+ plateNumber+" "+startTime+" "+ endTime+" "+wash+" "+maintenance);
 
         CarType carType = plateNumberRepository.findCarTypeByPlateNumberId(plateNumber);
         Optional<CarType> optionalCarType = carTypeRepository.findById(carType.getId());
