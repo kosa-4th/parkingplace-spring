@@ -96,7 +96,7 @@ public class ParkingLot {
     private LocalDateTime updatedAt;
 
     //ManyToOne에서 OneToOne으로 변경
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
 

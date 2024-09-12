@@ -1,13 +1,16 @@
 package org.gomgom.parkingplace.Repository;
 
+import jakarta.transaction.Transactional;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.gomgom.parkingplace.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -48,7 +51,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     /**
      * @Author 김경민
-     * @Date 2024.09.11*/
+     * @Date 2024.09.11
+     */
     //예약 여부 수정
     @Modifying
     @Transactional
@@ -58,7 +62,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     /**
      * @Author 김경민
-     * @Date 2024.09.11*/
+     * @Date 2024.09.11
+     */
     //생성시간 기준 5분마다 삭제.
     @Modifying
     @Transactional
@@ -67,19 +72,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     /**
      * @Author 김경민
-     * @Date 2024.09.11*/
+     * @Date 2024.09.11
+     */
     //생성시간 기준 5분마다 N인거 찾음.
     @Query("SELECT r FROM Reservation r WHERE r.reservationConfirmed = :reservationConfirmed AND r.createdAt < :time")
     List<Reservation> findByReservationConfirmedAndCreatedAtBefore(@Param("reservationConfirmed") Bool reservationConfirmed, @Param("time") LocalDateTime time);
 
-/**
- * 작성자: 오지수
- * 2024.09.11 : 입력한 날짜 사이에 있는 예약 목록 반환
- * @param user
- * @param startTime
- * @param endTime
- * @param pageable
- * @return
- */
-Page<Reservation> findByUserAndStartTimeGreaterThanEqualAndEndTimeLessThan(User user, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
+    /**
+     * 작성자: 오지수
+     * 2024.09.11 : 입력한 날짜 사이에 있는 예약 목록 반환
+     * @param user
+     * @param startTime
+     * @param endTime
+     * @param pageable
+     * @return
+     */
+    Page<Reservation> findByUserAndStartTimeGreaterThanEqualAndEndTimeLessThan(User user, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable);
 }

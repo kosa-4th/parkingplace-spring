@@ -83,6 +83,8 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
      * @Date 2024.09.05
 
      * @return              예약 가능한 주차 공간이 있으면 true, 없으면 false.
+     * ------------------------------------------------------------------------
+     * 2024.09.12 양건모 | 요금이 제대로 적용되지 않던 버그 수정
      */
     public ReservationAvailableResponseDto isParkingSpaceAvailable(RequestAvailableDto requestAvailableDto) {
 
@@ -93,14 +95,7 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
         for (ParkingSpace space : availableSpaces) {
             CarType carType = requestAvailableDto.getCarType();
 
-            if (space.getCarType().equals(carType.getId()) && space.getAvailableSpaceNum() > 0) {
-                System.out.println("차종에 맞는 자리 : " + space.getAvailableSpaceNum());
-                totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
-                System.out.println("space정보 : "+space.toString());
-
-                return new ReservationAvailableResponseDto(true, totalFee, space.getId());
-
-            }else if(space.getCarType().getId().equals(carType.getId()) && space.getAvailableSpaceNum()>0){
+            if ((space.getCarType().getId().equals(carType.getId()) || space.getCarType().getId() == 1) && space.getAvailableSpaceNum() > 0) {
                 System.out.println("맞는 자리 :"+ space.getAvailableSpaceNum());
                 totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
                 System.out.println("space정보 : "+space.toString());
