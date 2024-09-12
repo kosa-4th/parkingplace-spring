@@ -45,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
                 reservationRepository.findReservationById(reservationId).orElseThrow(()
                         -> new IllegalArgumentException("Reservation가 존재 안함"));
 
+        String merChanUid = requestPaymentDto.getMerchantUid();
         String buyerName = requestPaymentDto.getBuyerName();
         String buyerTel = requestPaymentDto.getBuyerTel();
         String buyerEmail = requestPaymentDto.getBuyerEmail();
@@ -54,7 +55,7 @@ public class PaymentServiceImpl implements PaymentService {
         String cardNumber = requestPaymentDto.getCardNumber();
         String status = requestPaymentDto.getStatus();
 
-
+        payment.setMerchantUid(merChanUid);
         payment.setReservation(reservation);
         payment.setAmount(amount);
         payment.setBuyerEmail(buyerEmail);

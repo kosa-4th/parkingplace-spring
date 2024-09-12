@@ -64,7 +64,6 @@ public class IamportService {
 
             // merchantUid가 일치하는지 확인
             if (retrievedMerchantUid != null && retrievedMerchantUid.equals(merchantUid)) {
-                String reservationUuid = (String) responseMap.get("merchant_uid");
                 String buyerName = (String) responseMap.get("buyer_name");
                 String buyerTel= (String) responseMap.get("buyer_tel");
                 String buyerEmail= (String) responseMap.get("buyer_email");
@@ -74,9 +73,9 @@ public class IamportService {
                 String cardNumber = (String) responseMap.get("card_number");
                 String status = (String) responseMap.get("card_status");
                 Bool reservationConfirmed = Bool.N;
+ 
 
-
-                return new PaymentDto.RequestPaymentDto(reservationUuid, buyerName, buyerTel, buyerEmail, receiptUrl, amount, cardName, cardNumber, status, reservationConfirmed);
+                return new PaymentDto.RequestPaymentDto(impUid, retrievedMerchantUid, buyerName, buyerTel, buyerEmail, receiptUrl, amount, cardName, cardNumber, status, reservationConfirmed);
             }
             return null;
 

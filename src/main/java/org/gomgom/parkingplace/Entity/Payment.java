@@ -24,6 +24,8 @@ public class Payment {
     @Column(name = "pg_tid", length = 255)
     private String pgTid;
 
+    @Column(name = "merchant_uid", length = 255)
+    private String merchantUid;
     @Column(name = "payment_method", length = 255)
     private String paymentMethod;
 
