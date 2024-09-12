@@ -24,13 +24,9 @@ public class PlateNumberController {
      *         myCars: 현재 내 차량 목록
      */
     @GetMapping("/protected")
-    public ResponseEntity<?> getCars(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        try {
-            Map<String, Object> result = plateNumberService.getPlateNumber(userDetails.getUser());
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Map<String, Object>> getCars(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Map<String, Object> result = plateNumberService.getPlateNumber(userDetails.getUser());
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -41,10 +37,10 @@ public class PlateNumberController {
      * @return / 생각해봐야함
      */
     @PostMapping("/protected")
-    public ResponseEntity<?> registerPlateNumber(@RequestBody PlateNumberDto.RequestMyCarDto myCarDto,
+    public ResponseEntity<Void> registerPlateNumber(@RequestBody PlateNumberDto.RequestMyCarDto myCarDto,
                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         plateNumberService.registerPlateNumber(userDetails.getUser(), myCarDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -56,10 +52,10 @@ public class PlateNumberController {
      * @return
      */
     @DeleteMapping("/{carId}/protected")
-    public ResponseEntity<?> unregisterPlateNumber(@PathVariable String carId,
+    public ResponseEntity<Void> unregisterPlateNumber(@PathVariable String carId,
                                                    @RequestBody PlateNumberDto.RequestMyCarDto myCarDto,
                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
         plateNumberService.deletePlateNumber(userDetails.getUser(), myCarDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

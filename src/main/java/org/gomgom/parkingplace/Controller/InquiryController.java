@@ -26,7 +26,7 @@ public class InquiryController {
      * ---------------------------------
      */
     @GetMapping()
-    public ResponseEntity<?> getInquiries(@PathVariable Long parkingLotId,
+    public ResponseEntity<InquiryDto.ResponseInquiriesDto> getInquiries(@PathVariable Long parkingLotId,
                                           Pageable pageable) {
         return ResponseEntity.ok(inquiryService.getInquiries(parkingLotId, pageable));
     }
@@ -41,14 +41,10 @@ public class InquiryController {
      */
     @PostMapping("/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> registerInquiry(@PathVariable Long parkingLotId,
+    public ResponseEntity<Void> registerInquiry(@PathVariable Long parkingLotId,
                                              @RequestBody InquiryDto.RequestInquiriesDto requestDto,
                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-//        try {
-            inquiryService.registerInquiry(userDetails.getUser(), parkingLotId, requestDto.getInquiry());
-            return ResponseEntity.ok().build();
-//        }catch (Exception e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
+        inquiryService.registerInquiry(userDetails.getUser(), parkingLotId, requestDto.getInquiry());
+        return ResponseEntity.noContent().build();
     }
 }
