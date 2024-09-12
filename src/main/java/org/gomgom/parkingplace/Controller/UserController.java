@@ -27,14 +27,11 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<?> getUsers() {
         record CarTypeResponse(String carType) {}
-        try {
-            List<CarTypeResponse> response = CarTypeEnum.getFilteredCarTypes().stream()
-                    .map(CarTypeResponse::new)
-                    .toList();
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+        List<CarTypeResponse> response = CarTypeEnum.getFilteredCarTypes().stream()
+                .map(CarTypeResponse::new)
+                .toList();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -44,13 +41,9 @@ public class UserController {
      * @return /
      */
     @PostMapping()
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto.requsetUserDto userDto) {
-        try {
-            userService.join(userDto);
-            return ResponseEntity.status(HttpStatus.OK).body(new UserDto.responseSignupDto("success"));
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> createUser(@Valid @RequestBody UserDto.requsetUserDto userDto) {
+        userService.join(userDto);
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -60,17 +53,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/authorize")
-    public ResponseEntity<?> signInUser(@Valid @RequestBody UserDto.requestSignInDto user) {
-        try {
-            return ResponseEntity.ok(userService.signIn(user));
-        } catch (CustomExceptions.UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (CustomExceptions.ValidationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-
+    public ResponseEntity<AuthDto.AuthResponseDto> signInUser(@Valid @RequestBody UserDto.requestSignInDto user) {
+        return ResponseEntity.ok(userService.signIn(user));
     }
 
     /**
@@ -81,16 +65,8 @@ public class UserController {
      * 수정 필요
      */
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody AuthDto.RefreshTokenRequestDto request) {
-        try {
-            return ResponseEntity.ok(userService.refreshToken(request.getRefreshToken()));
-        } catch (CustomExceptions.UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (CustomExceptions.ValidationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+    public ResponseEntity<AuthDto.AuthResponseDto> refresh(@RequestBody AuthDto.RefreshTokenRequestDto request) {
+        return ResponseEntity.ok(userService.refreshToken(request.getRefreshToken()));
     }
 
 }

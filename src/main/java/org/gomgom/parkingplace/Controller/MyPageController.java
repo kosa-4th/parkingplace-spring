@@ -6,7 +6,6 @@ import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Service.myPage.MyPageService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +30,7 @@ public class MyPageController {
     @GetMapping("/reviews/protected")
     public ResponseEntity<MyPageDto.ResponseReviewsDto> getMyReviews(Pageable pageable,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println("userDetails: " + userDetails.getUsername());
-        try {
-            return ResponseEntity.ok(myPageService.getMyReviews(userDetails.getUser(),pageable));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(myPageService.getMyReviews(userDetails.getUser(),pageable));
     }
 
     /**
