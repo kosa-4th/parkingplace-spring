@@ -51,10 +51,10 @@ public class Payment {
     private String status;
 
     @Column(name = "paid_at")
-    private LocalDateTime paidAt;
+    private String paidAt;
 
     @Column(name = "failed_at")
-    private LocalDateTime failedAt;
+    private String failedAt;
 
     @Column(name = "receipt_url", length = 255)
     private String receiptUrl;

@@ -26,12 +26,29 @@ public class PaymentController {
 
     /**
      * @Author 김경민
+     * @Date 2024.09.13
+     * <p>
+     * 결제 취소 컨트롤러
+     */
+//    @PostMapping("/cancel")
+//    public ResponseEntity<?> paymentCancleResult(@RequestParam String merchantUid, @RequestParam String reason) {
+//        try {
+//            String result = String.valueOf(iamportService.cancelPayment(merchantUid, reason));
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("결제 취소 중 오류가 발생했습니다: " + e.getMessage());
+//        }
+//    }
+
+    /**
+     * @Author 김경민
      * @Date 24.09.12
-     *
+     * <p>
      * 모바일 결제시 컨트롤러
-     * */
+     */
     @GetMapping("/complete")
-    public ResponseEntity<?> handlePaymentResult(
+    public ResponseEntity<?> mobilePaymentResult(
             @PathVariable("reservationId") Long reservationId,
             @RequestParam("imp_uid") String impUid,
             @RequestParam("merchant_uid") String merchantUid) throws IamportResponseException, IOException {
@@ -45,7 +62,8 @@ public class PaymentController {
             String failedRedirectUrl = "http://localhost:5173/reservation/detail/" + reservationId + "?message=결제 실패!";
             return ResponseEntity.status(HttpStatus.FOUND)  // 302 리다이렉트 상태 코드
                     .location(URI.create(failedRedirectUrl))
-                    .build();        }
+                    .build();
+        }
 
         // 결제가 성공한 경우
         paymentService.completePayment(reservationId, requestPaymentDto);
@@ -83,7 +101,8 @@ public class PaymentController {
             @PathVariable("reservationId") Long reservationId,
             @RequestBody RequestPaymentDto requestPaymentDto) {
 
-
+        System.out.println(requestPaymentDto.toString());
+        System.out.println(requestPaymentDto.getMerchantUid());
         // 결제 처리 서비스 호출
         paymentService.completePayment(reservationId, requestPaymentDto);
 
