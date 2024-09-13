@@ -7,12 +7,14 @@ import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.Repository.CarTypeRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
+import org.gomgom.parkingplace.Repository.PlateNumberRepository;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.springframework.stereotype.Service;
 import static org.gomgom.parkingplace.Dto.ReservationDto.ReservationAvailableResponseDto;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +23,17 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
     private final ReservationRepository reservationRepository;
     private final CarTypeRepository carTypeRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
-
+    private final PlateNumberRepository plateNumberRepository;
     /**
      * 주차장의 차종에 따른 자리 개수와 예약 가능한 주차 공간을 조회하는 메서드.
      * @Author 김겸민
      * @Date 2024.09.05
      * @return              예약 가능한 주차 공간(ParkingSpace)의 리스트.
      */
-    public List<ParkingSpace> findAvailableParkingSpaces(RequestAvailableDto requestAvailableDto) {
+    public List<ParkingSpace> findAvailableParkingSpaces(Long parkingLotId, RequestAvailableDto requestAvailableDto) {
 
         //먼저 주차장 내에 예약 된 주차장 자리 조회
-        List<Object[]> result =  reservationRepository.findAvailableSpaces(requestAvailableDto.getParkingLotId(), requestAvailableDto.getStartTime(), requestAvailableDto.getEndTime());
+        List<Object[]> result =  reservationRepository.findAvailableSpaces(parkingLotId, requestAvailableDto.getStartTime(), requestAvailableDto.getEndTime());
 
         for(int i = 0; i < result.size(); i++) {
             Object[] row = result.get(i);  // i번째 Object[] 배열 가져오기
@@ -48,7 +50,6 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             // row[0] : carTypeId, row[1] : availableSpaceNum
             Long carTypeId = (Long) row[0];
             Long availableSpaceNum = (Long) row[1];
-            Long parkingLotId = requestAvailableDto.getParkingLotId();
             // ParkingSpace 객체 생성
             ParkingSpace parkingSpace = parkingSpaceRepository.findByParkingLotAndCarType(parkingLotId, carTypeId)
                     .orElse(null);  // 먼저 주차장과 차량 타입에 맞는 ParkingSpace를 조회
@@ -85,22 +86,30 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
      * @return              예약 가능한 주차 공간이 있으면 true, 없으면 false.
      * ------------------------------------------------------------------------
      * 2024.09.12 양건모 | 요금이 제대로 적용되지 않던 버그 수정
+     * @DATE 2024.09.13 -> Controll바꾸면서 코드 수정하면서 리팩토링
      */
-    public ReservationAvailableResponseDto isParkingSpaceAvailable(RequestAvailableDto requestAvailableDto) {
+    public ReservationAvailableResponseDto isParkingSpaceAvailable(Long parkingLotId, RequestAvailableDto requestAvailableDto) {
+        CarType carType = plateNumberRepository.findCarTypeByPlateNumberId(requestAvailableDto.getPlateNumber());
 
-        List <ParkingSpace> availableSpaces = findAvailableParkingSpaces(requestAvailableDto);
+        System.out.println("carType: "+carType.getId());
+        Optional<CarType> optionalCarType = carTypeRepository.findById(carType.getId());
+
+        if (optionalCarType.isPresent()) {
+             carType = optionalCarType.get();
+        } else {
+            throw new IllegalArgumentException("Invalid Car Type ID");
+        }
+        List <ParkingSpace> availableSpaces = findAvailableParkingSpaces(parkingLotId, requestAvailableDto);
         int totalFee = 0;
         ParkingCalculator parkingCalculator = new ParkingCalculator();
         //차종에 맞는 자리 확인
         for (ParkingSpace space : availableSpaces) {
-            CarType carType = requestAvailableDto.getCarType();
 
             if ((space.getCarType().getId().equals(carType.getId()) || space.getCarType().getId() == 1) && space.getAvailableSpaceNum() > 0) {
                 totalFee = parkingCalculator.calculatorParkingFee(space, requestAvailableDto);
                 return new ReservationAvailableResponseDto(true, totalFee, space.getId());
             }
         }
-        System.out.println("남은 자리 없음.");
         return new ReservationAvailableResponseDto(false, totalFee, null);
     }
 }

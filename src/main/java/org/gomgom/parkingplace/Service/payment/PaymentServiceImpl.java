@@ -11,6 +11,7 @@ import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.gomgom.parkingplace.Dto.PaymentDto.ResponseReservationPaymentDto;
@@ -18,7 +19,7 @@ import static org.gomgom.parkingplace.Dto.PaymentDto.ResponseReservationPaymentD
 /**
  * @Author 김경민
  * @Date 2024.09.11 -> PC버전일 시 결제 내역 저장, 모바일 DB 접근 안되서, 다음 날까지
- * @Date 2024.09.12 ->
+ * @Date 2024.09.12 -> 모바일 결제 완료
  */
 @Service
 @RequiredArgsConstructor
@@ -54,7 +55,10 @@ public class PaymentServiceImpl implements PaymentService {
         String cardName = requestPaymentDto.getCardName();
         String cardNumber = requestPaymentDto.getCardNumber();
         String status = requestPaymentDto.getStatus();
+        String impUid = requestPaymentDto.getImpUid();
+        String paidAt = requestPaymentDto.getPaidAt();
 
+        payment.setImpUid(impUid);
         payment.setMerchantUid(merChanUid);
         payment.setReservation(reservation);
         payment.setAmount(amount);
@@ -65,7 +69,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setReceiptUrl(receiptUrl);
         payment.setCardNumber(cardNumber);
         payment.setStatus(status);
-
+        payment.setPaidAt(paidAt);
         reservationRepository.updateReservationStatus(reservationId, Bool.C);
 
         return paymentRepository.save(payment);
