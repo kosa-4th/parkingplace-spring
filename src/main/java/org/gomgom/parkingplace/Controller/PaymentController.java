@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URI;
 
-import static org.gomgom.parkingplace.Dto.PaymentDto.RequestPaymentDto;
 import static org.gomgom.parkingplace.Dto.PaymentDto.ResponseReservationPaymentDto;
+import static org.gomgom.parkingplace.Dto.PaymentDto.RequestPaymentDto;
 
 @RestController
 @RequestMapping("/api/payment/{reservationId}")
@@ -30,16 +30,17 @@ public class PaymentController {
      * <p>
      * 결제 취소 컨트롤러
      */
-//    @PostMapping("/cancel")
-//    public ResponseEntity<?> paymentCancleResult(@RequestParam String merchantUid, @RequestParam String reason) {
-//        try {
-//            String result = String.valueOf(iamportService.cancelPayment(merchantUid, reason));
-//            return ResponseEntity.ok(result);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("결제 취소 중 오류가 발생했습니다: " + e.getMessage());
-//        }
-//    }
+    @PostMapping("/cancel")
+    public ResponseEntity<?> paymentCancleResult(@RequestParam String merchantUid, @RequestParam String reason) {
+        try {
+            String result = String.valueOf(paymentService.cancelPayment(merchantUid, reason));
+            System.out.println("result"+result);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("결제 취소 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 
     /**
      * @Author 김경민
@@ -54,9 +55,8 @@ public class PaymentController {
             @RequestParam("merchant_uid") String merchantUid) throws IamportResponseException, IOException {
 
         // 액세스 토큰 발급
-        String accessToken = iamportService.getAccessToken();
-        System.out.println("accessToken" + accessToken);
-        RequestPaymentDto requestPaymentDto = iamportService.verifyPayment(accessToken, impUid, merchantUid);
+
+        RequestPaymentDto requestPaymentDto = iamportService.verifyPayment(impUid, merchantUid);
         if (requestPaymentDto == null) {
             // 실패 페이지로 리다이렉트
             String failedRedirectUrl = "http://localhost:5173/reservation/detail/" + reservationId + "?message=결제 실패!";
