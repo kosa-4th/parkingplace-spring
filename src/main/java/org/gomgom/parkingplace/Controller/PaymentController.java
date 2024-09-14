@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Service.payment.IamportService;
 import org.gomgom.parkingplace.Service.payment.PaymentServiceImpl;
+import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

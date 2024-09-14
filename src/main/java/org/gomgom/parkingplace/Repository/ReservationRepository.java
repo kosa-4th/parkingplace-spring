@@ -18,6 +18,13 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+    /**
+     * @Date 2024.09.14
+     * 예약의 ConfirmedBy 상태 확인
+     * */
+    @Query("SELECT r.reservationConfirmed FROM Reservation r WHERE r.id = :reservationId")
+    Bool findReservationConfirmedByReservationId(@Param("reservationId") Long reservationId);
+
 
     //userID값을 통한 예약 내회 조회
     List<Reservation> findByUserId(Long userId);

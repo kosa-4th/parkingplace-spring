@@ -36,6 +36,8 @@ public class ReservationDto {
         private Bool washService;
         private Bool maintenanceService;
 
+
+
         public RequestReservationDto(Long parkingSpaceId, String plateNumber, String startTime, String endTime, Integer totalPrice, String wash, String maintenance) {
             this.parkingSpaceId = parkingSpaceId;
             this.plateNumber = plateNumber;
