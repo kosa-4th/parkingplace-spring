@@ -129,9 +129,9 @@ public class IamportService {
                 String status = (String) responseMap.get("card_status");
                 String paidAt = "";
                 Bool reservationConfirmed = Bool.N;
+                Bool paymentConfirmed = Bool.Y;
 
-
-                return new PaymentDto.RequestPaymentDto(impUid, retrievedMerchantUid, amount, buyerEmail, buyerName, buyerTel, receiptUrl, status, cardName, cardNumber, paidAt, reservationConfirmed);
+                return new PaymentDto.RequestPaymentDto(impUid, retrievedMerchantUid, amount, buyerEmail, buyerName, buyerTel, receiptUrl, status, cardName, cardNumber, paidAt, reservationConfirmed,paymentConfirmed);
             }
 
             return null;

@@ -3,10 +3,11 @@ package org.gomgom.parkingplace.Controller;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
+import static org.gomgom.parkingplace.Dto.PaymentCancelDto.RequestPaymentCancelDto;
+
+import org.gomgom.parkingplace.Dto.PaymentCancelDto;
 import org.gomgom.parkingplace.Service.payment.IamportService;
 import org.gomgom.parkingplace.Service.payment.PaymentServiceImpl;
-import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
-import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,10 +33,10 @@ public class PaymentController {
      * <p>
      * 결제 취소 컨트롤러
      */
-    @PostMapping("/cancel")
-    public ResponseEntity<?> paymentCancleResult(@RequestParam String merchantUid, @RequestParam String reason) {
+    @PostMapping("/cancel/protected")
+    public ResponseEntity<?> paymentCancleResult(@PathVariable Long reservationId, @RequestBody RequestPaymentCancelDto requestPaymentCancelDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            String result = String.valueOf(paymentService.cancelPayment(merchantUid, reason));
+            String result = String.valueOf(paymentService.cancelPayment(reservationId, requestPaymentCancelDto));
             System.out.println("result"+result);
             return ResponseEntity.ok(result);
         } catch (Exception e) {

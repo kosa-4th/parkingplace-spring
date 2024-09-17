@@ -23,6 +23,7 @@ public class PaymentDto {
         private String cardNumber;
         private String paidAt;
         private Bool reservationConfirmed;
+        private Bool paymentConfirmed;
     }
 
 

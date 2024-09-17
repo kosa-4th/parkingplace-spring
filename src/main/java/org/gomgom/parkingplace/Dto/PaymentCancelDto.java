@@ -22,4 +22,10 @@ public class PaymentCancelDto {
         private String buyerEmail;
         private String merchantUid;
     }
+
+    @Data
+    public static class RequestPaymentCancelDto{
+        private String merchantUid;
+        private String reason;
+    }
 }

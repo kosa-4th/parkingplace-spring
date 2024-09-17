@@ -1,12 +1,14 @@
 package org.gomgom.parkingplace.Service.payment;
 
 import lombok.RequiredArgsConstructor;
+import org.gomgom.parkingplace.Dto.PaymentCancelDto;
 import org.gomgom.parkingplace.Entity.Payment;
 import org.gomgom.parkingplace.Entity.PaymentCancel;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Repository.PaymentCancelRepository;
 import org.gomgom.parkingplace.Repository.PaymentRepository;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
+import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,12 +33,16 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final IamportService iamportService;
     private final PaymentCancelRepository paymentCancelRepository;
+    private final ReservationServiceImpl reservationService;
 
     @Transactional
-    public PaymentCancel cancelPayment(String merchantUid, String reason) {
-        ResponseEntity<ResponsePaymentCancelDto> response = iamportService.cancelPayment(merchantUid, reason);
-        PaymentCancel paymentCancel = new PaymentCancel();
+    public PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto) {
 
+        ResponseEntity<ResponsePaymentCancelDto> response = iamportService.cancelPayment(requestPaymentCancelDto.getMerchantUid(), requestPaymentCancelDto.getReason());
+        int result = reservationService.cancelReservation(reservationId);
+        PaymentCancel paymentCancel = new PaymentCancel();
+        Payment payment = new Payment();
+        int i = paymentRepository.updatePaymentStatusByUuid(requestPaymentCancelDto.getMerchantUid(), Bool.Y);
         if (response.getStatusCode().is2xxSuccessful()) {
             ResponsePaymentCancelDto cancelDto = response.getBody();
             // 취소된 금액 및 영수증 URL을 처리할 수 있음
@@ -45,7 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentCancel.setAmount(cancelDto.getAmount());
             paymentCancel.setMerchant_uid(cancelDto.getMerchantUid());
             paymentCancel.setPgTid(cancelDto.getPgTid());
-            paymentCancel.setPayment(paymentRepository.findByMerchantUid(merchantUid));
+            paymentCancel.setPayment(paymentRepository.findByMerchantUid(requestPaymentCancelDto.getMerchantUid()));
 
             return paymentCancelRepository.save(paymentCancel);
         }
@@ -93,6 +99,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setCardNumber(cardNumber);
         payment.setStatus(status);
         payment.setPaidAt(paidAt);
+        payment.setPaymentConfirmed(Bool.Y);
         reservationRepository.updateReservationStatus(reservationId, Bool.C);
 
         return paymentRepository.save(payment);
