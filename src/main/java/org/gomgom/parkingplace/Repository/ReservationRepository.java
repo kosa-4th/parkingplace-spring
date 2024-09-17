@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Repository;
 
 import jakarta.transaction.Transactional;
+import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Bool;
@@ -18,6 +19,12 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+    /**
+     * @Date 2024.09.17
+     * 예약 데이터 가져오기
+     * */
+    @Query("SELECT r FROM Reservation r JOIN r.parkingLot tpl WHERE r.id = :reservationId AND r.user.id = :userId")
+    Optional<Reservation> findReservationByIdAndUserId(@Param("reservationId") Long reservationId, @Param("userId") Long userId);
     /**
      * @Date 2024.09.14
      * 예약의 ConfirmedBy 상태 확인
