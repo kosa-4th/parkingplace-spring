@@ -114,6 +114,7 @@ public class MyPageDto {
     public static class ResponseReservationDetailsDto{
         private String reservationUuid;
         private Bool reservationConfirmed;
+        private Integer totalPrice;
         private LocalDateTime startTime;
         private LocalDateTime endTime;
         private Bool maintenance;

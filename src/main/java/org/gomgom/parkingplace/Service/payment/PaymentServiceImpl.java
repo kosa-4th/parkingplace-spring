@@ -37,12 +37,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Transactional
     public PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto) {
-
         ResponseEntity<ResponsePaymentCancelDto> response = iamportService.cancelPayment(requestPaymentCancelDto.getMerchantUid(), requestPaymentCancelDto.getReason());
         int result = reservationService.cancelReservation(reservationId);
+        System.out.println("결제 취소 : result" + result);
         PaymentCancel paymentCancel = new PaymentCancel();
         Payment payment = new Payment();
-        int i = paymentRepository.updatePaymentStatusByUuid(requestPaymentCancelDto.getMerchantUid(), Bool.Y);
+        int i = paymentRepository.updatePaymentStatusByUuid(requestPaymentCancelDto.getMerchantUid(), Bool.N);
         if (response.getStatusCode().is2xxSuccessful()) {
             ResponsePaymentCancelDto cancelDto = response.getBody();
             // 취소된 금액 및 영수증 URL을 처리할 수 있음

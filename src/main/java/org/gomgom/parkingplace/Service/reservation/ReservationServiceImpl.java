@@ -44,7 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     public int cancelReservation(Long ReservationId){
         Bool check = reservationRepository.findReservationConfirmedByReservationId(ReservationId);
-        if(check==Bool.N){
+        if(check==Bool.N || check==Bool.Y || check ==Bool.C){
             return reservationRepository.updateReservationStatus(ReservationId, Bool.D);
         }
         return 0;

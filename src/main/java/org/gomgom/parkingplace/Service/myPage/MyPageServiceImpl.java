@@ -64,6 +64,7 @@ public class MyPageServiceImpl implements MyPageService {
         return new MyPageDto.ResponseReservationDetailsDto(
                 reservation.getReservationUuid(),
                 reservation.getReservationConfirmed(),
+                reservation.getTotalPrice(),
                 reservation.getStartTime(),
                 reservation.getEndTime(),
                 reservation.getMaintenance(),

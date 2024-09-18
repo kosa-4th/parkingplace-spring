@@ -3,7 +3,6 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.MyPageDto;
-import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Service.myPage.MyPageService;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +64,7 @@ public class MyPageController {
     @GetMapping("/reservationsDetails/{reservationId}/protected")
     public ResponseEntity<MyPageDto.ResponseReservationDetailsDto> getMyReservationDetails(@PathVariable Long reservationId,
                                                                                          @AuthenticationPrincipal CustomUserDetails userDetails){
+        System.out.println("테스트");
         Long userId = userDetails.getUser().getId();
         try {
             // 서비스 호출
