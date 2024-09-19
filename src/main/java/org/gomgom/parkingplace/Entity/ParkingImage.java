@@ -44,7 +44,6 @@ public class ParkingImage {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
 }

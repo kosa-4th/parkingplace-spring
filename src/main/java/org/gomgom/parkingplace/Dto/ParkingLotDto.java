@@ -12,7 +12,9 @@ import org.springframework.data.domain.Page;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ParkingLotDto {
@@ -98,7 +100,7 @@ public class ParkingLotDto {
         private String weekendTime;
         private int weekdayPrice;
         private int weekendPrice;
-        private final List<String> images;
+        private List<String> images;
 
         public ParkingLotDetailResponseDto(ParkingLot parkingLot) {
             this.parkingLotName = parkingLot.getName();
@@ -111,7 +113,9 @@ public class ParkingLotDto {
                     " ~ " + parkingLot.getWeekendCloseTime().format(DateTimeFormatter.ofPattern("HH:mm"));
             this.weekdayPrice = parkingLot.getParkingSpaces().getFirst().getWeekdaysPrice();
             this.weekendPrice = parkingLot.getParkingSpaces().getFirst().getWeekendPrice();
-            this.images = parkingLot.getParkingImages().stream()
+            this.images = Optional.ofNullable(parkingLot.getParkingImages())
+                    .orElse(Collections.emptyList())
+                    .stream()
                     .map(ParkingImage::getImagePath)
                     .collect(Collectors.toList());
         }

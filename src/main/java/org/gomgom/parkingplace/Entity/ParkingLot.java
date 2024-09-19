@@ -101,7 +101,7 @@ public class ParkingLot {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_image_id")
+    @JoinColumn(name = "parking_lot_id")
     private List<ParkingImage> parkingImages = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
