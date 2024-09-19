@@ -1,12 +1,8 @@
 package org.gomgom.parkingplace.Repository;
 
-import jakarta.transaction.Transactional;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Bool;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.gomgom.parkingplace.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

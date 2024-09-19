@@ -3,6 +3,7 @@ package org.gomgom.parkingplace.Dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
 
@@ -56,6 +57,7 @@ public class MyPageDto {
      * - LocalDateTime endDate: 예약을 불러올 마지막날짜
      */
     @Getter
+    @AllArgsConstructor
     public static class MyReservationRequestDto {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private LocalDateTime startDate;
@@ -93,6 +95,9 @@ public class MyPageDto {
         private String parkingLotName;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
+        private String carNumber;
+        private String carType;
+        private String status;
 
         public MyReservation(Reservation reservation) {
             this.reservationId = reservation.getId();
@@ -100,6 +105,9 @@ public class MyPageDto {
             this.parkingLotName = reservation.getParkingLot().getName();
             this.startDate = reservation.getStartTime();
             this.endDate = reservation.getEndTime();
+            this.carNumber = reservation.getPlateNumber();
+            this.carType = reservation.getParkingSpace().getCarType().getCarTypeEnum().getKor();
+            this.status = reservation.getReservationConfirmed().name().equals("Y") ? "예약확정" : "예약취소";
         }
     }
 }

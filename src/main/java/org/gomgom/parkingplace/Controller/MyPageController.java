@@ -42,11 +42,10 @@ public class MyPageController {
      *
      * @return 다음 페이지 여부와 예약 정보 / MyPageDto.MyReservationResponseDt
      * ---------------------------------
-     * 데이터 없어서 테스트 안해봄 ㅎ, 테스트 필요
      */
-    @PostMapping("/reservations/protected")
+    @GetMapping("/reservations/protected")
     public ResponseEntity<MyPageDto.MyReservationResponseDto> getMyReservations(Pageable pageable,
-                                                                                @RequestBody MyPageDto.MyReservationRequestDto requestDto,
+                                                                                MyPageDto.MyReservationRequestDto requestDto,
                                                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
         System.out.println(userDetails.getUsername());
         System.out.println(requestDto.getStartDate());
