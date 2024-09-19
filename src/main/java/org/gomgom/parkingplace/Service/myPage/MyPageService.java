@@ -12,4 +12,12 @@ public interface MyPageService {
 
     // 내 예약 목록 가져오기
     MyPageDto.MyReservationResponseDto getMyReservations(User user, MyPageDto.MyReservationRequestDto dateDto, Pageable pageable);
+
+    /**
+     * @Date 2024.09.17
+     * @Author 김경민
+     * 예약상세 가져오기
+     * */
+    MyPageDto.ResponseReservationDetailsDto getMyReservationDetails(Long reservationId, Long userId);
+
 }

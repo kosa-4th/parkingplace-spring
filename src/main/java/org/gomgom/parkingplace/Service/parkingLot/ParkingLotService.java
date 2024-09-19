@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Service.parkingLot;
 
+import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 
 public interface ParkingLotService {
@@ -32,4 +33,17 @@ public interface ParkingLotService {
      * 2024.09.07 양건모 | 기능 구현
      * */
     ParkingLotDto.ParkingLotPreviewResponseDto getParkingLotPreview(Long parkingLotId);
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.15
+     * 설명 : 사용자 id로 등록된 주차장 조회
+     * @param userId 사용자 id
+     * @return List 형태로 주차장 id, 주차장 이름
+     *  ---------------------
+     * 2024.09.15 양건모 | 기능 구현
+     * */
+    ParkingLotDto.MyParkingLotsReponseDto getMyParkingLots(Long userId);
+
+    ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) throws BadRequestException;
 }

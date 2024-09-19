@@ -72,7 +72,7 @@ public class FavoriteController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public FavoriteDto.MyFavoritesResponseDto myFavorites(
             @RequestParam long page,
-            @PageableDefault(page=0, size=2) Pageable pageable,
+            @PageableDefault(page=0, size=10) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return favoriteService.myFavorites(pageable, userDetails.getUser().getId());
