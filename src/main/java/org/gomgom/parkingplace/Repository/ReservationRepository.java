@@ -1,6 +1,5 @@
 package org.gomgom.parkingplace.Repository;
 
-import jakarta.transaction.Transactional;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Bool;

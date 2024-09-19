@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,17 @@ import java.util.Set;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.10
+     * 설명 : 잘못된 요청에 대해 처리하는 ExceptionHandler
+     *  ---------------------
+     * 2024.09.16 양건모 | 기능 구현
+     * */
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleMissingServletRequestParameterException(BadRequestException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse("잘못된 요청입니다"));
+    }
 
     /**
      * 작성자: 양건모

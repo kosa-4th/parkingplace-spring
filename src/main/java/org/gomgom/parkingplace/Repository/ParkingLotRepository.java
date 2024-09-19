@@ -91,4 +91,21 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
     * */
     @Query("SELECT pl FROM ParkingLot pl WHERE pl.id = :parkingLotId")
     Optional<ParkingLot> getParkingLotReservationData(Long parkingLotId);
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.15
+     * 설명 : 사용자 id로 등록된 주차장 조회
+     * @param userId 사용자 id
+     * @return 주차장 id, 주차장 이름 List 형태로 반환
+     *  ---------------------
+     * 2024.09.15 양건모 | 기능 구현
+     * */
+    @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotIdAndNameDto(" +
+                "pl.id, pl.name " +
+            ") " +
+            "FROM ParkingLot pl " +
+            "JOIN pl.user usr " +
+            "WHERE usr.id = :userId")
+    List<ParkingLotDto.ParkingLotIdAndNameDto> findIdAndNameByUserId(Long userId);
 }
