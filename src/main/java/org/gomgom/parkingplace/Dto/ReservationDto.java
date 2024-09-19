@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.enums.Bool;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +17,7 @@ import java.util.List;
 /**
  * @Author 김경민
  * @Date 2024-09-03
+ * @Date 2024-09-13 코드수정
  *
  * ReservationDto 생성
  *
@@ -23,7 +26,6 @@ public class ReservationDto {
 
     // 클라이언트가 예약 요청 시 사용하는 DTO
     @Data
-    @AllArgsConstructor
     @ToString
     public static class RequestReservationDto {
         private Long parkingSpaceId;
@@ -34,17 +36,41 @@ public class ReservationDto {
         private Bool washService;
         private Bool maintenanceService;
 
+
+
+        public RequestReservationDto(Long parkingSpaceId, String plateNumber, String startTime, String endTime, Integer totalPrice, String wash, String maintenance) {
+            this.parkingSpaceId = parkingSpaceId;
+            this.plateNumber = plateNumber;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.totalPrice = totalPrice;
+            this.washService = "true".equalsIgnoreCase(wash) ? Bool.Y : Bool.N;
+            this.maintenanceService = "true".equalsIgnoreCase(maintenance) ? Bool.Y : Bool.N;
+        }
+
     }
 
+    /**
+     *  @DATE 2024.09.13 -> 컨트롤을 바꾸면서 ModelAttribute로 바꾸면서 코드 리팩토링
+     * */
     @Data
-    @AllArgsConstructor
     public static class RequestAvailableDto {
-        private Long parkingLotId;
-        private CarType carType;
+        private String plateNumber;
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime startTime;
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime endTime;
+
         private Bool washService;
         private Bool maintenanceService;
+
+        public RequestAvailableDto(String plateNumber, LocalDateTime startTime, LocalDateTime endTime, String wash, String maintenance) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.plateNumber = plateNumber;
+            this.washService = "true".equalsIgnoreCase(wash) ? Bool.Y : Bool.N;
+            this.maintenanceService = "true".equalsIgnoreCase(maintenance) ? Bool.Y : Bool.N;
+        }
     }
 
     // 서버가 예약 정보를 응답할 때 사용하는 DTO

@@ -13,15 +13,17 @@ public class PaymentDto {
     public static class RequestPaymentDto{
         private String impUid;
         private String merchantUid;
+        private Double amount;
+        private String buyerEmail;
         private String buyerName;
         private String buyerTel;
-        private String buyerEmail;
         private String receiptUrl;
-        private Double amount;
+        private String status;
         private String cardName;
         private String cardNumber;
-        private String status;
+        private String paidAt;
         private Bool reservationConfirmed;
+        private Bool paymentConfirmed;
     }
 
 

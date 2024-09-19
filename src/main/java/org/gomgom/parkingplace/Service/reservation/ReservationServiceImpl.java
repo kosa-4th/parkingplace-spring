@@ -8,7 +8,7 @@ import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.PlateNumberDto
 import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotReservationResponseDto;
 import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotAndCarInfoResponseDto;
 
-import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
+import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.enums.Bool;
@@ -41,6 +41,14 @@ public class ReservationServiceImpl implements ReservationService {
     private final PlateNumberRepository plateNumberRepository;
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
+
+    public int cancelReservation(Long ReservationId){
+        Bool check = reservationRepository.findReservationConfirmedByReservationId(ReservationId);
+        if(check==Bool.N || check==Bool.Y || check ==Bool.C){
+            return reservationRepository.updateReservationStatus(ReservationId, Bool.D);
+        }
+        return 0;
+    }
 
     /**
      * @Author 김경민

@@ -18,6 +18,7 @@ public class ParkingCalculator {
      * @return 계산된 총 주차 요금 (종일권, 시간별 요금, 부가 서비스 포함).
      * @Author 김경민
      * @Date 2024.09.05
+     * @Date 2024.09.13 코드리팩토링
      */
     public int calculatorParkingFee(ParkingSpace parkingSpace, ReservationDto.RequestAvailableDto requestAvailableDto) {
 
@@ -26,11 +27,6 @@ public class ParkingCalculator {
         long parkingMinutes = ChronoUnit.MINUTES.between(requestAvailableDto.getStartTime(), requestAvailableDto.getEndTime());
 
         long halfHourUnits = (long) Math.ceil((double) parkingMinutes / 30);
-
-        System.out.println(requestAvailableDto.getStartTime());
-        System.out.println(requestAvailableDto.getEndTime());
-        System.out.println(parkingSpace.toString());
-        System.out.println(halfHourUnits + "halfHourUnits");
 
         for (int i = 0; i < halfHourUnits; i++) {
             int rate = getRateForTime(parkingSpace, requestAvailableDto.getStartTime());
@@ -45,18 +41,15 @@ public class ParkingCalculator {
             totalAmount = oneDayCoupon;
 
         }
-
         if (requestAvailableDto.getWashService() == Y) {
-            System.out.println("세차여부 확인");
             totalAmount += (parkingSpace.getWashPrice() != null) ? parkingSpace.getWashPrice() : 0;
 
         }
+
         if (requestAvailableDto.getMaintenanceService() == Y) {
-            System.out.println("기본정비 확인");
             totalAmount += (parkingSpace.getMaintenancePrice() != null) ? parkingSpace.getMaintenancePrice() : 0;
         }
 
-        System.out.println("totalFee" + totalAmount);
         return totalAmount;
     }
 

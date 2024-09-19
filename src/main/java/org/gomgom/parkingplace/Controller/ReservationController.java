@@ -3,23 +3,14 @@ package org.gomgom.parkingplace.Controller;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
-import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
-import org.gomgom.parkingplace.Repository.CarTypeRepository;
-import org.gomgom.parkingplace.Repository.PlateNumberRepository;
 import org.gomgom.parkingplace.Service.reservation.ParkingSeatSearchServiceImpl;
 import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
-import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
 import static org.gomgom.parkingplace.Dto.ReservationDto.*;
 
 @RestController
@@ -28,52 +19,25 @@ import static org.gomgom.parkingplace.Dto.ReservationDto.*;
 public class ReservationController {
 
     private final ParkingSeatSearchServiceImpl parkingSeatSearchService;
-    private final CarTypeRepository carTypeRepository;
-    private final PlateNumberRepository plateNumberRepository;
+
     private final ReservationServiceImpl reservationService;
+
+
 
     /**
      * @Author 김경민
      * @DATE 2024.09.07 -> 컨트롤단 설정
      * @DATE 2024.09.09 -> VUE에 맞는 DTO 변경
-     * <p>
-     * 주차 조회 및 요금 조회 컨트롤단.
+     * @DATE 2024.09.13 -> Param을 ModelAttribute로 바꾸면서 코드 리팩토링
+     *
      */
     @GetMapping("/parkingCheck")
     public ResponseEntity<ReservationAvailableResponseDto> checkParkingSpaceSealAndTotalFee(
             @PathVariable Long parkingLotId,
-            @RequestParam String plateNumber,
-            @RequestParam String startTimeStr,
-            @RequestParam String endTimeStr,
-            @RequestParam boolean wash,
-            @RequestParam boolean maintenance) {
+            @ModelAttribute RequestAvailableDto requestAvailableDto) {
 
-        // 문자열로 받은 시작/종료 시간을 LocalDateTime으로 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startTime = LocalDateTime.parse(startTimeStr, formatter);
-        LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
-
-        System.out.println(parkingLotId +" "+ plateNumber+" "+startTime+" "+ endTime+" "+wash+" "+maintenance);
-
-        CarType carType = plateNumberRepository.findCarTypeByPlateNumberId(plateNumber);
-        Optional<CarType> optionalCarType = carTypeRepository.findById(carType.getId());
-        Bool washService = Bool.N;
-        Bool maintenanceService = Bool.N;
-        if(wash == true){
-            washService = Bool.Y;
-        }
-        if(maintenance == true){
-            maintenanceService = Bool.Y;
-        }
-        if (optionalCarType.isPresent()) {
-            carType = optionalCarType.get();
-        } else {
-            throw new IllegalArgumentException("Invalid Car Type ID");
-        }
-
-        RequestAvailableDto requestAvailableDto = new RequestAvailableDto(parkingLotId, carType, startTime, endTime, washService, maintenanceService);
-
-        ReservationAvailableResponseDto response = parkingSeatSearchService.isParkingSpaceAvailable(requestAvailableDto);
+        System.out.println("#########"+requestAvailableDto.getWashService()+" "+requestAvailableDto.getMaintenanceService());
+        ReservationAvailableResponseDto response = parkingSeatSearchService.isParkingSpaceAvailable(parkingLotId, requestAvailableDto);
         return ResponseEntity.ok(response);
     }
 

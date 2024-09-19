@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
+import org.gomgom.parkingplace.enums.Bool;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,5 +102,26 @@ public class MyPageDto {
             this.startDate = reservation.getStartTime();
             this.endDate = reservation.getEndTime();
         }
+    }
+
+    /**
+     * @Author김경민
+     * @Date 2024.09.17
+     * 상세 예약 페이지 DTO
+     * */
+    @Getter
+    @AllArgsConstructor
+    public static class ResponseReservationDetailsDto{
+        private String reservationUuid;
+        private Bool reservationConfirmed;
+        private Integer totalPrice;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private Bool maintenance;
+        private Bool wash;
+        private String plateNumber;
+        private String lotName;
+        private String address;
+        private String tel;
     }
 }
