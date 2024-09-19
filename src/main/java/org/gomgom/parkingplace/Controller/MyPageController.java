@@ -6,6 +6,7 @@ import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Service.myPage.MyPageService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +52,26 @@ public class MyPageController {
         System.out.println(requestDto.getStartDate());
         System.out.println(requestDto.getEndDate());
         return ResponseEntity.ok(myPageService.getMyReservations(userDetails.getUser(), requestDto, pageable));
+    }
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.17
+     *
+     * 사용자 예약 상세 페이지 데이터 가져오기
+     * */
+    @GetMapping("/reservationsDetails/{reservationId}/protected")
+    public ResponseEntity<MyPageDto.ResponseReservationDetailsDto> getMyReservationDetails(@PathVariable Long reservationId,
+                                                                                         @AuthenticationPrincipal CustomUserDetails userDetails){
+        System.out.println("테스트");
+        Long userId = userDetails.getUser().getId();
+        try {
+            // 서비스 호출
+            MyPageDto.ResponseReservationDetailsDto reservationDetails = myPageService.getMyReservationDetails(reservationId, userId);
+            return ResponseEntity.ok(reservationDetails);
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
     }
 }

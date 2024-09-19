@@ -1,13 +1,17 @@
 package org.gomgom.parkingplace.Service.parkingLot;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
+import org.gomgom.parkingplace.Entity.ParkingImage;
 import org.gomgom.parkingplace.Entity.ParkingLot;
+import org.gomgom.parkingplace.Entity.ParkingSpace;
+import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +64,51 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
         preview.setParkingSpaces(parkingSpaceRepository.getSpacesPreviewsByParkingLotId(parkingLotId));
         return preview;
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.15
+     * 설명 : 사용자 id로 등록된 주차장 조회
+     * @param userId 사용자 id
+     * @return List 형태로 주차장 id, 주차장 이름
+     *  ---------------------
+     * 2024.09.15 양건모 | 기능 구현
+     * */
+    @Override
+    public ParkingLotDto.MyParkingLotsReponseDto getMyParkingLots(Long userId) {
+        List<ParkingLotDto.ParkingLotIdAndNameDto> list = parkingLotRepository.findIdAndNameByUserId(userId);
+        return new ParkingLotDto.MyParkingLotsReponseDto(list);
+    }
+
+    @Override
+    public ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) throws BadRequestException {
+        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId).orElseThrow();
+
+        if (parkingLot.getUser() == null || !parkingLot.getUser().getId().equals(userId)) {
+            throw new BadRequestException();
+        }
+
+        //주차장 이미지 가공
+        List<ParkingLotDto.MyParkingLotImage> images = new ArrayList<>();
+        for (ParkingImage image: parkingLot.getParkingImages()) {
+            images.add(new ParkingLotDto.MyParkingLotImage(image.getId(), image.getThumbnailPath()));
+        }
+
+        //주차구역 가공
+        List<ParkingLotDto.MyParkingLotSpace> parkingSpaces = new ArrayList<>();
+        for (ParkingSpace space: parkingLot.getParkingSpaces()) {
+            parkingSpaces.add(new ParkingLotDto.MyParkingLotSpace(
+                    space.getId(), space.getSpaceName(), space.getCarType().getCarTypeEnum().getKor(),
+                    space.getWeekdaysPrice(), space.getWeekendPrice(), space.getWeekAllDayPrice(),
+                    space.getWeekendAllDayPrice(), space.getWashPrice(), space.getMaintenancePrice(),
+                    space.getAvailableSpaceNum()));
+        }
+
+        return new ParkingLotDto.OwnerParkingLotDetailResponseDto(
+            parkingLot.getName(), parkingLot.getAddress(), parkingLot.getTel(), parkingLot.getWeekdaysOpenTime(),
+                parkingLot.getWeekdaysCloseTime(), parkingLot.getWeekendOpenTime(), parkingLot.getWeekendCloseTime(), images, parkingSpaces
+        );
     }
 
 }

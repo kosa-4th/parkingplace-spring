@@ -2,10 +2,12 @@ package org.gomgom.parkingplace.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Entity.ParkingImage;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.Bool;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -143,6 +145,70 @@ public class ParkingLotDto {
         public void setParkingSpaces(List<ParkingSpaceDto.ParkingSpacesPreviewDto> parkingSpaces) {
             this.parkingSpaces = parkingSpaces;
         }
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.15
+     * 설명 : 주차장 업주의 등록한 주차장 목록 조회 응답 DTO
+     * ---------------------
+     * 2024.09.07 양건모 | 기능 구현
+     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
+     */
+    @RequiredArgsConstructor
+    @Getter
+    public static class ParkingLotIdAndNameDto {
+        private final long id;
+        private final String name;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class MyParkingLotsReponseDto {
+        private final List<ParkingLotDto.ParkingLotIdAndNameDto> parkingLots;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class OwnerParkingLotDetailResponseDto {
+        private final String name;
+        private final String address;
+        private final String tel;
+        private final LocalTime weekdaysOpenTime;
+        private final LocalTime WeekdaysCloseTime;
+        private final LocalTime weekendOpenTime;
+        private final LocalTime weekendCloseTime;
+        private final List<MyParkingLotImage> images;
+        private final List<MyParkingLotSpace> parkingSpaces;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class MyParkingLotImage {
+        private final long id;
+        private final String path;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class MyParkingLotSpace {
+        private final long id;
+        private final String spaceName;
+        private final String carType;
+        private final int weekdaysPrice;
+        private final int weekendPrice;
+        private final int weekAllDayPrice;
+        private final int weekendAllDayPrice;
+        private final Integer washPrice;
+        private final Integer maintenancePrice;
+        private final int availableSpaceNum;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class MyParkingLotReview {
+        private final LocalDateTime createdAt;
+        private final String review;
     }
 
 }

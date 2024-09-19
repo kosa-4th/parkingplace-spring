@@ -1,9 +1,14 @@
 package org.gomgom.parkingplace.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
+import org.gomgom.parkingplace.enums.Role;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,6 +59,32 @@ public class ParkingLotController {
     @GetMapping("/preview/{parkingLotId}")
     public ResponseEntity<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreview(@PathVariable Long parkingLotId) {
         return ResponseEntity.ok(parkingLotService.getParkingLotPreview(parkingLotId));
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.16
+     * 설명 : 나의 주차장 정보
+     * @return 주차장 id, 주차장명
+     *  ---------------------
+     * 2024.09.16 양건모 | 기능 구현
+     * */
+    @GetMapping("/my/protected")
+    public ResponseEntity<ParkingLotDto.MyParkingLotsReponseDto> getMyParkingLots (
+            @AuthenticationPrincipal CustomUserDetails userDetails) throws BadRequestException {
+        if (userDetails.getUser().getAuth() != Role.ROLE_PARKING_MANAGER) {
+            throw new BadRequestException("접근 권한이 없습니다");
+        }
+        return ResponseEntity.ok(parkingLotService.getMyParkingLots(userDetails.getUser().getId()));
+    }
+
+    @GetMapping("/{parkingLotId}/owner/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
+    public ResponseEntity<ParkingLotDto.OwnerParkingLotDetailResponseDto> getOwnerParkingLotDetail (
+            @PathVariable long parkingLotId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) throws BadRequestException {
+        return ResponseEntity.ok(parkingLotService.getOwnerParkingLotDetail(userDetails.getUser().getId(), parkingLotId));
     }
 
 }

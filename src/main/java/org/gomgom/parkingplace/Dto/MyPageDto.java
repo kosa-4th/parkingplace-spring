@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
+import org.gomgom.parkingplace.enums.Bool;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -109,5 +110,26 @@ public class MyPageDto {
             this.carType = reservation.getParkingSpace().getCarType().getCarTypeEnum().getKor();
             this.status = reservation.getReservationConfirmed().name().equals("Y") ? "예약확정" : "예약취소";
         }
+    }
+
+    /**
+     * @Author김경민
+     * @Date 2024.09.17
+     * 상세 예약 페이지 DTO
+     * */
+    @Getter
+    @AllArgsConstructor
+    public static class ResponseReservationDetailsDto{
+        private String reservationUuid;
+        private Bool reservationConfirmed;
+        private Integer totalPrice;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private Bool maintenance;
+        private Bool wash;
+        private String plateNumber;
+        private String lotName;
+        private String address;
+        private String tel;
     }
 }
