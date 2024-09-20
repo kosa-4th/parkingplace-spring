@@ -108,15 +108,12 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * @return 주차장 상세 정보
      *  ---------------------
      * 2024.09.18 양건모 | 기능 구현
-     * 2024.09.20 양건모 | DTO 이름 변경으로 인한 수정
+     * 2024.09.20 양건모 | 성능 향상을 위해 findById() 메서드를 findByIdIncludeImageSpace() 메서드로 대체
      * */
     @Override
-    public ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) throws BadRequestException {
-        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId).orElseThrow();
-
-        if (parkingLot.getUser() == null || !parkingLot.getUser().getId().equals(userId)) {
-            throw new BadRequestException();
-        }
+    @Transactional(readOnly = true)
+    public ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) {
+        ParkingLot parkingLot = parkingLotRepository.findByIdIncludeImageSpace(userId,parkingLotId).orElseThrow();
 
         //주차장 이미지 가공
         List<ParkingLotDto.MyParkingLotImageDto> images = new ArrayList<>();
@@ -151,15 +148,12 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      *  ---------------------
      * 2024.09.19 양건모 | 이미지 삭제를 제외한 기능 구현
      * 2024.09.20 양건모 | 이미지 삭제 로직 연결
+     * 2024.09.20 양건모 | 성능 향상을 위해 findById() 메서드를 findByIdIncludeImageSpace() 메서드로 대체
      * */
     @Override
     @Transactional
-    public void modifyOwnerParkingLotDetail(long userId, long parkingLotId, ParkingLotDto.ParkingLotModifyRequestDto request) throws IOException, BadRequestException {
-        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId).orElseThrow();
-
-        if (parkingLot.getUser() == null || !parkingLot.getUser().getId().equals(userId)) {
-            throw new BadRequestException();
-        }
+    public void modifyOwnerParkingLotDetail(long userId, long parkingLotId, ParkingLotDto.ParkingLotModifyRequestDto request) throws IOException {
+        ParkingLot parkingLot = parkingLotRepository.findByIdIncludeImageSpace(userId, parkingLotId).orElseThrow();
 
         //기본 정보 수정
         parkingLot.setName(request.getName());
