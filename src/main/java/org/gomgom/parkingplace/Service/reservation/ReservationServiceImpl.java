@@ -2,17 +2,14 @@ package org.gomgom.parkingplace.Service.reservation;
 
 
 import lombok.RequiredArgsConstructor;
-import static org.gomgom.parkingplace.Dto.ReservationDto.RequestReservationDto;
-
-import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.PlateNumberDto;
-import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotReservationResponseDto;
-import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.ParkingLotAndCarInfoResponseDto;
-
-import org.gomgom.parkingplace.Dto.ReservationDto;
+import org.gomgom.parkingplace.Dto.ReservationDto.RequestOwnerReservationDto;
+import org.gomgom.parkingplace.Dto.ReservationDto.ResponseOwnerReservationDto;
 import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.util.CustomUUIDGenerator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +19,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.*;
+import static org.gomgom.parkingplace.Dto.ReservationDto.RequestReservationDto;
+
 
 /**
  * ReservationServiceImpl.java
- *
+ * <p>
  * 예약 저장하는 로직
  *
  * @author 김경민
@@ -42,9 +42,63 @@ public class ReservationServiceImpl implements ReservationService {
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
 
-    public int cancelReservation(Long ReservationId){
+    //예약 허가 삭제.
+    @Override
+    public int updateReservationStatus(Long reservationId, Bool reservationConfirmed) {
+        if(reservationConfirmed == Bool.Y){
+            return reservationRepository.updateReservationStatus(reservationId, Bool.Y);
+        }else if(reservationConfirmed == Bool.D){
+            return reservationRepository.updateReservationStatus(reservationId, Bool.D);
+        }
+
+        return 0;
+
+    }
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.19 -> 사용자 페이지 예약 괸련 정보 조회
+     */
+    @Transactional //사용한 이유 지연 된 로된 필드를 가져올 수 있음
+    public Page<ResponseOwnerReservationDto> getOwnerReservations(
+            RequestOwnerReservationDto requestOwnerReservationDto, Pageable pageable) {
+
+        Page<Reservation> reservations;
+
+        Long parkingLotId = requestOwnerReservationDto.getParkingLotId();
+        LocalDateTime startTime = requestOwnerReservationDto.getStartTime();
+        LocalDateTime endTime = requestOwnerReservationDto.getEndTime();
+        Bool reservationConfirmed = requestOwnerReservationDto.getReservationConfirmed();
+        System.out.println(parkingLotId + "  " + reservationConfirmed +"#########");
+        if (startTime != null && endTime != null) {
+            reservations = reservationRepository.findReservationsByParkingLotAndConfirmedAndTimeRange(parkingLotId, reservationConfirmed, startTime, endTime, pageable);
+        } else {
+            reservations = reservationRepository.findReservationsByParkingLotAndConfirmed(parkingLotId, reservationConfirmed, pageable);
+        }
+        return reservations.map(reservation -> new ResponseOwnerReservationDto(
+                reservation.getId(),
+                reservation.getUser() != null ? reservation.getUser().getName() : "",
+                reservation.getUser() != null ? reservation.getUser().getEmail() : "",
+                reservation.getPlateNumber(),
+                reservation.getParkingSpace() != null ? reservation.getParkingSpace().getSpaceName() : "",
+                reservation.getReservationUuid(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getReservationConfirmed(),
+                reservation.getWash(),
+                reservation.getMaintenance()
+        ));
+    }
+
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.14 -> 예약 취소 서비스메소드 군현
+     * @Date 2024.09.18 -> 소스 check 값 수정
+     */
+    public int cancelReservation(Long ReservationId) {
         Bool check = reservationRepository.findReservationConfirmedByReservationId(ReservationId);
-        if(check==Bool.N || check==Bool.Y || check ==Bool.C){
+        if (check == Bool.N || check == Bool.Y || check == Bool.C) {
             return reservationRepository.updateReservationStatus(ReservationId, Bool.D);
         }
         return 0;
@@ -53,12 +107,11 @@ public class ReservationServiceImpl implements ReservationService {
     /**
      * @Author 김경민
      * @Date 2024.09.07
-     *
+     * <p>
      * 예약 저장하는 로직
-     *
-     * */
+     */
     @Transactional
-    public Reservation createReservation(Long parkingLotId, String userEmail, RequestReservationDto requestReservationDto){
+    public Reservation createReservation(Long parkingLotId, String userEmail, RequestReservationDto requestReservationDto) {
         Reservation reservation = new Reservation();
 
 
@@ -73,11 +126,11 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() ->new IllegalArgumentException("Email 존재 안함"));
+                .orElseThrow(() -> new IllegalArgumentException("Email 존재 안함"));
 
 
         ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
-                        .orElseThrow(()->new IllegalArgumentException("parkingLot 존재 안함."));
+                .orElseThrow(() -> new IllegalArgumentException("parkingLot 존재 안함."));
 
 
         String plateNumber = requestReservationDto.getPlateNumber();
@@ -85,7 +138,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDateTime startTime = LocalDateTime.parse(requestReservationDto.getStartTime(), formatter);
         LocalDateTime endTime = LocalDateTime.parse(requestReservationDto.getEndTime(), formatter);
         Bool wash = requestReservationDto.getWashService();
-        Bool maintenance =  requestReservationDto.getMaintenanceService();
+        Bool maintenance = requestReservationDto.getMaintenanceService();
         int totalPrice = requestReservationDto.getTotalPrice();
 
         reservation.setLotName(parkingLotName);
@@ -107,7 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
     /**
      * @Author 김경민
      * @Date 2024.09.07 주차장예약페이지 데이터 조회
-     * */
+     */
     public ParkingLotAndCarInfoResponseDto getParkingLotReservation(Long parkingLotId, String userEmail) {
         // 주차장 정보 가져오기
         ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
@@ -152,7 +205,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @Author 김경민
      * @Date 2024.09.11
      * 예약 생성 후 5분 후까지 결제가 되지 않을 시 예약 삭제
-     * */
+     */
     // 1분마다 실행
     @Scheduled(fixedRate = 60000) // 60초 = 1분
     @Transactional

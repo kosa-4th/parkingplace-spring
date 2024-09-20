@@ -5,7 +5,10 @@ import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Service.reservation.ParkingSeatSearchServiceImpl;
-import org.gomgom.parkingplace.Service.reservation.ReservationServiceImpl;
+import org.gomgom.parkingplace.Service.reservation.ReservationService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,8 +23,7 @@ public class ReservationController {
 
     private final ParkingSeatSearchServiceImpl parkingSeatSearchService;
 
-    private final ReservationServiceImpl reservationService;
-
+    private final ReservationService reservationService;
 
 
     /**
@@ -54,14 +56,15 @@ public class ReservationController {
             @RequestBody RequestReservationDto requestReservationDto) {
 
 
-        Reservation reservation = reservationService.createReservation(parkingLotId, userDetails.getUser().getEmail(), requestReservationDto);
+        Reservation reservation = reservationService.createReservation(
+                parkingLotId, userDetails.getUser().getEmail(), requestReservationDto);
 
         ResponseReservationDto responseReservationDto = new ResponseReservationDto(reservation);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseReservationDto);
     }
 
     /*
-    *@Author 김경민
+    * @Author 김경민
     * @Date 2024.09.08
     * 예약 페이지 접근
     * */
