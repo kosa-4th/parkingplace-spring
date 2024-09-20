@@ -108,4 +108,13 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
             "JOIN pl.user usr " +
             "WHERE usr.id = :userId")
     List<ParkingLotDto.ParkingLotIdAndNameDto> findIdAndNameByUserId(Long userId);
+
+    @Query("SELECT DiSTINCT pl FROM ParkingLot pl " +
+            "LEFT JOIN pl.parkingImages pi " +
+            "LEFT JOIN FETCH pl.parkingSpaces ps " +
+            "LEFT JOIN FETCH ps.carType ct " +
+            "JOIN FETCH pl.user usr " +
+            "WHERE pl.id = :parkingLotId " +
+            "AND usr.id = :userId")
+    Optional<ParkingLot> findByIdIncludeImageSpace(long userId, long parkingLotId);
 }
