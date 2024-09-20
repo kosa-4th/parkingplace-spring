@@ -1,12 +1,8 @@
 package org.gomgom.parkingplace.Repository;
 
-import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Bool;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.gomgom.parkingplace.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,16 +18,45 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+
+    /**
+     * @Date 2024.09.19
+     * 검색 조건에 맞는 데이터 가져오기
+     */
+    @Query("SELECT r FROM Reservation r " +
+            "INNER JOIN r.parkingLot p " +
+            "INNER JOIN r.user u " +
+            "WHERE p.id = :parkingLotId " +
+            "AND r.reservationConfirmed = :reservationConfirmed " +
+            "AND r.startTime BETWEEN :startTime AND :endTime")
+    Page<Reservation> findReservationsByParkingLotAndConfirmedAndTimeRange(
+            @Param("parkingLotId") Long parkingLotId,
+            @Param("reservationConfirmed") Bool reservationConfirmed,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            Pageable pageable);
+
+    @Query("SELECT r FROM Reservation r " +
+            "INNER JOIN r.parkingLot p " +
+            "INNER JOIN r.user u " +
+            "WHERE p.id = :parkingLotId " +
+            "AND r.reservationConfirmed = :reservationConfirmed")
+    Page<Reservation> findReservationsByParkingLotAndConfirmed(
+            @Param("parkingLotId") Long parkingLotId,
+            @Param("reservationConfirmed") Bool reservationConfirmed,
+            Pageable pageable);
+
     /**
      * @Date 2024.09.17
      * 예약 데이터 가져오기
-     * */
+     */
     @Query("SELECT r FROM Reservation r JOIN r.parkingLot tpl WHERE r.id = :reservationId AND r.user.id = :userId")
     Optional<Reservation> findReservationByIdAndUserId(@Param("reservationId") Long reservationId, @Param("userId") Long userId);
+
     /**
      * @Date 2024.09.14
      * 예약의 ConfirmedBy 상태 확인
-     * */
+     */
     @Query("SELECT r.reservationConfirmed FROM Reservation r WHERE r.id = :reservationId")
     Bool findReservationConfirmedByReservationId(@Param("reservationId") Long reservationId);
 
@@ -70,7 +95,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     //예약 여부 수정
     @Modifying
     @Transactional
-    @Query("UPDATE Reservation r SET r.reservationConfirmed = :status WHERE r.id = :reservationId")
+    @Query("UPDATE Reservation r SET r.reservationConfirmed = :status, r.updatedAt = CURRENT_TIMESTAMP WHERE r.id = :reservationId")
     int updateReservationStatus(@Param("reservationId") Long reservationId, @Param("status") Bool status);
 
 
@@ -95,6 +120,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     /**
      * 작성자: 오지수
      * 2024.09.11 : 입력한 날짜 사이에 있는 예약 목록 반환
+     *
      * @param user
      * @param startTime
      * @param endTime
