@@ -108,6 +108,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * @return 주차장 상세 정보
      *  ---------------------
      * 2024.09.18 양건모 | 기능 구현
+     * 2024.09.20 양건모 | DTO 이름 변경으로 인한 수정
      * */
     @Override
     public ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) throws BadRequestException {
@@ -118,15 +119,15 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
 
         //주차장 이미지 가공
-        List<ParkingLotDto.MyParkingLotImage> images = new ArrayList<>();
+        List<ParkingLotDto.MyParkingLotImageDto> images = new ArrayList<>();
         for (ParkingImage image: parkingLot.getParkingImages()) {
-            images.add(new ParkingLotDto.MyParkingLotImage(image.getId(), uploadPath + File.separator + image.getThumbnailPath()));
+            images.add(new ParkingLotDto.MyParkingLotImageDto(image.getId(), uploadPath + File.separator + image.getThumbnailPath()));
         }
 
         //주차구역 가공
-        List<ParkingLotDto.MyParkingLotSpace> parkingSpaces = new ArrayList<>();
+        List<ParkingLotDto.MyParkingLotSpaceDto> parkingSpaces = new ArrayList<>();
         for (ParkingSpace space: parkingLot.getParkingSpaces()) {
-            parkingSpaces.add(new ParkingLotDto.MyParkingLotSpace(
+            parkingSpaces.add(new ParkingLotDto.MyParkingLotSpaceDto(
                     space.getId(), space.getSpaceName(), space.getCarType().getCarTypeEnum().getKor(),
                     space.getWeekdaysPrice(), space.getWeekendPrice(), space.getWeekAllDayPrice(),
                     space.getWeekendAllDayPrice(), space.getWashPrice(), space.getMaintenancePrice(),
