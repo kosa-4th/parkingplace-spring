@@ -41,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService {
      * */
     @Transactional
     public PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto) {
-        System.out.println("여기는 뜨니2");
         ResponseEntity<ResponsePaymentCancelDto> response = iamportService.cancelPayment(requestPaymentCancelDto.getMerchantUid(), requestPaymentCancelDto.getReason());
         int result = reservationService.cancelReservation(reservationId);
         System.out.println("결제 취소 : result" + result);

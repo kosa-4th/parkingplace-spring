@@ -19,6 +19,46 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
+    /**@Date 2024.09.20
+     * 입차예정 출차예정 출차완료에 대한 실시간 데이터
+     * */
+    @Query("SELECT r FROM Reservation r " +
+            "INNER JOIN r.parkingLot p " +
+            "INNER JOIN r.user u " +
+            "WHERE p.id = :parkingLotId " +
+            "AND DATE(r.startTime) = DATE(:now) " +  // 날짜가 오늘인 데이터
+            "AND r.startTime > :now " +  // 현재 시간 이후인 데이터
+            "ORDER BY r.startTime ASC")
+    Page<Reservation> findTodayUpcomingEntries(
+            @Param("parkingLotId") Long parkingLotId,
+            @Param("now") LocalDateTime now,
+            Pageable pageable);
+
+    @Query("SELECT r FROM Reservation r " +
+            "INNER JOIN r.parkingLot p " +
+            "INNER JOIN r.user u " +
+            "WHERE p.id = :parkingLotId " +
+            "AND DATE(r.startTime) = DATE(:now) " +
+            "AND r.startTime <= :now " +
+            "AND r.endTime > :now " +
+            "ORDER BY r.startTime ASC")
+    Page<Reservation> findTodayPendingExits(
+            @Param("parkingLotId") Long parkingLotId,
+            @Param("now") LocalDateTime now,
+            Pageable pageable);
+
+    @Query("SELECT r FROM Reservation r " +
+            "INNER JOIN r.parkingLot p " +
+            "INNER JOIN r.user u " +
+            "WHERE p.id = :parkingLotId " +
+            "AND DATE(r.endTime) = DATE(:now) " +  // 오늘 날짜의 데이터
+            "AND r.endTime < :now " +  // 현재 시간보다 이전인 데이터
+            "ORDER BY r.endTime ASC")
+    Page<Reservation> findTodayCompletedExits(
+            @Param("parkingLotId") Long parkingLotId,
+            @Param("now") LocalDateTime now,
+            Pageable pageable);
+
     /**
      * @Date 2024.09.19
      * 검색 조건에 맞는 데이터 가져오기
@@ -28,7 +68,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "INNER JOIN r.user u " +
             "WHERE p.id = :parkingLotId " +
             "AND r.reservationConfirmed = :reservationConfirmed " +
-            "AND r.startTime BETWEEN :startTime AND :endTime")
+            "AND r.startTime BETWEEN :startTime AND :endTime " +
+            "order by r.startTime asc" )
     Page<Reservation> findReservationsByParkingLotAndConfirmedAndTimeRange(
             @Param("parkingLotId") Long parkingLotId,
             @Param("reservationConfirmed") Bool reservationConfirmed,
@@ -40,7 +81,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "INNER JOIN r.parkingLot p " +
             "INNER JOIN r.user u " +
             "WHERE p.id = :parkingLotId " +
-            "AND r.reservationConfirmed = :reservationConfirmed")
+            "AND r.reservationConfirmed = :reservationConfirmed " +
+            "order by r.startTime asc" )
     Page<Reservation> findReservationsByParkingLotAndConfirmed(
             @Param("parkingLotId") Long parkingLotId,
             @Param("reservationConfirmed") Bool reservationConfirmed,

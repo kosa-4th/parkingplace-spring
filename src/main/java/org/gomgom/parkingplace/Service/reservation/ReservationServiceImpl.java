@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Service.reservation;
 
 
 import lombok.RequiredArgsConstructor;
+import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Dto.ReservationDto.RequestOwnerReservationDto;
 import org.gomgom.parkingplace.Dto.ReservationDto.ResponseOwnerReservationDto;
 import org.gomgom.parkingplace.Entity.*;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.gomgom.parkingplace.Dto.ParkingLotAndCarInfoDto.*;
 import static org.gomgom.parkingplace.Dto.ReservationDto.RequestReservationDto;
+import static org.gomgom.parkingplace.Dto.ReservationDto.ResponseOwnerReservationStatusDto;
 
 
 /**
@@ -29,7 +31,7 @@ import static org.gomgom.parkingplace.Dto.ReservationDto.RequestReservationDto;
  * 예약 저장하는 로직
  *
  * @author 김경민
- * @date 2024-09-07
+ * @Date 2024-09-07
  */
 @Service
 @RequiredArgsConstructor
@@ -42,12 +44,78 @@ public class ReservationServiceImpl implements ReservationService {
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
 
+
+    /**
+     * @DATE 2024.09.20
+     * 오늘의 예약 조회
+     */
+
+
+    @Override
+    @Transactional
+    public Page<ResponseOwnerReservationStatusDto> getTodayUpcomingEntries(Long parkingLotId, LocalDateTime now, Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findTodayUpcomingEntries(parkingLotId, now, pageable);
+
+        return reservations.map(reservation -> new ReservationDto.ResponseOwnerReservationStatusDto(
+                reservation.getId(),
+                reservation.getUser().getName(),
+                reservation.getUser().getEmail(),
+                reservation.getPlateNumber(),
+                reservation.getParkingSpace().getSpaceName(),
+                reservation.getReservationUuid(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getWash(),
+                reservation.getMaintenance()
+        ));
+    }
+
+    @Transactional
+
+    public Page<ResponseOwnerReservationStatusDto> getTodayPendingExits(Long parkingLotId, LocalDateTime now, Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findTodayPendingExits(parkingLotId, now, pageable);
+        return reservations.map(reservation -> new ReservationDto.ResponseOwnerReservationStatusDto(
+                reservation.getId(),
+                reservation.getUser().getName(),
+                reservation.getUser().getEmail(),
+                reservation.getPlateNumber(),
+                reservation.getParkingSpace().getSpaceName(),
+                reservation.getReservationUuid(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getWash(),
+                reservation.getMaintenance()
+        ));    }
+
+    @Transactional
+
+    public Page<ResponseOwnerReservationStatusDto> getTodayCompletedExits(Long parkingLotId, LocalDateTime now, Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findTodayCompletedExits(parkingLotId, now, pageable);
+
+        return reservations.map(reservation -> new ReservationDto.ResponseOwnerReservationStatusDto(
+                reservation.getId(),
+                reservation.getUser().getName(),
+                reservation.getUser().getEmail(),
+                reservation.getPlateNumber(),
+                reservation.getParkingSpace().getSpaceName(),
+                reservation.getReservationUuid(),
+                reservation.getStartTime(),
+                reservation.getEndTime(),
+                reservation.getWash(),
+                reservation.getMaintenance()
+        ));    }
+
+    /**
+     * @Date 2024.09.20
+     * 입차 예정, 출차 예정, 출차 완료 서비스처리
+     */
+
     //예약 허가 삭제.
     @Override
     public int updateReservationStatus(Long reservationId, Bool reservationConfirmed) {
-        if(reservationConfirmed == Bool.Y){
+        if (reservationConfirmed == Bool.Y) {
             return reservationRepository.updateReservationStatus(reservationId, Bool.Y);
-        }else if(reservationConfirmed == Bool.D){
+        } else if (reservationConfirmed == Bool.D) {
             return reservationRepository.updateReservationStatus(reservationId, Bool.D);
         }
 
@@ -69,7 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDateTime startTime = requestOwnerReservationDto.getStartTime();
         LocalDateTime endTime = requestOwnerReservationDto.getEndTime();
         Bool reservationConfirmed = requestOwnerReservationDto.getReservationConfirmed();
-        System.out.println(parkingLotId + "  " + reservationConfirmed +"#########");
+        System.out.println(parkingLotId + "  " + reservationConfirmed + "#########");
         if (startTime != null && endTime != null) {
             reservations = reservationRepository.findReservationsByParkingLotAndConfirmedAndTimeRange(parkingLotId, reservationConfirmed, startTime, endTime, pageable);
         } else {
