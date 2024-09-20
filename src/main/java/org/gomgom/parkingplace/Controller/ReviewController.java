@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ReviewDto;
 import org.gomgom.parkingplace.Service.Review.ReviewService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/parkinglots/{parkinglotId}/reviews")
+@Log4j2
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -30,8 +32,9 @@ public class ReviewController {
     public ResponseEntity<?> registerReview(@PathVariable("parkinglotId") Long parkinglotId,
                                          @RequestBody ReviewDto.ReviewRequestDto reviewDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
-
+        log.info("Controller: 주차장 리뷰 등록");
         String result = reviewService.saveReview(userDetails.getUser(), parkinglotId, reviewDto.getNewReview());
+        log.info("Controller: 주차장 리뷰 등록 완료");
         return ResponseEntity.ok(result);
     }
 
@@ -46,6 +49,7 @@ public class ReviewController {
     @GetMapping()
     public ResponseEntity<?> getReviews(@PathVariable("parkinglotId") Long parkinglotId,
                                         Pageable pageable) {
+        log.info("Controller: 주차장 리뷰 목록 가져오기");
         return ResponseEntity.ok(reviewService.getReviews(parkinglotId, pageable));
     }
 
@@ -58,15 +62,13 @@ public class ReviewController {
      * @return /
      */
     @DeleteMapping("/{reviewId}/protected")
-    public ResponseEntity<?> deleteReview(@PathVariable("parkinglotId") Long parkinglotId,
+    public ResponseEntity<Void> deleteReview(@PathVariable("parkinglotId") Long parkinglotId,
                                           @PathVariable("reviewId") Long reviewId,
                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
-        try {
-            reviewService.deleteReview(userDetails.getUser().getId(), parkinglotId, reviewId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        log.info("Controller: 주차장 댓글 삭제");
+        reviewService.deleteReview(userDetails.getUser().getId(), parkinglotId, reviewId);
+        log.info("Controller: 주차장 댓글 삭제 완료");
+        return ResponseEntity.ok().build();
     }
 
     /**

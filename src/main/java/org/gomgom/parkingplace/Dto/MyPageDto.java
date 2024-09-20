@@ -67,6 +67,7 @@ public class MyPageDto {
         private LocalDateTime endDate;
     }
 
+
     /**
      * 작성자: 오지수
      * 2024.09.11 : 마이페이지에 내 예약 내역을 전달하기 위해 사용
@@ -94,8 +95,8 @@ public class MyPageDto {
         private Long reservationId;
         private Long parkinglotId;
         private String parkingLotName;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
+        private String startDate;
+        private String endDate;
         private String carNumber;
         private String carType;
         private String status;
@@ -104,8 +105,8 @@ public class MyPageDto {
             this.reservationId = reservation.getId();
             this.parkinglotId = reservation.getParkingLot().getId();
             this.parkingLotName = reservation.getParkingLot().getName();
-            this.startDate = reservation.getStartTime();
-            this.endDate = reservation.getEndTime();
+            this.startDate = reservation.getStartTime().toString();
+            this.endDate = reservation.getEndTime().toString();
             this.carNumber = reservation.getPlateNumber();
             this.carType = reservation.getParkingSpace().getCarType().getCarTypeEnum().getKor();
             this.status = reservation.getReservationConfirmed().name().equals("Y") ? "예약확정" : "예약취소";

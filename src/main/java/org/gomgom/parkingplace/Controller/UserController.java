@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
-import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Service.user.UserService;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.springframework.http.HttpStatus;

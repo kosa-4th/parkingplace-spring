@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.PlateNumberDto;
@@ -37,7 +38,7 @@ public class PlateNumberController {
      * @return / 생각해봐야함
      */
     @PostMapping("/protected")
-    public ResponseEntity<Void> registerPlateNumber(@RequestBody PlateNumberDto.RequestMyCarDto myCarDto,
+    public ResponseEntity<Void> registerPlateNumber(@Valid @RequestBody PlateNumberDto.RequestMyCarDto myCarDto,
                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         plateNumberService.registerPlateNumber(userDetails.getUser(), myCarDto);
         return ResponseEntity.noContent().build();

@@ -73,14 +73,17 @@ public class ReviewServiceImpl implements ReviewService{
     public void deleteReview(Long userId, Long parkinglotId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
-
+        
         if (!review.getParkingLot().getId().equals(parkinglotId)) {
+            log.info("Service: 주차장 리뷰 삭제, 리뷰의 parkinglot 정보와 parkinglotId param 불일치");
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 
         if (!review.getUser().getId().equals(userId)) {
+            log.info("Service: 주차장 리뷰 삭제, 리뷰 user 정보와 userId 불일치");
             throw new IllegalArgumentException("삭제 권한이 없는 리뷰입니다.");
         }
+        log.info("Service: 주차장 삭제 완료");
         reviewRepository.delete(review);
     }
 
