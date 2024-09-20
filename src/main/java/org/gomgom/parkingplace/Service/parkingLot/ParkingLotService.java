@@ -3,6 +3,8 @@ package org.gomgom.parkingplace.Service.parkingLot;
 import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 
+import java.io.IOException;
+
 public interface ParkingLotService {
 
     /**
@@ -37,7 +39,7 @@ public interface ParkingLotService {
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.15
-     * 설명 : 사용자 id로 등록된 주차장 조회
+     * 설명 : 사용자 id로 등록된 주차장 목록 조회
      * @param userId 사용자 id
      * @return List 형태로 주차장 id, 주차장 이름
      *  ---------------------
@@ -45,5 +47,28 @@ public interface ParkingLotService {
      * */
     ParkingLotDto.MyParkingLotsReponseDto getMyParkingLots(Long userId);
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 주차구역, 이미지를 포함한 사용자가 소유한 주차장 상세 정보 조회
+     * @param userId 사용자 id
+     * @param parkingLotId 주치장 id
+     * @return 주차장 상세 정보
+     *  ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     * */
     ParkingLotDto.OwnerParkingLotDetailResponseDto getOwnerParkingLotDetail(long userId, long parkingLotId) throws BadRequestException;
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 이미지를 포함한 주차장 정보 수정
+     * @param userId 사용자 id
+     * @param parkingLotId 주차장 id
+     * @param request 수정 값
+     * @return void
+     *  ---------------------
+     * 2024.09.19 양건모 | 기능 구현
+     * */
+    void modifyOwnerParkingLotDetail(long userId, long parkingLotId, ParkingLotDto.ParkingLotModifyRequestDto request) throws IOException;
 }

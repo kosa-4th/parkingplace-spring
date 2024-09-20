@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -13,10 +14,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "tbl_parking_image")
+@NoArgsConstructor
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class ParkingImage {
     @Id
@@ -44,6 +45,13 @@ public class ParkingImage {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLot parkingLot;
+
+    public ParkingImage(String imagePath, String thumbnailPath, ParkingLot parkingLot) {
+        this.imagePath = imagePath;
+        this.thumbnailPath = thumbnailPath;
+        this.parkingLot = parkingLot;
+    }
 }

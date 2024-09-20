@@ -3,11 +3,13 @@ package org.gomgom.parkingplace.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.gomgom.parkingplace.Entity.ParkingImage;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -154,10 +156,9 @@ public class ParkingLotDto {
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.15
-     * 설명 : 주차장 업주의 등록한 주차장 목록 조회 응답 DTO
+     * 설명 : 주차장 업주의 등록한 주차장 목록 조회 요소 DTO
      * ---------------------
-     * 2024.09.07 양건모 | 기능 구현
-     * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
+     * 2024.09.15 양건모 | 기능 구현
      */
     @RequiredArgsConstructor
     @Getter
@@ -166,12 +167,26 @@ public class ParkingLotDto {
         private final String name;
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.15
+     * 설명 : 주차장 업주의 등록한 주차장 목록 조회 응답 DTO
+     * ---------------------
+     * 2024.09.15 양건모 | 기능 구현
+     */
     @RequiredArgsConstructor
     @Getter
     public static class MyParkingLotsReponseDto {
         private final List<ParkingLotDto.ParkingLotIdAndNameDto> parkingLots;
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 주차장 업주의 등록한 주차장 상세 조회 응답 DTO
+     * ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     */
     @RequiredArgsConstructor
     @Getter
     public static class OwnerParkingLotDetailResponseDto {
@@ -182,20 +197,34 @@ public class ParkingLotDto {
         private final LocalTime WeekdaysCloseTime;
         private final LocalTime weekendOpenTime;
         private final LocalTime weekendCloseTime;
-        private final List<MyParkingLotImage> images;
-        private final List<MyParkingLotSpace> parkingSpaces;
+        private final List<MyParkingLotImageDto> images;
+        private final List<MyParkingLotSpaceDto> parkingSpaces;
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 주차장 업주의 등록한 주차장 상세 조회의 이미지 요소 DTO
+     * ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     */
     @RequiredArgsConstructor
     @Getter
-    public static class MyParkingLotImage {
+    public static class MyParkingLotImageDto {
         private final long id;
         private final String path;
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 주차장 업주의 등록한 주차장 상세 조회의 주차 공간 요소 DTO
+     * ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     */
     @RequiredArgsConstructor
     @Getter
-    public static class MyParkingLotSpace {
+    public static class MyParkingLotSpaceDto {
         private final long id;
         private final String spaceName;
         private final String carType;
@@ -208,11 +237,27 @@ public class ParkingLotDto {
         private final int availableSpaceNum;
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 주차장 정보 수정을 위한 요청 DTO
+     * ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     * 2024.09.20 양건모 | 기존 이미지 삭제를 위해 deleteImageIds 컬럼 추가
+     */
     @RequiredArgsConstructor
+    @AllArgsConstructor
     @Getter
-    public static class MyParkingLotReview {
-        private final LocalDateTime createdAt;
-        private final String review;
+    @Setter
+    public static class ParkingLotModifyRequestDto {
+        private String name;
+        private String tel;
+        private LocalTime weekdaysOpenTime;
+        private LocalTime weekdaysCloseTime;
+        private LocalTime weekendOpenTime;
+        private LocalTime weekendCloseTime;
+        private List<Long> deleteImageIds;
+        private MultipartFile[] images;
     }
 
 }

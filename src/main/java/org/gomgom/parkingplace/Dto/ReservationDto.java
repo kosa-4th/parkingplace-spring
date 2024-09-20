@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
-import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * @Author 김경민
@@ -23,6 +19,52 @@ import java.util.List;
  *
  * */
 public class ReservationDto {
+    /**
+     * @Author 김경민
+     * @Date 2024.09.19
+     */
+    @Data
+    @AllArgsConstructor
+    public static class RequestOwnerReservationDto{
+        private Long parkingLotId;
+        private Bool reservationConfirmed;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+    }
+    /**
+     * @Author 김경민
+     * @date 2024.09.19
+     * 관리자 전용 예약 관리 Response
+     * */
+    @Getter
+    @ToString
+    public static class ResponseOwnerReservationDto{
+        private Long reservationId;
+        private String userName; //유저이름
+        private String userEmail;
+        private String plateCarNumber; //자동차번호
+        private String spaceName; //주차장좌석이름
+        private String reservationUid;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private Bool reservationConfirmed; //예약상태
+        private Bool wash;
+        private Bool maintenance;
+
+        public ResponseOwnerReservationDto(Long reservationId, String userName, String userEmail, String plateCarNumber, String spaceName, String reservationUid, LocalDateTime startTime, LocalDateTime endTime, Bool reservationConfirmed, Bool wash, Bool maintenance) {
+            this.reservationId = reservationId;
+            this.userName = userName;
+            this.userEmail = userEmail;
+            this.plateCarNumber = plateCarNumber;
+            this.spaceName = spaceName;
+            this.reservationUid = reservationUid;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.reservationConfirmed = reservationConfirmed;
+            this.wash = wash;
+            this.maintenance = maintenance;
+        }
+    }
 
     // 클라이언트가 예약 요청 시 사용하는 DTO
     @Data
