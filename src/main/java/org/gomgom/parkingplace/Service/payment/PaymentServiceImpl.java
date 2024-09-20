@@ -35,8 +35,13 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentCancelRepository paymentCancelRepository;
     private final ReservationServiceImpl reservationService;
 
+    /**
+     * @Date 2024.09.17
+     * 결제 취소
+     * */
     @Transactional
     public PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto) {
+        System.out.println("여기는 뜨니2");
         ResponseEntity<ResponsePaymentCancelDto> response = iamportService.cancelPayment(requestPaymentCancelDto.getMerchantUid(), requestPaymentCancelDto.getReason());
         int result = reservationService.cancelReservation(reservationId);
         System.out.println("결제 취소 : result" + result);

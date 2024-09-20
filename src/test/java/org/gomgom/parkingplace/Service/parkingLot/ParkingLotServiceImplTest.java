@@ -45,4 +45,7 @@ class ParkingLotServiceImplTest {
             System.out.println("이미지: " +image);
         }
     }
+
+
+
 }

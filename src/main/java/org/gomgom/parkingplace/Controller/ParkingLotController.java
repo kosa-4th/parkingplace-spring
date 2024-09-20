@@ -11,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/parkinglots")
@@ -64,7 +66,7 @@ public class ParkingLotController {
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.16
-     * 설명 : 나의 주차장 정보
+     * 설명 : 나의 주차장 목록
      * @return 주차장 id, 주차장명
      *  ---------------------
      * 2024.09.16 양건모 | 기능 구현
@@ -78,12 +80,43 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getMyParkingLots(userDetails.getUser().getId()));
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.18
+     * 설명 : 업주 자신의 주차장 세부 정보 조회
+     * @param parkingLotId 주차장 id
+     * @return 주차장 세부 정보
+     *  ---------------------
+     * 2024.09.18 양건모 | 기능 구현
+     * */
     @GetMapping("/{parkingLotId}/owner/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<ParkingLotDto.OwnerParkingLotDetailResponseDto> getOwnerParkingLotDetail (
             @PathVariable long parkingLotId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) throws BadRequestException {
+        return ResponseEntity.ok(parkingLotService.getOwnerParkingLotDetail(userDetails.getUser().getId(), parkingLotId));
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.19
+     * 설명 : 나의 주차장 수정
+     * @param parkingLotId 주차장 id
+     * @pararm request 수정될 값
+     * @return void
+     *  ---------------------
+     * 2024.09.19 양건모 | 기능 구현
+     * 2024.09.19 양건모 | 원활한 트랜잭션 처리 및 영속성 반영을 위해 수정과 반환 로직을 분리
+     * */
+    @PutMapping("/{parkingLotId}/owner/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
+    public ResponseEntity<ParkingLotDto.OwnerParkingLotDetailResponseDto> modifyOwnerParkingLotDetail (
+            @PathVariable long parkingLotId,
+            @ModelAttribute ParkingLotDto.ParkingLotModifyRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) throws IOException, BadRequestException {
+        parkingLotService.modifyOwnerParkingLotDetail(userDetails.getUser().getId(), parkingLotId, request);
         return ResponseEntity.ok(parkingLotService.getOwnerParkingLotDetail(userDetails.getUser().getId(), parkingLotId));
     }
 

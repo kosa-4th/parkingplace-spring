@@ -100,16 +100,16 @@ public class ParkingLot {
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_lot_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parkingLot")
+//    @JoinColumn(name = "parking_lot_id")
     private List<ParkingImage> parkingImages = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_space_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parkingLot")
+//    @JoinColumn(name = "parking_lot_id")
     private List<ParkingSpace> parkingSpaces = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parking_lot_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parkingLot")
+//    @JoinColumn(name = "parking_lot_id")
     private List<Review> reviews;
 
     @Builder
