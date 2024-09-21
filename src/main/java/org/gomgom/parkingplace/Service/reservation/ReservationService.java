@@ -7,6 +7,8 @@ import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+
 /**
  * ReservationService.java
  *
@@ -14,6 +16,13 @@ import org.springframework.data.domain.Pageable;
  * @date 2024-09-03
  */
 public interface ReservationService {
+    /**
+     * @Date 2024.09.20
+     * 입차 예정 / 출차 예정 / 출차 완료 서비스단
+     */
+    public Page<ResponseOwnerReservationStatusDto> getTodayUpcomingEntries(Long parkingLotId, LocalDateTime now, Pageable pageable);
+    public Page<ResponseOwnerReservationStatusDto> getTodayPendingExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
+    public Page<ResponseOwnerReservationStatusDto> getTodayCompletedExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
 
     /**
      * @Author 김경민
