@@ -95,6 +95,7 @@ public class ParkingLotDto {
     public static class ParkingLotDetailResponseDto {
         private String parkingLotName;
         private String parkingLotType;
+        private boolean isIfReservation;
 
         private String address;
         private String phone;
@@ -107,6 +108,7 @@ public class ParkingLotDto {
         public ParkingLotDetailResponseDto(ParkingLot parkingLot) {
             this.parkingLotName = parkingLot.getName();
             this.parkingLotType = parkingLot.getParkingType();
+            this.isIfReservation = Optional.ofNullable(parkingLot.getUser()).isPresent();
             this.address = parkingLot.getAddress();
             this.phone = parkingLot.getTel();
             this.weekdayTime = parkingLot.getWeekdaysOpenTime().format(DateTimeFormatter.ofPattern("HH:mm")) +

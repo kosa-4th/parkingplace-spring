@@ -3,9 +3,11 @@ package org.gomgom.parkingplace.Service.myPage;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Dto.ReservationDto;
+import org.gomgom.parkingplace.Entity.Inquiry;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.Repository.InquiryRepository;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Repository.ReviewRepository;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class MyPageServiceImpl implements MyPageService {
     private final ReviewRepository reviewRepository;
     private final ReservationRepository reservationRepository;
+    private final InquiryRepository inquiryRepository;
 
     /**
      * 작성자: 오지수
@@ -74,5 +77,20 @@ public class MyPageServiceImpl implements MyPageService {
                 reservation.getParkingLot().getAddress(),
                 reservation.getParkingLot().getTel()
                 );
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.20 : 마이페이지에서 내가 작성한 문의 목록
+     * @param user
+     * @param pageable
+     * @return
+     */
+    @Override
+    public MyPageDto.MyInquiryResponseDto getMyInquiries(User user, Pageable pageable) {
+        Page<Inquiry> inquiries = inquiryRepository.findByUser(user, pageable);
+
+        return new MyPageDto.MyInquiryResponseDto(inquiries.hasNext(),
+                inquiries.stream().map(MyPageDto.MyInquiry::new).toList());
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.gomgom.parkingplace.Entity.Inquiry;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.enums.Bool;
@@ -11,6 +12,7 @@ import org.gomgom.parkingplace.enums.Bool;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class MyPageDto {
 
@@ -132,5 +134,42 @@ public class MyPageDto {
         private String lotName;
         private String address;
         private String tel;
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.20 : 마이페이지에 내 문의 내역을 전달하기 위해 사용
+     */
+    @Getter
+    @AllArgsConstructor
+    public static class MyInquiryResponseDto {
+        private boolean nextPage; // 더보기 출력을 위한 다음 페이지 여부
+        List<MyInquiry> inquiries; //전달할 문의 목록
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.20 : 마이페이지에 전달할 내 문의 정보
+     */
+    @Getter
+    public static class MyInquiry {
+        private Long inquiryId;
+        private Long parkinglotId;
+        private String parkingLotName;
+        private String inquiryDate;
+        private String inquiry;
+        private Boolean isIfAnswer;
+//        private String answer;
+
+        public MyInquiry(Inquiry inquiry) {
+            this.inquiryId = inquiry.getId();
+            this.parkinglotId = inquiry.getParkingLot().getId();
+            this.parkingLotName = inquiry.getParkingLot().getName();
+            this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
+            this.inquiry = inquiry.getInquiry();
+//            this.answerDate = Optional.ofNullable(inquiry.getAnswer()).orElse("");
+//            this.answer = Optional.ofNullable(inquiry.getAnswer()).orElse("");
+            this.isIfAnswer = Optional.ofNullable(inquiry.getAnswerCreatedAt()).isPresent();
+        }
     }
 }

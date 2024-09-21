@@ -1,6 +1,8 @@
 package org.gomgom.parkingplace.Controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
@@ -8,6 +10,7 @@ import org.gomgom.parkingplace.Service.myPage.MyPageService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
+@Log4j2
 public class MyPageController {
     private final MyPageService myPageService;
     private final ReservationRepository reservationRepository;
@@ -29,6 +33,7 @@ public class MyPageController {
      * ---------------------------------
      */
     @GetMapping("/reviews/protected")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MyPageDto.ResponseReviewsDto> getMyReviews(Pageable pageable,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(myPageService.getMyReviews(userDetails.getUser(),pageable));
@@ -45,12 +50,14 @@ public class MyPageController {
      * ---------------------------------
      */
     @GetMapping("/reservations/protected")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MyPageDto.MyReservationResponseDto> getMyReservations(Pageable pageable,
                                                                                 MyPageDto.MyReservationRequestDto requestDto,
                                                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println(userDetails.getUsername());
-        System.out.println(requestDto.getStartDate());
-        System.out.println(requestDto.getEndDate());
+//        System.out.println(userDetails.getUsername());
+//        System.out.println(requestDto.getStartDate());
+//        System.out.println(requestDto.getEndDate());
+        log.info("Controller: 마이페이지 / 예약 목록 가져오기");
         return ResponseEntity.ok(myPageService.getMyReservations(userDetails.getUser(), requestDto, pageable));
     }
 
@@ -73,5 +80,22 @@ public class MyPageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.20 : 내 문의 목록
+     * @param pageable / page, size
+     * @param userDetails / 사용자 정보
+     *
+     * @return 다음 페이지 여부와 예약 정보 / MyPageDto.MyInquiryResponseDto
+     * ---------------------------------
+     */
+    @GetMapping("/inquiries/protected")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<MyPageDto.MyInquiryResponseDto> getMyInquiries(Pageable pageable,
+                                                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
+        log.info("Controller: 마이페이지 / 문의 목록 가져오기");
+        return ResponseEntity.ok(myPageService.getMyInquiries(userDetails.getUser(), pageable));
     }
 }

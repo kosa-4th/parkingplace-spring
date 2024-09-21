@@ -20,4 +20,7 @@ public interface MyPageService {
      * */
     MyPageDto.ResponseReservationDetailsDto getMyReservationDetails(Long reservationId, Long userId);
 
+    // 내 문의 목록 가져오기
+    MyPageDto.MyInquiryResponseDto getMyInquiries(User user, Pageable pageable);
+
 }
