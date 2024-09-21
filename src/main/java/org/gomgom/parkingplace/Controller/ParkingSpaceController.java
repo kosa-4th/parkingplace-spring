@@ -27,7 +27,7 @@ public class ParkingSpaceController {
      *  ---------------------
      * 2024.09.20 양건모 | 기능 구현
      * */
-    @PostMapping("/api/parking-manager/info/parkingarea")
+    @PostMapping("/api/parking-manager/info/parkingarea/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<?> insertParkingSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -53,6 +53,23 @@ public class ParkingSpaceController {
             @ModelAttribute ParkingSpaceDto.ModifyParkingSpaceRequestDto request
     ) throws BadRequestException {
         parkingSpaceService.modifyParkingSpace(userDetails.getUser().getId(), request);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.22
+     * 설명 : 주차 구역 삭제
+     *  ---------------------
+     * 2024.09.22 양건모 | 기능 구현
+     * */
+    @DeleteMapping("/api/parking-manager/info/parkingarea/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
+    public ResponseEntity<?> deleteParkingSpace(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestHeader("parkingSpaceId") long parkingSpaceId
+    ) throws BadRequestException {
+        parkingSpaceService.deleteParkingSpace(userDetails.getUser().getId(), parkingSpaceId);
         return ResponseEntity.ok().build();
     }
 }

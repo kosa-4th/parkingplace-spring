@@ -72,4 +72,23 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
         }
         parkingSpace.setAllValues(request, carType);
     }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.21
+     * 설명 : 주차 구역 삭제
+     *  ---------------------
+     * 2024.09.21 양건모 | 기능 구현
+     * */
+    @Override
+    @Transactional
+    public void deleteParkingSpace(long userId, long parkingSpaceId) throws BadRequestException {
+        ParkingSpace parkingSpace = parkingSpaceRepository.findById(parkingSpaceId).orElseThrow();
+
+        if (!parkingSpace.getParkingLot().getUser().getId().equals(userId)) {
+            throw new BadRequestException();
+        }
+        parkingSpace.setUsable(false);
+        System.out.println(parkingSpace.isUsable() + "===================");
+    }
 }
