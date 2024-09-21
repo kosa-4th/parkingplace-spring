@@ -20,6 +20,40 @@ import java.time.LocalDateTime;
  * */
 public class ReservationDto {
     /**
+     * @AUTHOR 김경민
+     * @DATE 2024.09.20
+     *
+     * 입출차 관련 DTO
+     */
+    @Data
+    @ToString
+    public static class ResponseOwnerReservationStatusDto{
+        private Long reservationId;
+        private String userName; // 유저 이름
+        private String userEmail;
+        private String plateCarNumber; // 자동차 번호
+        private String spaceName; // 주차장 좌석 이름
+        private String reservationUid;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private Bool wash;
+        private Bool maintenance;
+
+        public ResponseOwnerReservationStatusDto(Long reservationId, String userName, String userEmail, String plateCarNumber, String spaceName, String reservationUid, LocalDateTime startTime, LocalDateTime endTime, Bool wash, Bool maintenance) {
+            this.reservationId = reservationId;
+            this.userName = userName;
+            this.userEmail = userEmail;
+            this.plateCarNumber = plateCarNumber;
+            this.spaceName = spaceName;
+            this.reservationUid = reservationUid;
+            this.startTime = startTime;
+            this.endTime = endTime;
+            this.wash = wash;
+            this.maintenance = maintenance;
+        }
+    }
+
+    /**
      * @Author 김경민
      * @Date 2024.09.19
      */

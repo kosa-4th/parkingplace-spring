@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.PaymentCancelDto;
 import org.gomgom.parkingplace.Dto.ReservationDto;
+import org.gomgom.parkingplace.Entity.Reservation;
+import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Service.payment.PaymentService;
 import org.gomgom.parkingplace.Service.reservation.ReservationService;
 import org.gomgom.parkingplace.enums.Bool;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 
@@ -25,11 +29,56 @@ public class OwnerPageController {
 
     private final ReservationService reservationService;
     private final PaymentService paymentService;
+    private final ParkingLotRepository parkingLotRepository;
+    /**
+     * @Date 2024.09.20
+     * 주차장 이름 조회
+     * */
+    @GetMapping("/parkingLotName")
+    public ResponseEntity<?> getLotName(@RequestParam Long parkingLotId) {
+        try {
+            String parkingLotName = parkingLotRepository.findByParkingLotName(parkingLotId);
+            if (parkingLotName != null) {
+                return ResponseEntity.ok().body(Collections.singletonMap("parkingLotName", parkingLotName));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("주차장을 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
+        }
+    }    /**
+     * 관리자 오늘의 예약 현황
+     * @DATE 2024.09.20
+     * */
+    @GetMapping("/reservations/today")
+    public ResponseEntity<?> getTodayReservations(@RequestParam Long parkingLotId, @RequestParam String status,@RequestParam int page,@RequestParam int size){
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDateTime now = LocalDateTime.now();
 
+        Page<ReservationDto.ResponseOwnerReservationStatusDto> result;
+        switch (status.toUpperCase()) {
+            case "ENTRY":
+                result = reservationService.getTodayUpcomingEntries(parkingLotId, now, pageable);
+                break;
+            case "EXIT":
+                result = reservationService.getTodayPendingExits(parkingLotId, now, pageable);
+                break;
+            case "COMPLETED":
+                result = reservationService.getTodayCompletedExits(parkingLotId, now, pageable);
+                break;
+            default:
+                return ResponseEntity.badRequest().body("Invalid status value.");
+        }
+
+        return ResponseEntity.ok(result);
+    }
+    /**
+     * @Date 2024.09.20
+     * 관리자 예약 취소 및 결제 취소 관련
+     * */
     @PostMapping("/reservation/cancel/{reservationId}/protected")
     public ResponseEntity<?> paymentCancel(@PathVariable Long reservationId, @RequestBody PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            System.out.println("여기는 뜨니?");
             String result = String.valueOf(paymentService.cancelPayment(reservationId, requestPaymentCancelDto));
             System.out.println("result"+result);
             return ResponseEntity.ok(result);
