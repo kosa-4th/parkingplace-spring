@@ -12,6 +12,7 @@ import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
 import org.gomgom.parkingplace.Repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -43,7 +44,7 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
                 request.getSpaceName(),
                 carType,
                 request.getAvailableSpaceNum(),
-                request.getWeekDaysPrice(),
+                request.getWeekdaysPrice(),
                 request.getWeekAllDayPrice(),
                 request.getWeekendPrice(),
                 request.getWeekendAllDayPrice(),
@@ -51,5 +52,24 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
                 request.getMaintenancePrice()
         );
         parkingSpaceRepository.save(parkingSpace);
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.21
+     * 설명 : 주차 구역 수정
+     *  ---------------------
+     * 2024.09.21 양건모 | 기능 구현
+     * */
+    @Override
+    @Transactional
+    public void modifyParkingSpace(long userId, ParkingSpaceDto.ModifyParkingSpaceRequestDto request) throws BadRequestException {
+        ParkingSpace parkingSpace = parkingSpaceRepository.findById(request.getParkingSpaceId()).orElseThrow();
+        CarType carType = carTypeRepository.findById(request.getCarTypeId()).orElseThrow();
+
+        if (!parkingSpace.getParkingLot().getUser().getId().equals(userId)) {
+            throw new BadRequestException();
+        }
+        parkingSpace.setAllValues(request, carType);
     }
 }

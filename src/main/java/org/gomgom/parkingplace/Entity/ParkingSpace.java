@@ -3,6 +3,7 @@ package org.gomgom.parkingplace.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.gomgom.parkingplace.Dto.ParkingSpaceDto;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
@@ -81,5 +82,17 @@ public class ParkingSpace extends Base {
 
     public void setPlusAvailableSpaceNum(int availableSpaceNum) {
         this.availableSpaceNum += availableSpaceNum;
+    }
+
+    public void setAllValues(ParkingSpaceDto.InputParkingSpaceValuesDto dto, CarType carType) {
+        this.spaceName = dto.getSpaceName();
+        this.carType = carType;
+        this.availableSpaceNum = dto.getAvailableSpaceNum();
+        this.weekdaysPrice = dto.getWeekdaysPrice();
+        this.weekAllDayPrice = dto.getWeekAllDayPrice();
+        this.weekendPrice = dto.getWeekendPrice();
+        this.weekendAllDayPrice = dto.getWeekendAllDayPrice();
+        this.washPrice = dto.isWashService() ? dto.getWashPrice() : 0;
+        this.maintenancePrice = dto.isMaintenanceService() ? dto.getMaintenancePrice() : 0;
     }
 }
