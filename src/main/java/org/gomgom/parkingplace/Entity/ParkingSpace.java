@@ -63,16 +63,20 @@ public class ParkingSpace extends Base {
     private CarType carType;
 
     @Builder
-    public ParkingSpace(ParkingLot parkingLot, CarType carType, int availableSpaceNum,
+    public ParkingSpace(ParkingLot parkingLot, String spaceName, CarType carType, int availableSpaceNum,
                         int weekdaysPrice, int weekAllDayPrice,
-                        int weekendPrice, int weekendAllDayPrice) {
+                        int weekendPrice, int weekendAllDayPrice,
+                        int washPrice, int maintenancePrice) {
         this.parkingLot = parkingLot;
+        this.spaceName = spaceName;
         this.carType = carType;
         this.availableSpaceNum = availableSpaceNum;
         this.weekdaysPrice = weekdaysPrice;
         this.weekAllDayPrice = weekAllDayPrice;
         this.weekendPrice = weekendPrice;
         this.weekendAllDayPrice = weekendAllDayPrice;
+        this.washPrice = washPrice;
+        this.maintenancePrice = maintenancePrice;
     }
 
     public void setPlusAvailableSpaceNum(int availableSpaceNum) {

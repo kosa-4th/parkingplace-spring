@@ -2,6 +2,9 @@ package org.gomgom.parkingplace.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.gomgom.parkingplace.Entity.CarType;
+import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 
@@ -32,5 +35,27 @@ public class ParkingSpaceDto {
             this.weekAllDayPrice = weekAllDayPrice;
             this.weekendAllDayPrice = weekendAllDayPrice;
         }
+    }
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.20
+     * 설명 : 주차 구역 추가를 위한 요청 DTO
+     *  ---------------------
+     * 2024.09.20 양건모 | 기능 구현
+     * */
+    @RequiredArgsConstructor
+    @Getter
+    public static class InsertParkingSpaceRequestDto {
+        private final long parkingLotId;
+        private final String spaceName;
+        private final int availableSpaceNum;
+        private final long carTypeId;
+        private final int weekDaysPrice;
+        private final int weekAllDayPrice;
+        private final int weekendPrice;
+        private final int weekendAllDayPrice;
+        private final Integer washPrice;
+        private final Integer maintenancePrice;
     }
 }
