@@ -13,4 +13,6 @@ public interface ReviewService {
     void deleteReview(Long userId, Long parkinglotId, Long reviewId);
 
     void modifyReview(Long userId, Long parkinglotId, Long reviewId, String review);
+
+    ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable);
 }

@@ -1,10 +1,15 @@
 package org.gomgom.parkingplace.Dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.gomgom.parkingplace.Entity.Inquiry;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class InquiryDto {
 
@@ -53,5 +58,59 @@ public class InquiryDto {
     @Getter
     public static class RequestInquiriesDto {
         private String inquiry; // 문의
+    }
+
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.21: 주차장 관리자 페이지 / 문의 목록 요청
+     */
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class ParkingInquiryRequestDto {
+        private Long parkinglotId;
+        private String actionType;
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDateTime from;
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDateTime to;
+
+        public LocalDateTime getFrom() {
+            return from != null ? from : LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+
+        public LocalDateTime getTo() {
+            return to != null ? to : LocalDateTime.now().plusDays(30);
+        }
+
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.21: 주차장 관리자 페이지 / 문의 반환
+     */
+    @AllArgsConstructor
+    @Getter
+    public static class ParkingInquiryResponseDto {
+        private boolean nextPage;
+        private int pageNum;
+        List<ParkingInquiryDto> inquiries;
+    }
+
+    public static class ParkingInquiryDto {
+        public Long inquiryId;
+        public String inquiry;
+        public String inquirer;
+        public String inquiryDate;
+        public boolean isIfAnswer;
+
+        public ParkingInquiryDto(Inquiry inquiry) {
+            this.inquiryId = inquiry.getId();
+            this.inquiry = inquiry.getInquiry();
+            this.inquirer = inquiry.getUser().getName();
+            this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
+            this.isIfAnswer = Optional.ofNullable(inquiry.getAnswerCreatedAt()).isPresent();
+        }
     }
 }

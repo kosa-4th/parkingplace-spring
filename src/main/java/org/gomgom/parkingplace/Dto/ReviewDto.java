@@ -1,9 +1,13 @@
 package org.gomgom.parkingplace.Dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.gomgom.parkingplace.Entity.Review;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReviewDto {
@@ -49,6 +53,52 @@ public class ReviewDto {
             this.reviewDate = review.getCreatedAt().toLocalDate();
             this.reviewer = review.getUser().getName();
             this.email = review.getUser().getEmail();
+        }
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.21: 주차장 관리 페이지에서 리뷰 목록을 가져옴
+     */
+    @Getter
+    @AllArgsConstructor
+    public static class ParkingReviewsRequestDto {
+        private Long parkinglotId;
+//        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDateTime from;
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDateTime to;
+
+        public LocalDateTime getFrom() {
+            return from != null ? from : LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+
+        public LocalDateTime getTo() {
+            return to != null ? to : LocalDateTime.now().plusDays(30);
+        }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ParkingReviewsResponseDto {
+        private boolean nextPage;
+        private int pageNum;
+        List<ParkingReviewsDto> parkingReviews;
+    }
+
+    @Getter
+    public static class ParkingReviewsDto {
+        public Long reviewId;
+        public String reviewer;
+        public String review;
+        public String reviewDate;
+
+        public ParkingReviewsDto(Review review) {
+            this.reviewId = review.getId();
+            this.reviewer = review.getUser().getName();
+            this.review = review.getReview();
+            this.reviewDate = review.getCreatedAt().toLocalDate().toString();
         }
     }
 }

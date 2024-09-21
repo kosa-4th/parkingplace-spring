@@ -19,4 +19,7 @@ public interface InquiryService {
 
     //답변 수정하기
     void modifyAnswer(User user, Long parkinglotId, String answer);
+
+    //관리자페이지 문의 목록 가져오기
+    InquiryDto.ParkingInquiryResponseDto getInquiriesByParking(User user, InquiryDto.ParkingInquiryRequestDto dto, Pageable pageable);
 }

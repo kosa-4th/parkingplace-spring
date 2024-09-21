@@ -7,6 +7,7 @@ import org.gomgom.parkingplace.Dto.ReviewDto;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ReviewRepository;
 import org.springframework.data.domain.Page;
@@ -111,5 +112,20 @@ public class ReviewServiceImpl implements ReviewService{
         // 로그 추가
         log.info("리뷰 {} 수정 by 사용자 {}: {}", reviewId, userId, newReview);
         review.setReview(newReview);
+    }
+
+    @Override
+    public ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable) {
+        ParkingLot parkingLot = parkingLotRepository.findById(dto.getParkinglotId())
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
+
+        if (!parkingLot.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
+
+        Page<Review> reviewPage = reviewRepository.findReviewsByParkingLotAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(parkingLot, dto.getFrom(), dto.getTo().plusDays(1), pageable);
+
+        return new ReviewDto.ParkingReviewsResponseDto(reviewPage.hasNext(), reviewPage.getTotalPages(),
+                reviewPage.stream().map(ReviewDto.ParkingReviewsDto::new).toList());
     }
 }

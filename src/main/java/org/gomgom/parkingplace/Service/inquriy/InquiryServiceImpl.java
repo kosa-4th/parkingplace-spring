@@ -73,4 +73,37 @@ public class InquiryServiceImpl implements InquiryService{
     public void modifyAnswer(User user, Long parkinglotId, String answer) {
 
     }
+
+    /**
+     * 작성자: 오지수
+     * 2024.09.21: 주차장 관리자 페이지 문의 목록 불러오기
+     * @param user
+     * @param dto
+     * @param pageable
+     * @return
+     */
+    @Override
+    public InquiryDto.ParkingInquiryResponseDto getInquiriesByParking(User user, InquiryDto.ParkingInquiryRequestDto dto, Pageable pageable) {
+        ParkingLot parkingLot = parkingLotRepository.findById(dto.getParkinglotId())
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
+        if (!parkingLot.getUser().getId().equals(user.getId())) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        Page<Inquiry> inquiries = null;
+        String actionType = dto.getActionType();
+        if (actionType.equals("All")) {
+            inquiries = inquiryRepository.findByParkingLotAndInquiryCreatedAtGreaterThanEqualAndInquiryCreatedAtLessThan(parkingLot, dto.getFrom(), dto.getTo().plusDays(1), pageable);
+        } else if (actionType.equals("Answered")) {
+            inquiries = inquiryRepository.findByParkingLotAndAnswerCreatedAtIsNotNullAndInquiryCreatedAtGreaterThanEqualAndInquiryCreatedAtLessThan(parkingLot, dto.getFrom(), dto.getTo().plusDays(1), pageable);
+        } else if (actionType.equals("UnAnswered")) {
+            inquiries = inquiryRepository.findByParkingLotAndAnswerCreatedAtIsNullAndInquiryCreatedAtGreaterThanEqualAndInquiryCreatedAtLessThan(parkingLot, dto.getFrom(), dto.getTo().plusDays(1), pageable);
+        } else {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        return new InquiryDto.ParkingInquiryResponseDto(inquiries.hasNext(), inquiries.getTotalPages(),
+                inquiries.stream().map(InquiryDto.ParkingInquiryDto::new).toList());
+    }
+
 }
