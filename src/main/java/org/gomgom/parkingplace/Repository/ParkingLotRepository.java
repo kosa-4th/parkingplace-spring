@@ -65,7 +65,6 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
      * 2024.09.07 양건모 | 가장 최신 리뷰를 전달하기 위해 서브쿼리 추가
      * 2024.09.09 양건모 | 본 서비스를 통해 예약 가능한 주차장인지 여부를 판단하기 위한 hasUser 컬럼 추가
      * */
-
     @Query("SELECT new org.gomgom.parkingplace.Dto.ParkingLotDto$ParkingLotPreviewResponseDto(" +
             "p.name, p.address, COALESCE(COUNT(r), 0), " +
             "(SELECT r2.review " +
@@ -79,7 +78,6 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
             "LEFT JOIN p.reviews r " +
             "WHERE p.id = :parkingLotId " +
             "GROUP BY p.id ")
-
     Optional<ParkingLotDto.ParkingLotPreviewResponseDto> getParkingLotPreviewById(Long parkingLotId);
 
 
@@ -109,6 +107,16 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
             "WHERE usr.id = :userId")
     List<ParkingLotDto.ParkingLotIdAndNameDto> findIdAndNameByUserId(Long userId);
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.20
+     * 설명 : userId, parkingLotId가 일치하는 주차장 Entity 조회
+     * @param userId 사용자 id
+     * @param parkingLotId 주치장 id
+     * @return 주차장 상세 정보
+     *  ---------------------
+     * 2024.09.20 양건모 | 기능 구현
+     * */
     @Query("SELECT DiSTINCT pl FROM ParkingLot pl " +
             "LEFT JOIN pl.parkingImages pi " +
             "LEFT JOIN FETCH pl.parkingSpaces ps " +
