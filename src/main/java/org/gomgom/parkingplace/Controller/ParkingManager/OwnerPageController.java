@@ -30,11 +30,16 @@ public class OwnerPageController {
     private final ReservationService reservationService;
     private final PaymentService paymentService;
     private final ParkingLotRepository parkingLotRepository;
+
+    /**
+     * @Date 2024.09.23
+     * 주차장 추가
+     */
+
     /**
      * @Date 2024.09.20
      * 주차장 이름 조회
      * */
-
     @GetMapping("/parkingLotName")
     public ResponseEntity<?> getLotName(@RequestParam Long parkingLotId) {
         try {

@@ -2,10 +2,21 @@ package org.gomgom.parkingplace.Service.parkingLot;
 
 import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 
 public interface ParkingLotService {
+
+    /**
+     * @Author 김경민
+     * @Date 2024.0923
+     *
+     * ParkingLot Data Paging 및 검색어 처리
+     * */
+    Page<ParkingLotDto.ResponseParkingLotDto> getParkingLotData(String name, String address, Pageable pageable);
+
 
     /**
      * 작성자: 양건모

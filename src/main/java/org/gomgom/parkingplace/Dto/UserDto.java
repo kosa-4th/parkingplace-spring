@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import org.gomgom.parkingplace.Entity.CarType;
-import org.gomgom.parkingplace.Entity.ParkingLot;
-import org.gomgom.parkingplace.Entity.PlateNumber;
+import lombok.NoArgsConstructor;
 import org.gomgom.parkingplace.enums.Role;
 
 import java.util.List;
@@ -68,6 +66,7 @@ public class UserDto {
      * */
 
     @Getter
+    @NoArgsConstructor
     public static class ResponseAllUserDto {
         private Long userId;
         private Role auth;

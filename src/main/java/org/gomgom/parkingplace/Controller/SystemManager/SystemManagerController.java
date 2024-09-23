@@ -2,7 +2,9 @@ package org.gomgom.parkingplace.Controller.SystemManager;
 
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
+import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Dto.UserDto.ResponseAllUserDto;
+import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
 import org.gomgom.parkingplace.Service.user.UserService;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.data.domain.Page;
@@ -28,14 +30,45 @@ import java.util.List;
 @RequestMapping("/api/System-Manager")
 public class SystemManagerController {
     private final UserService userService;
+    private final ParkingLotService parkingLotService;
+
+    /***
+     * @Author 김경민
+     * @Date 2024.09.23
+     *
+     * 주차장 정보 조회
+     */
+    @GetMapping("/parkingLotData/protected")
+    public ResponseEntity<Page<ParkingLotDto.ResponseParkingLotDto>> getParkingLotData(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        String auth = String.valueOf(customUserDetails.getUser().getAuth());
+
+        if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ParkingLotDto.ResponseParkingLotDto> parkingLotDataPage = parkingLotService.getParkingLotData(name, address, pageable);
+
+        if (parkingLotDataPage.isEmpty()) {
+            return ResponseEntity.ok(parkingLotDataPage);
+        }
+
+        return ResponseEntity.ok(parkingLotDataPage);
+    }
 
     /**
      * @Author 김경민
      * @Date 2024.09.23
      * Modal 요청시 상세 데이터 가져오기
-     * */
+     */
     @GetMapping("/userDetailData/protected")
-    public ResponseEntity<?> getUserDetailData(@RequestParam Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<?> getUserDetailData(@RequestParam Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         String auth = String.valueOf(customUserDetails.getUser().getAuth());
 
         if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
@@ -43,17 +76,18 @@ public class SystemManagerController {
         }
         List<?> userDetailData = userService.getUserDetailData(userId);
 
-        if(userDetailData == null){
+        if (userDetailData == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("사용자 정보를 찾을 수 없습니다.");
 
         }
         return ResponseEntity.ok(userDetailData);
     }
+
     /**
      * @Author 김경민
      * @Date 2024.09.22
      * 유저 데이터 가져오기
-     * */
+     */
     @GetMapping("/userData/protected")
     public ResponseEntity<?> getUserData(
             @RequestParam String requestAuth,
