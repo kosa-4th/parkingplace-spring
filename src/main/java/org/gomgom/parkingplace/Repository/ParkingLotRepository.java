@@ -24,7 +24,11 @@ import java.util.List;
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
 
-//    Optional<ParkingLot> findByParkingCenterId(String parkingCenterId);
+    /**
+     * @Date 2024.09.23
+     * Data가져오기
+     * */
+    List<ParkingLot> findByUserId(Long userId);
 
     List<ParkingLot> findByUsable (Bool usable);
 

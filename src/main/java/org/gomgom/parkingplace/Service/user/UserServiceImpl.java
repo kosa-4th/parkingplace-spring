@@ -1,39 +1,112 @@
 package org.gomgom.parkingplace.Service.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
-import org.gomgom.parkingplace.Entity.CarType;
-import org.gomgom.parkingplace.Entity.PlateNumber;
-import org.gomgom.parkingplace.Entity.RefreshToken;
-import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.Dto.UserDto.ResponseAllUserDto;
+import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
-import org.gomgom.parkingplace.Repository.CarTypeRepository;
-import org.gomgom.parkingplace.Repository.PlateNumberRepository;
-import org.gomgom.parkingplace.Repository.RefreshTokenRepository;
-import org.gomgom.parkingplace.Repository.UserRepository;
+import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.Service.jwt.JwtService;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.gomgom.parkingplace.enums.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder encoder;
     private final PlateNumberRepository plateNumberRepository;
     private final CarTypeRepository carTypeRepository;
+    private final ParkingLotRepository parkingLotRepository;
+
+    @Override
+    @Transactional
+    public List<?> getUserDetailData(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return null; // 사용자 없음
+        }
+
+        if (user.getAuth().equals(Role.ROLE_USER)) {
+            // 일반 사용자일 경우 PlateNumber와 CarType 데이터를 가져옴
+            List<UserDto.PlateInfoDto> plateInfoList = plateNumberRepository.findByUserId(userId).stream()
+                    .map(plateNumber -> new UserDto.PlateInfoDto(
+                            plateNumber.getPlateNumber(),
+                            plateNumber.getCarType().getCarTypeEnum().name()
+                    ))
+                    .collect(Collectors.toList());
+
+            // ResponseUserDto로 반환
+            return List.of(new UserDto.ResponseUserDto(
+                    user.getId(),
+                    user.getAuth(),
+                    user.getEmail(),
+                    user.getName(),
+                    plateInfoList
+            ));
+
+        } else if (user.getAuth().equals(Role.ROLE_PARKING_MANAGER)) {
+            // ParkingLot 리스트를 ParkingLotDto 리스트로 변환
+            List<UserDto.ParkingLotDto> parkingLotDtos = parkingLotRepository.findByUserId(userId).stream()
+                    .map(parkingLot -> new UserDto.ParkingLotDto(
+                            parkingLot.getId(),
+                            parkingLot.getName(),
+                            parkingLot.getAddress()
+                    ))
+                    .collect(Collectors.toList());
+            // ResponseParkingManagerDto로 반환
+            return List.of(new UserDto.ResponseParkingManagerDto(
+                    user.getId(),
+                    user.getAuth(),
+                    user.getEmail(),
+                    user.getName(),
+                    parkingLotDtos
+            ));
+        }
+
+        return Collections.emptyList(); // 해당하는 경우가 없을 때
+    }
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.22
+     * getAllUsers
+     * 기본 정보 가져오기
+     */
+    @Override
+    @Transactional
+    public Page<ResponseAllUserDto> getAllUsers(Role requestAuth, Pageable pageable) {
+        Page<User> usersPage = userRepository.findAllByAuth(requestAuth, pageable);
+
+        return usersPage.map(user -> new ResponseAllUserDto(
+                user.getId(),
+                user.getAuth(),
+                user.getEmail(),
+                user.getName()
+        ));
+    }
+
 
     /*
-    작성자: 오지수
-    회원가입
-     */
+        작성자: 오지수
+        회원가입
+         */
     @Override
     @Transactional
     public void join(UserDto.requsetUserDto userDto) {
@@ -54,10 +127,10 @@ public class UserServiceImpl implements UserService{
             throw new CustomExceptions.ValidationException("잘못된 차량 정보입니다.");
         }
         PlateNumber plateNumber = PlateNumber.builder()
-                                    .user(user)
-                                    .carType(carType)
-                                    .plateNumber(userDto.getCarNum())
-                                    .build();
+                .user(user)
+                .carType(carType)
+                .plateNumber(userDto.getCarNum())
+                .build();
         plateNumberRepository.save(plateNumber);
     }
 
@@ -113,7 +186,7 @@ public class UserServiceImpl implements UserService{
 
         // 비밀번호 일치 여부 확인
         boolean result = encoder.matches(user.getPassword(), signInUser.getPassword());
-        if(!result) {
+        if (!result) {
             throw new CustomExceptions.ValidationException("등록된 회원 정보와 일치하지 않습니다.");
         }
 

@@ -6,8 +6,83 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import org.gomgom.parkingplace.Entity.CarType;
+import org.gomgom.parkingplace.Entity.ParkingLot;
+import org.gomgom.parkingplace.Entity.PlateNumber;
+import org.gomgom.parkingplace.enums.Role;
+
+import java.util.List;
+
 
 public class UserDto {
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.23
+     * 상속 받아서 주차쟁 관리자, 일반 회원 상세정보
+     * */
+
+    @Getter
+    public static class ResponseUserDto extends ResponseAllUserDto {
+        private List<PlateInfoDto> plateInfoList;  // 차량 번호와 차종 정보를 포함하는 리스트
+
+        // 일반 사용자(User)용 생성자
+        public ResponseUserDto(Long userId, Role auth, String email, String userName, List<PlateInfoDto> plateInfoList) {
+            super(userId, auth, email, userName);
+            this.plateInfoList = plateInfoList;
+        }
+    }
+
+    // PlateNumber와 CarType 정보를 담는 DTO
+    @Getter
+    @AllArgsConstructor
+    public static class PlateInfoDto {
+        private String plateNumber;  // 차량 번호
+        private String carTypeEnum;  // 차량 종류
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class ParkingLotDto{
+        private Long parkingLotId;
+        private String name;
+        private String address;
+    }
+
+    @Getter
+    public static class ResponseParkingManagerDto extends ResponseAllUserDto {
+        private List<ParkingLotDto> parkingLots;  // 주차장 리스트로 변경
+
+        // 주차장 관리자(Parking Manager)용 생성자
+        public ResponseParkingManagerDto(Long userId, Role auth, String email, String userName, List<ParkingLotDto> parkingLots) {
+            super(userId, auth, email, userName);
+            this.parkingLots = parkingLots;
+        }
+    }
+
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.22
+     * 일반 회원 정보 가져오기
+     * */
+
+    @Getter
+    public static class ResponseAllUserDto {
+        private Long userId;
+        private Role auth;
+        private String email;
+        private String userName;
+
+        public ResponseAllUserDto(Long userId, Role auth, String email, String userName) {
+            this.userId = userId;
+            this.auth = auth;
+            this.email = email;
+            this.userName = userName;
+        }
+    }
+
+
 
     /*
     작성자: 오지수

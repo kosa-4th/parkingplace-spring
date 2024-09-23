@@ -12,6 +12,11 @@ import java.util.List;
 
 @Repository
 public interface PlateNumberRepository extends JpaRepository<PlateNumber, Long> {
+    /**
+     * @Date 2024.09.23
+     *
+     * */
+    List<PlateNumber> findByUserId(Long userId);
 
     // plate_number_id로 PlateNumber 엔티티 조회 후 CarType 반환
     @Query("SELECT p.carType FROM PlateNumber p WHERE p.plateNumber = :plateNumber")
