@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -229,6 +230,21 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         }
 
         return folderPath;
+    }
+
+    @Override
+    public ParkingLotDto.RecommendedParkingLotsResponseDto getRecommendedPakringLots(ParkingLotDto.RecommendedParkingLotsRequestDto request) {
+        System.out.println(request);
+        List<Object[]> objs = parkingLotRepository.getRecommendedParkingLots(request.getLongitude(), request.getLatitude(), request.getMaxDistance(), request.getStartDateTime(), request.getEndDateTime(), request.getCarTypeId());
+        System.out.println(objs.size() + "=================================");
+
+        List<ParkingLotDto.RecommendedParkingLotDto> recommendedParkingLots = new ArrayList<>();
+        for (Object[] obj: objs) {
+            ParkingLotDto.RecommendedParkingLotDto parkingLot = new ParkingLotDto.RecommendedParkingLotDto((Long) obj[0], (String) obj[1], (String) obj[2], (Long) obj[3], ((BigDecimal) obj[4]).longValue(), (Double)obj[5]);
+            recommendedParkingLots.add(parkingLot);
+        }
+
+        return new ParkingLotDto.RecommendedParkingLotsResponseDto(recommendedParkingLots);
     }
 
 }

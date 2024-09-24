@@ -5,6 +5,7 @@ import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Service.parkingLot.ParkingLotService;
+import org.gomgom.parkingplace.Service.parkingSpace.ParkingSpaceService;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -120,4 +121,21 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getOwnerParkingLotDetail(userDetails.getUser().getId(), parkingLotId));
     }
 
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.19
+     * 설명 : 나의 주차장 수정
+     * @param parkingLotId 주차장 id
+     * @pararm request 수정될 값
+     * @return void
+     *  ---------------------
+     * 2024.09.19 양건모 | 기능 구현
+     * 2024.09.19 양건모 | 원활한 트랜잭션 처리 및 영속성 반영을 위해 수정과 반환 로직을 분리
+     * */
+    @GetMapping("/recommend")
+    public ResponseEntity<ParkingLotDto.RecommendedParkingLotsResponseDto> getRecommendedParkingLots(
+            @RequestBody ParkingLotDto.RecommendedParkingLotsRequestDto request
+    ) {
+        return ResponseEntity.ok(parkingLotService.getRecommendedPakringLots(request));
+    }
 }

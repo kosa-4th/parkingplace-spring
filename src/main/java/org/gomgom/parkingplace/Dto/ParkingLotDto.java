@@ -1,9 +1,6 @@
 package org.gomgom.parkingplace.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.gomgom.parkingplace.Entity.ParkingImage;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
@@ -258,6 +255,36 @@ public class ParkingLotDto {
         private LocalTime weekendCloseTime;
         private List<Long> deleteImageIds;
         private MultipartFile[] images;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotDto {
+        private final Long parkingLotId;
+        private final String parkingLotName;
+        private final String address;
+        private final Long parkingSpaceId;
+        private final Long price;
+        private final double distance;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotsResponseDto {
+        private final List<RecommendedParkingLotDto> parkingLots;
+    }
+
+    @Getter
+    @ToString
+    @Setter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotsRequestDto {
+        private double longitude;
+        private double latitude;
+        private int maxDistance;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private long carTypeId;
     }
 
 }

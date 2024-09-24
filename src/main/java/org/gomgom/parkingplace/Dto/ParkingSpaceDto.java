@@ -3,10 +3,14 @@ package org.gomgom.parkingplace.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.gomgom.parkingplace.Entity.CarType;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class ParkingSpaceDto {
     /**
