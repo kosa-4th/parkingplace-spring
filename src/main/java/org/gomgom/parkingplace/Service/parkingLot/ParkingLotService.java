@@ -9,9 +9,18 @@ import java.io.IOException;
 
 public interface ParkingLotService {
 
+    /***
+     * @Author 김경민
+     * @Date 2024.09.24
+     *
+     * 주차장 데이터 수정
+     */
+    int modifyLotData(ParkingLotDto.RequestModifyLotDto requestModifyLotDto);
+
+
     /**
      * @Author 김경민
-     * @Date 2024.0923
+     * @Date 2024.09.23
      *
      * ParkingLot Data Paging 및 검색어 처리
      * */

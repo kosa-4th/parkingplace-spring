@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +28,37 @@ import java.util.List;
 public class SystemManagerController {
     private final UserService userService;
     private final ParkingLotService parkingLotService;
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.24
+     * <p>
+     * 주차장 수정 여부
+     */
+//    @PutMapping("/parkLotData/modify/protected")
+    @PutMapping("/parkLotData/modify")
+    public ResponseEntity<?> modifyLotData(
+            @RequestBody ParkingLotDto.RequestModifyLotDto requestModifyLotDto){
+//            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+//        String auth = customUserDetails.getUser().getAuth().toString();
+//
+//        // 관리자 권한만 허용
+//        if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
+//        }
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!"+requestModifyLotDto.getUserEmail());
+        // 수정 작업 수행
+        int result = parkingLotService.modifyLotData(requestModifyLotDto);
+
+        if (result == 1) {
+            return ResponseEntity.status(HttpStatus.OK).body("수정 완료");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("수정 실패");
+        }
+    }
+
 
     /***
      * @Author 김경민

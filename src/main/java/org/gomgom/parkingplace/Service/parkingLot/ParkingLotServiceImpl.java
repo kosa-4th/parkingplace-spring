@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Service.parkingLot;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
@@ -12,6 +13,8 @@ import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.Repository.ParkingImageRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Repository.ParkingSpaceRepository;
+import org.gomgom.parkingplace.Repository.UserRepository;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.gomgom.parkingplace.enums.Bool.N;
+
 @Service
 @RequiredArgsConstructor
 public class ParkingLotServiceImpl implements ParkingLotService {
@@ -37,8 +42,67 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
     private final ParkingImageRepository parkingImageRepository;
+    private final UserRepository userRepository;
     @Value("${parple.upload.virtual}")
     private String uploadPath;
+
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.24
+     *
+     * 주차장 데이터 수정
+     * */
+    @Override
+    @Transactional
+    public int modifyLotData(ParkingLotDto.RequestModifyLotDto requestModifyLotDto) {
+        requestModifyLotDto.trimFields();
+        ParkingLot parkingLot = parkingLotRepository.findById(requestModifyLotDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 주차장을 찾을 수 없습니다."));
+
+        Bool usable = N;
+        if(requestModifyLotDto.getUserEmail()!=null) {
+            User user = userRepository.findByEmail(requestModifyLotDto.getUserEmail())
+                    .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없음"));
+
+            if(user.getId()!=null){
+                usable = Bool.Y;
+            }
+            parkingLot.setName(requestModifyLotDto.getName());
+            parkingLot.setTel(requestModifyLotDto.getTel());
+            parkingLot.setParkingType(requestModifyLotDto.getParkingType());
+            parkingLot.setLatitude(requestModifyLotDto.getLatitude());
+            parkingLot.setLongitude(requestModifyLotDto.getLongitude());
+            parkingLot.setWeekdaysOpenTime(requestModifyLotDto.getWeekdaysOpenTime());
+            parkingLot.setWeekdaysCloseTime(requestModifyLotDto.getWeekdaysCloseTime());
+            parkingLot.setWeekendOpenTime(requestModifyLotDto.getWeekendOpenTime());
+            parkingLot.setWeekendCloseTime(requestModifyLotDto.getWeekendCloseTime());
+            parkingLot.setWash(requestModifyLotDto.getWash());
+            parkingLot.setMaintenance(requestModifyLotDto.getMaintenance());
+            parkingLot.setUser(user);
+            parkingLot.setUsable(usable);
+
+            parkingLotRepository.save(parkingLot);
+            return 1;
+        }else {
+            parkingLot.setName(requestModifyLotDto.getName());
+            parkingLot.setTel(requestModifyLotDto.getTel());
+            parkingLot.setParkingType(requestModifyLotDto.getParkingType());
+            parkingLot.setLatitude(requestModifyLotDto.getLatitude());
+            parkingLot.setLongitude(requestModifyLotDto.getLongitude());
+            parkingLot.setWeekdaysOpenTime(requestModifyLotDto.getWeekdaysOpenTime());
+            parkingLot.setWeekdaysCloseTime(requestModifyLotDto.getWeekdaysCloseTime());
+            parkingLot.setWeekendOpenTime(requestModifyLotDto.getWeekendOpenTime());
+            parkingLot.setWeekendCloseTime(requestModifyLotDto.getWeekendCloseTime());
+            parkingLot.setWash(requestModifyLotDto.getWash());
+            parkingLot.setMaintenance(requestModifyLotDto.getMaintenance());
+            parkingLot.setUser(null);
+            parkingLot.setUsable(usable);
+
+            parkingLotRepository.save(parkingLot);
+            return 1;
+        }
+    }
 
     /**
      * @Author 김경민
