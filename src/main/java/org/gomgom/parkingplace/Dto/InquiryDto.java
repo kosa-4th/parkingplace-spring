@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gomgom.parkingplace.Entity.Inquiry;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,6 +61,12 @@ public class InquiryDto {
         private String inquiry; // 문의
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class RequestInquiryModifyDto {
+        private Long inquiryId;
+        private String newInquiry;
+    }
 
     /**
      * 작성자: 오지수
@@ -69,7 +76,7 @@ public class InquiryDto {
     @Setter
     @AllArgsConstructor
     public static class ParkingInquiryRequestDto {
-        private Long parkinglotId;
+//        private Long parkinglotId;
         private String actionType;
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDateTime from;
@@ -112,5 +119,41 @@ public class InquiryDto {
             this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
             this.isIfAnswer = Optional.ofNullable(inquiry.getAnswerCreatedAt()).isPresent();
         }
+    }
+
+    /**
+     * 작성자: 오지수
+     * 문의 1개 디테일 정보
+     */
+    @Getter
+    public static class ParkingInquiryDetailDto {
+        public Long inquiryId;
+        public String inquiry;
+        public String inquirer;
+        public String inquiryDate;
+        public String inquiryUpdateDate;
+        public String answerDate;
+        public String answerUpdateDate;
+
+        public ParkingInquiryDetailDto(Inquiry inquiry) {
+            this.inquiryId = inquiry.getId();
+            this.inquiry = inquiry.getInquiry();
+            this.inquirer = inquiry.getUser().getName();
+            this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
+            this.inquiryUpdateDate = inquiry.getInquiryUpdatedAt().toLocalDate().toString();
+            this.answerDate = inquiry.getAnswerCreatedAt() != null ? inquiry.getAnswerCreatedAt().toLocalDate().toString() : "";
+            this.answerUpdateDate = inquiry.getAnswerUpdatedAt() != null ? inquiry.getAnswerUpdatedAt().toLocalDate().toString() : "";
+        }
+    }
+
+    /**\
+     * 작성자: 오지수
+     * 주차장 관리자 페이지 / 문의 등록, 수정
+     */
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ParkingInquiryAnswerRequest {
+        private String answer;
     }
 }

@@ -9,9 +9,13 @@ import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.InquiryRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
+import org.gomgom.parkingplace.Service.Common.CommonParkingValidService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class InquiryServiceImpl implements InquiryService{
     private final InquiryRepository inquiryRepository;
     private final ParkingLotRepository parkingLotRepository;
+    private final CommonParkingValidService validService;
 
     /**
      * 작성자: 오지수
@@ -47,6 +52,7 @@ public class InquiryServiceImpl implements InquiryService{
      * @param inquiry 문의 내용
      */
     @Override
+    @Transactional
     public void registerInquiry(User user, Long parkinglotId, String inquiry) {
         // 주차장 확인
         ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
@@ -59,21 +65,60 @@ public class InquiryServiceImpl implements InquiryService{
         inquiryRepository.save(inquiryEntity);
     }
 
+    /**
+     * 작성자: 오지수
+     * 사용자 문의 수정
+     * @param user
+     * @param parkinglotId
+     * @param requestDto
+     */
     @Override
-    public void modifyInquiry(User user, Long parkinglotId, String inquiry) {
-
+    @Transactional
+    public void modifyInquiry(User user, Long parkinglotId, InquiryDto.RequestInquiryModifyDto requestDto) {
+        Inquiry inquiry = vaildInquiry(user, parkinglotId, requestDto.getInquiryId());
+        inquiry.modifyInquiry(requestDto.getNewInquiry());
     }
 
+    /**
+     * 작성자: 오지수
+     * 사용자 문의 삭제
+     * @param user
+     * @param parkinglotId
+     * @param inquiryId
+     */
     @Override
-    public void registerAnswer(User user, Long parkinglotId, String answer) {
-
+    @Transactional
+    public void deleteInquiry(User user, Long parkinglotId, Long inquiryId) {
+        Inquiry inquiry = vaildInquiry(user, parkinglotId, inquiryId);
+        inquiryRepository.delete(inquiry);
     }
 
-    @Override
-    public void modifyAnswer(User user, Long parkinglotId, String answer) {
+    /**
+     * 작성자: 오지수
+     * 사용자 문의 수정, 삭제를 위한 문의 유효성 검사
+     * @param user
+     * @param parkinglotId
+     * @param inquiryId
+     * @return
+     */
+    private Inquiry vaildInquiry(User user, Long parkinglotId, Long inquiryId) {
+        ParkingLot parkingLot = validService.ifExistParkinglot(parkinglotId);
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 문의입니다."));
 
+        if (!inquiry.getParkingLot().equals(parkingLot)) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        if (!inquiry.getUser().equals(user)) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+        return inquiry;
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // 관리자
     /**
      * 작성자: 오지수
      * 2024.09.21: 주차장 관리자 페이지 문의 목록 불러오기
@@ -83,8 +128,8 @@ public class InquiryServiceImpl implements InquiryService{
      * @return
      */
     @Override
-    public InquiryDto.ParkingInquiryResponseDto getInquiriesByParking(User user, InquiryDto.ParkingInquiryRequestDto dto, Pageable pageable) {
-        ParkingLot parkingLot = parkingLotRepository.findById(dto.getParkinglotId())
+    public InquiryDto.ParkingInquiryResponseDto getInquiriesByParking(User user, Long parkinglotId, InquiryDto.ParkingInquiryRequestDto dto, Pageable pageable) {
+        ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
         if (!parkingLot.getUser().getId().equals(user.getId())) {
             throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
@@ -104,6 +149,85 @@ public class InquiryServiceImpl implements InquiryService{
 
         return new InquiryDto.ParkingInquiryResponseDto(inquiries.hasNext(), inquiries.getTotalPages(),
                 inquiries.stream().map(InquiryDto.ParkingInquiryDto::new).toList());
+    }
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 페이지 : 문의 상세 정보 가져오기
+     * @param user
+     * @param path / parkinglotId, inquiryId
+     * @return
+     */
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 페이지 : 문의 상세 정보 가져오기
+     * @param user
+     * @param parkinglotId
+     * @param inquiryId
+     * @return
+     */
+    @Override
+    public InquiryDto.ParkingInquiryDetailDto getInquiryByParking(User user, Long parkinglotId, Long inquiryId) {
+        Inquiry inquiry = getInquiryByParking(user.getId(), parkinglotId, inquiryId);
+        return new InquiryDto.ParkingInquiryDetailDto(inquiry);
+    }
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 문의 답변 등록하기
+     * @param user
+     * @param parkinglotId
+     * @param inquiryId
+     * @param answer
+     */
+    @Override
+    @Transactional
+    public void registerAnswerByParking(User user, Long parkinglotId, Long inquiryId, String answer) {
+        Inquiry inquiry = getInquiryByParking(user.getId(), parkinglotId, inquiryId);
+        inquiry.addAnswer(answer);
+        inquiryRepository.save(inquiry);
+    }
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 문의 답변 수정하기
+     * @param user
+     * @param parkinglotId
+     * @param answerDto
+     */
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 문의 답변 수정하기
+     * @param user
+     * @param parkinglotId
+     * @param inquiryId
+     * @param answer
+     */
+    @Override
+    @Transactional
+    public void modifyAnswerByParking(User user, Long parkinglotId, Long inquiryId, String answer) {
+        Inquiry inquiry = getInquiryByParking(user.getId(), parkinglotId, inquiryId);
+        inquiry.modifyAnswer(answer);
+    }
+
+    /**
+     * 작성자: 오지수
+     * 주차장 관리자 문의 등록 및 수정
+     * @param userId
+     * @param parkinglotId
+     * @param inquiryId
+     * @return
+     */
+    private Inquiry getInquiryByParking(Long userId, Long parkinglotId, Long inquiryId) {
+        ParkingLot parkingLot = validService.ifValidParkinglotWithUser(parkinglotId, userId);
+        Inquiry inquiry =  inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 문의입니다."));
+        if(!inquiry.getParkingLot().equals(parkingLot)) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+        return inquiry;
     }
 
 }

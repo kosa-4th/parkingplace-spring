@@ -22,6 +22,7 @@ public class ParkingReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/reviews/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<ReviewDto.ParkingReviewsResponseDto> getParkingReviews(ReviewDto.ParkingReviewsRequestDto requestDto,
                                                                                  Pageable pageable,
                                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
