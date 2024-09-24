@@ -91,4 +91,17 @@ public interface ParkingLotService {
      * 2024.09.19 양건모 | 기능 구현
      * */
     void modifyOwnerParkingLotDetail(long userId, long parkingLotId, ParkingLotDto.ParkingLotModifyRequestDto request) throws IOException;
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.23
+     * 설명 : 특정 위치 근처의 주차장 추천
+     * @param userId 사용자 id
+     * @param parkingLotId 주차장 id
+     * @param request 수정 값
+     * @return void
+     *  ---------------------
+     * 2024.09.19 양건모 | 기능 구현
+     * */
+    ParkingLotDto.RecommendedParkingLotsResponseDto getRecommendedPakringLots(ParkingLotDto.RecommendedParkingLotsRequestDto request);
 }
