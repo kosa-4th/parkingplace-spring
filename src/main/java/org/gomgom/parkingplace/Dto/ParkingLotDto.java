@@ -1,12 +1,10 @@
 package org.gomgom.parkingplace.Dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.gomgom.parkingplace.Entity.ParkingImage;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.ParkingSpace;
+import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +19,100 @@ import java.util.stream.Collectors;
 
 public class ParkingLotDto {
 
+
+    /**@Author 김경민
+     * @Date 2024.09.24
+     * 주차장 데이터 수정
+     */
+    @Data
+    public static class RequestModifyLotDto{
+        private Long id;                 // 주차장 ID
+        private String name;             // 주차장 이름
+        private String tel;              // 전화번호
+        private String parkingType;      // 주차장 타입
+        private double latitude;
+        private double longitude;
+        private LocalTime weekdaysOpenTime;  // 평일 오픈 시간
+        private LocalTime weekdaysCloseTime; // 평일 닫는 시간
+        private LocalTime weekendOpenTime;   // 주말 오픈 시간
+        private LocalTime weekendCloseTime;  // 주말 닫는 시간
+        private Bool wash;               // 세차 서비스 여부
+        private Bool maintenance;        // 정비 서비스 여부
+        private String userEmail;
+
+        // 빈 문자열을 null로 변환하는 메서드
+        public void trimFields() {
+            if (name != null && name.trim().isEmpty()) {
+                name = null;
+            }
+            if (tel != null && tel.trim().isEmpty()) {
+                tel = null;
+            }
+            if (parkingType != null && parkingType.trim().isEmpty()) {
+                parkingType = null;
+            }
+            if (userEmail != null && userEmail.trim().isEmpty()) {
+                userEmail = null;
+            }
+            if (latitude == 0.0) {
+                this.latitude = -1.0;
+            }
+            if (longitude == 0.0) {
+                this.longitude = -1.0;
+            }
+        }
+    }
+
+
     /**
+     * @Author 김경민
+     * @Date 2024.09.23
+     *
+     * 주차장 데이터
+     * */
+    @Getter
+    @Setter
+    public static class ResponseParkingLotDto {
+        private Long id;                 // 주차장 ID
+        private String name;             // 주차장 이름
+        private String address;          // 주소
+        private String tel;              // 전화번호
+        private String parkingType;      // 주차장 타입
+        private Double latitude;         // 위도
+        private Double longitude;        // 경도
+        private LocalTime weekdaysOpenTime;  // 평일 오픈 시간
+        private LocalTime weekdaysCloseTime; // 평일 닫는 시간
+        private LocalTime weekendOpenTime;   // 주말 오픈 시간
+        private LocalTime weekendCloseTime;  // 주말 닫는 시간
+        private Bool wash;               // 세차 서비스 여부
+        private Bool maintenance;        // 정비 서비스 여부
+        private Bool usable;             // 사용 가능 여부
+        private UserDto.ResponseAllUserDto user;
+
+        public ResponseParkingLotDto(Long id, String name, String address, String tel,
+                                     String parkingType, Double latitude, Double longitude,
+                                     LocalTime weekdaysOpenTime, LocalTime weekdaysCloseTime,
+                                     LocalTime weekendOpenTime, LocalTime weekendCloseTime,
+                                     Bool wash, Bool maintenance, Bool usable, UserDto.ResponseAllUserDto user) {
+            this.id = id;
+            this.name = name;
+            this.address = address;
+            this.tel = tel;
+            this.parkingType = parkingType;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.weekdaysOpenTime = weekdaysOpenTime;
+            this.weekdaysCloseTime = weekdaysCloseTime;
+            this.weekendOpenTime = weekendOpenTime;
+            this.weekendCloseTime = weekendCloseTime;
+            this.wash = wash;
+            this.maintenance = maintenance;
+            this.usable = usable;
+            this.user = (user != null) ? user : new UserDto.ResponseAllUserDto();  // user가 null일 때 기본 객체로 초기화
+        }
+    }
+
+        /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.05
      * 설명 : 주차장 마커 생성을 위한 요청 DTO
@@ -260,6 +351,36 @@ public class ParkingLotDto {
         private LocalTime weekendCloseTime;
         private List<Long> deleteImageIds;
         private MultipartFile[] images;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotDto {
+        private final Long parkingLotId;
+        private final String parkingLotName;
+        private final String address;
+        private final Long parkingSpaceId;
+        private final Long price;
+        private final double distance;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotsResponseDto {
+        private final List<RecommendedParkingLotDto> parkingLots;
+    }
+
+    @Getter
+    @ToString
+    @Setter
+    @AllArgsConstructor
+    public static class RecommendedParkingLotsRequestDto {
+        private double longitude;
+        private double latitude;
+        private int maxDistance;
+        private LocalDateTime startDateTime;
+        private LocalDateTime endDateTime;
+        private long carTypeId;
     }
 
 }

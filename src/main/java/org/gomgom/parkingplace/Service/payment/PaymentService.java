@@ -6,7 +6,7 @@ import org.gomgom.parkingplace.Entity.Payment;
 import org.gomgom.parkingplace.Entity.PaymentCancel;
 
 public interface PaymentService {
-    public PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto);
-    public Payment completePayment(Long reservationId, PaymentDto.RequestPaymentDto requestPaymentDto);
-    public PaymentDto.ResponseReservationPaymentDto getReservationPaymentInfo(Long reservationId);
+     PaymentCancel cancelPayment(Long reservationId, PaymentCancelDto.RequestPaymentCancelDto requestPaymentCancelDto);
+     Payment completePayment(Long reservationId, PaymentDto.RequestPaymentDto requestPaymentDto);
+     PaymentDto.ResponseReservationPaymentDto getReservationPaymentInfo(Long reservationId);
 }

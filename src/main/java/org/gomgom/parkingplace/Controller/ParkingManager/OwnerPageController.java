@@ -1,4 +1,4 @@
-package org.gomgom.parkingplace.Controller;
+package org.gomgom.parkingplace.Controller.ParkingManager;
 
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Configure.CustomUserDetails;
@@ -30,6 +30,12 @@ public class OwnerPageController {
     private final ReservationService reservationService;
     private final PaymentService paymentService;
     private final ParkingLotRepository parkingLotRepository;
+
+    /**
+     * @Date 2024.09.23
+     * 주차장 추가
+     */
+
     /**
      * @Date 2024.09.20
      * 주차장 이름 조회
@@ -46,7 +52,9 @@ public class OwnerPageController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류가 발생했습니다.");
         }
-    }    /**
+    }
+
+    /**
      * 관리자 오늘의 예약 현황
      * @DATE 2024.09.20
      * */

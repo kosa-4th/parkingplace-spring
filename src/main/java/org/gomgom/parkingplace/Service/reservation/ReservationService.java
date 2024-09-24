@@ -20,9 +20,9 @@ public interface ReservationService {
      * @Date 2024.09.20
      * 입차 예정 / 출차 예정 / 출차 완료 서비스단
      */
-    public Page<ResponseOwnerReservationStatusDto> getTodayUpcomingEntries(Long parkingLotId, LocalDateTime now, Pageable pageable);
-    public Page<ResponseOwnerReservationStatusDto> getTodayPendingExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
-    public Page<ResponseOwnerReservationStatusDto> getTodayCompletedExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
+    Page<ResponseOwnerReservationStatusDto> getTodayUpcomingEntries(Long parkingLotId, LocalDateTime now, Pageable pageable);
+    Page<ResponseOwnerReservationStatusDto> getTodayPendingExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
+    Page<ResponseOwnerReservationStatusDto> getTodayCompletedExits(Long parkingLotId, LocalDateTime now, Pageable pageable);
 
     /**
      * @Author 김경민

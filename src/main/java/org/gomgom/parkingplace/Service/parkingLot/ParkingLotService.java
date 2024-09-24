@@ -2,10 +2,30 @@ package org.gomgom.parkingplace.Service.parkingLot;
 
 import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 
 public interface ParkingLotService {
+
+    /***
+     * @Author 김경민
+     * @Date 2024.09.24
+     *
+     * 주차장 데이터 수정
+     */
+    int modifyLotData(ParkingLotDto.RequestModifyLotDto requestModifyLotDto);
+
+
+    /**
+     * @Author 김경민
+     * @Date 2024.09.23
+     *
+     * ParkingLot Data Paging 및 검색어 처리
+     * */
+    Page<ParkingLotDto.ResponseParkingLotDto> getParkingLotData(String name, String address, Pageable pageable);
+
 
     /**
      * 작성자: 양건모
@@ -71,4 +91,17 @@ public interface ParkingLotService {
      * 2024.09.19 양건모 | 기능 구현
      * */
     void modifyOwnerParkingLotDetail(long userId, long parkingLotId, ParkingLotDto.ParkingLotModifyRequestDto request) throws IOException;
+
+    /**
+     * 작성자: 양건모
+     * 시작 일자: 2024.09.23
+     * 설명 : 특정 위치 근처의 주차장 추천
+     * @param userId 사용자 id
+     * @param parkingLotId 주차장 id
+     * @param request 수정 값
+     * @return void
+     *  ---------------------
+     * 2024.09.19 양건모 | 기능 구현
+     * */
+    ParkingLotDto.RecommendedParkingLotsResponseDto getRecommendedPakringLots(ParkingLotDto.RecommendedParkingLotsRequestDto request);
 }

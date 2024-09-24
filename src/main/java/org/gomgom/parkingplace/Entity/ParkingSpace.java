@@ -1,10 +1,12 @@
 package org.gomgom.parkingplace.Entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.gomgom.parkingplace.Dto.ParkingSpaceDto;
+import org.gomgom.parkingplace.enums.Bool;
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,6 +21,7 @@ import java.time.LocalTime;
 @ToString(exclude = {"parkingLot"})  // 순환 참조를 방지하기 위해 제외
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
+@SQLRestriction("usable = true")
 public class ParkingSpace extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +53,10 @@ public class ParkingSpace extends Base {
     @Column(name = "available_space_num", nullable = false)
     private Integer availableSpaceNum;
 
+    @NotNull
+    @Column(name = "usable")
+    @ColumnDefault("true")
+    private boolean usable;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -63,19 +70,40 @@ public class ParkingSpace extends Base {
     private CarType carType;
 
     @Builder
-    public ParkingSpace(ParkingLot parkingLot, CarType carType, int availableSpaceNum,
+    public ParkingSpace(ParkingLot parkingLot, String spaceName, CarType carType, int availableSpaceNum,
                         int weekdaysPrice, int weekAllDayPrice,
-                        int weekendPrice, int weekendAllDayPrice) {
+                        int weekendPrice, int weekendAllDayPrice,
+                        int washPrice, int maintenancePrice) {
         this.parkingLot = parkingLot;
+        this.spaceName = spaceName;
         this.carType = carType;
         this.availableSpaceNum = availableSpaceNum;
         this.weekdaysPrice = weekdaysPrice;
         this.weekAllDayPrice = weekAllDayPrice;
         this.weekendPrice = weekendPrice;
         this.weekendAllDayPrice = weekendAllDayPrice;
+        this.washPrice = washPrice;
+        this.maintenancePrice = maintenancePrice;
     }
 
     public void setPlusAvailableSpaceNum(int availableSpaceNum) {
         this.availableSpaceNum += availableSpaceNum;
+    }
+
+    public void setAllValues(ParkingSpaceDto.InputParkingSpaceValuesDto dto, CarType carType) {
+        this.spaceName = dto.getSpaceName();
+        this.carType = carType;
+        this.availableSpaceNum = dto.getAvailableSpaceNum();
+        this.weekdaysPrice = dto.getWeekdaysPrice();
+        this.weekAllDayPrice = dto.getWeekAllDayPrice();
+        this.weekendPrice = dto.getWeekendPrice();
+        this.weekendAllDayPrice = dto.getWeekendAllDayPrice();
+        this.washPrice = dto.isWashService() ? dto.getWashPrice() : 0;
+        this.maintenancePrice = dto.isMaintenanceService() ? dto.getMaintenancePrice() : 0;
+    }
+
+    @PrePersist
+    public void setUsableTrue() {
+        this.usable = true;
     }
 }
