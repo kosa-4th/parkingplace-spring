@@ -7,6 +7,7 @@ import org.gomgom.parkingplace.Dto.ReservationDto.RequestOwnerReservationDto;
 import org.gomgom.parkingplace.Dto.ReservationDto.ResponseOwnerReservationDto;
 import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Repository.*;
+import org.gomgom.parkingplace.Service.notification.NotificationService;
 import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.util.CustomUUIDGenerator;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final PlateNumberRepository plateNumberRepository;
     private final ParkingLotRepository parkingLotRepository;
     private final ParkingSpaceRepository parkingSpaceRepository;
+    private final NotificationService notificationService;
 
 
     /**
@@ -108,14 +110,26 @@ public class ReservationServiceImpl implements ReservationService {
     /**
      * @Date 2024.09.20
      * 입차 예정, 출차 예정, 출차 완료 서비스처리
+     * ------------------------------------
+     * 2024.09.25 양건모 | 알림 생성 로직 추가
      */
 
     //예약 허가 삭제.
     @Override
+    @Transactional
     public int updateReservationStatus(Long reservationId, Bool reservationConfirmed) {
+        Reservation reservation = reservationRepository.findReservationById(reservationId).orElseThrow();
+        String notificationMessage;
+        String parkingLotName = reservation.getLotName();
+
         if (reservationConfirmed == Bool.Y) {
-            return reservationRepository.updateReservationStatus(reservationId, Bool.Y);
+            notificationMessage = "'" + parkingLotName + "'에 대한 예약이 확정되었습니다.";
+            int resultValue =  reservationRepository.updateReservationStatus(reservationId, Bool.Y);
+            notificationService.createNotification(reservation.getUser().getId(), notificationMessage, "/my/reservations/" + reservationId);
+            return resultValue;
         } else if (reservationConfirmed == Bool.D) {
+            notificationMessage = "'" + parkingLotName + "'에 대한 예약이 거절되었습니다.";
+            notificationService.createNotification(reservation.getUser().getId(), notificationMessage, "/my/reservations/" + reservationId);
             return reservationRepository.updateReservationStatus(reservationId, Bool.D);
         }
 
@@ -165,8 +179,11 @@ public class ReservationServiceImpl implements ReservationService {
      * @Date 2024.09.18 -> 소스 check 값 수정
      */
     public int cancelReservation(Long ReservationId) {
+        Reservation reservation = reservationRepository.findById(ReservationId).orElseThrow();
         Bool check = reservationRepository.findReservationConfirmedByReservationId(ReservationId);
         if (check == Bool.N || check == Bool.Y || check == Bool.C) {
+            String notificationMessage = "'" + reservation.getLotName() + "'에 대한 예약이 취소되었습니다.";
+            notificationService.createNotification(reservation.getUser().getId(), notificationMessage, "/my/reservations/" + ReservationId);
             return reservationRepository.updateReservationStatus(ReservationId, Bool.D);
         }
         return 0;

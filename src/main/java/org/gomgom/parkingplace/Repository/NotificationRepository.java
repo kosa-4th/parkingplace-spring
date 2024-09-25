@@ -20,13 +20,13 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             "ORDER BY noti.createdAt DESC")
     Page<NotificationDto.NotificationDefaultDto> getNotifications(long userId, Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Notification noti SET noti.checked = true " +
             "WHERE noti.user.id = :userId " +
             "AND noti.checked = false ")
     void checkAllByUserId(long userId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Notification noti SET noti.usable = false " +
             "WHERE noti.user.id = :userId " +
             "AND noti.usable = true")
