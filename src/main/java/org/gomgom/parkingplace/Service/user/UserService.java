@@ -4,6 +4,7 @@ import org.gomgom.parkingplace.Dto.AuthDto;
 import static org.gomgom.parkingplace.Dto.UserDto.*;
 
 import org.gomgom.parkingplace.Dto.UserDto;
+import org.gomgom.parkingplace.Entity.User;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,5 +35,12 @@ public interface UserService {
     // 리프레시 토큰
     AuthDto.AuthResponseDto refreshToken(String refreshToken);
 
+    // 구글 로그인
     AuthDto.AuthResponseDto googleSignIn(String googleToken);
+
+    // 비밀번호 수정
+    void modifyUserPassword(User user, UserDto.RequestModifyPasswordDto dto);
+
+    // 회원탈퇴
+    void deleteUser(User user);
 }

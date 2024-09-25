@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gomgom.parkingplace.Entity.Inquiry;
+import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;

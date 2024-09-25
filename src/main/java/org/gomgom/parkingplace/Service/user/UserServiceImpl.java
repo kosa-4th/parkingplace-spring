@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Service.user;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.gomgom.parkingplace.Dto.AuthDto;
 import org.gomgom.parkingplace.Dto.UserDto;
 import org.gomgom.parkingplace.Dto.UserDto.ResponseAllUserDto;
@@ -9,6 +10,7 @@ import org.gomgom.parkingplace.Entity.*;
 import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.*;
 import org.gomgom.parkingplace.Service.jwt.JwtService;
+import org.gomgom.parkingplace.enums.Bool;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
 import org.gomgom.parkingplace.enums.Role;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final PlateNumberRepository plateNumberRepository;
     private final CarTypeRepository carTypeRepository;
     private final ParkingLotRepository parkingLotRepository;
+
 
     @Override
     @Transactional
@@ -202,10 +206,54 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * 작성자: 오지수
+     * 2024-09-25: 사용자 비밀번호 변경 요청
+     * @param user
+     * @param dto
+     */
+    @Override
+    @Transactional
+    public void modifyUserPassword(User user, UserDto.RequestModifyPasswordDto dto) {
+        log.info("Service: 사용자 비밀번호 변경");
+
+        boolean result = encoder.matches(dto.getPassword(), user.getPassword());
+        if (!result) {
+            throw new CustomExceptions.ValidationException("비밀번호가 일치하지 않습니다.");
+        }
+
+        result = encoder.matches(dto.getNewPassword(), user.getPassword());
+        if (result) {
+            throw new CustomExceptions.ValidationException("기존 비밀번호로 변경할 수 없습니다.");
+        }
+        String newEncodedPassword = encoder.encode(dto.getNewPassword());
+
+        User userEntity = userRepository.findByEmail(user.getEmail()).get();
+        userEntity.updatePassword(newEncodedPassword);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(User user) {
+        User userEntity = userRepository.findByEmail(user.getEmail()).get();
+        userEntity.deleteUser();
+    }
+
+
+    /**
+     * 작성자: 오지수
+     * @param user
+     * @return
+     */
     private User authenticate(UserDto.requestSignInDto user) {
         // 회원 존재 여부 확인
         User signInUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new CustomExceptions.UserNotFoundException("존재하지 않는 회원 아이디 입니다."));
+
+        //
+        if (signInUser.getUsable().equals(Bool.N)) {
+            throw new CustomExceptions.ValidationException("등록되지 않은 회원 정보입니다.");
+        }
 
         // Role 확인
         Role userRole = signInUser.getAuth();

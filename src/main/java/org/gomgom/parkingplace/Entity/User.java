@@ -57,7 +57,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
+    @ColumnDefault("'Y'")
     @Column(name = "usable", nullable = false)
     private Bool usable;
 
@@ -72,6 +72,10 @@ public class User {
 
     public void updatePassword(String encryptedPassword) {
         this.password = encryptedPassword;
+    }
+
+    public void deleteUser() {
+        this.usable = Bool.N;
     }
 
     // 회원 정보 수정

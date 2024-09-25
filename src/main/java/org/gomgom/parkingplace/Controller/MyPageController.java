@@ -8,6 +8,8 @@ import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Service.myPage.MyPageService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +36,7 @@ public class MyPageController {
      */
     @GetMapping("/reviews/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MyPageDto.ResponseReviewsDto> getMyReviews(Pageable pageable,
+    public ResponseEntity<MyPageDto.ResponseReviewsDto> getMyReviews(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(myPageService.getMyReviews(userDetails.getUser(),pageable));
     }
@@ -51,7 +53,7 @@ public class MyPageController {
      */
     @GetMapping("/reservations/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MyPageDto.MyReservationResponseDto> getMyReservations(Pageable pageable,
+    public ResponseEntity<MyPageDto.MyReservationResponseDto> getMyReservations(@PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                                 MyPageDto.MyReservationRequestDto requestDto,
                                                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
 //        System.out.println(userDetails.getUsername());
@@ -93,9 +95,17 @@ public class MyPageController {
      */
     @GetMapping("/inquiries/protected")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MyPageDto.MyInquiryResponseDto> getMyInquiries(Pageable pageable,
+    public ResponseEntity<MyPageDto.MyInquiryResponseDto> getMyInquiries(@PageableDefault(sort = "inquiryCreatedAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 마이페이지 / 문의 목록 가져오기");
         return ResponseEntity.ok(myPageService.getMyInquiries(userDetails.getUser(), pageable));
+    }
+
+    @GetMapping(value = "/inquiries/{inquiryId}/protected")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<MyPageDto.ResponseInquiryDto> getMyInquiry(@PathVariable Long inquiryId,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+        log.info("Controller: 마이페이지 / 상세 문의 가져오기");
+        return ResponseEntity.ok(myPageService.getInquiryDetails(userDetails.getUser(), inquiryId));
     }
 }
