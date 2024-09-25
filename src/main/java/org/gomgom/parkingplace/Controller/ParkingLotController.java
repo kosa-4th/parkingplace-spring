@@ -134,7 +134,7 @@ public class ParkingLotController {
      * */
     @GetMapping("/recommend")
     public ResponseEntity<ParkingLotDto.RecommendedParkingLotsResponseDto> getRecommendedParkingLots(
-            @RequestBody ParkingLotDto.RecommendedParkingLotsRequestDto request
+            @ModelAttribute ParkingLotDto.RecommendedParkingLotsRequestDto request
     ) {
         return ResponseEntity.ok(parkingLotService.getRecommendedPakringLots(request));
     }
