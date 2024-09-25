@@ -46,13 +46,65 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Value("${parple.upload.virtual}")
     private String uploadPath;
 
+    @Override
+    @Transactional
+    public int createLotData(ParkingLotDto.RequestCreateLotDto requestCreateLotDto) {
+        ParkingLot parkingLot = new ParkingLot();
+        Bool usable = N;
+
+        if (requestCreateLotDto.getUserEmail() != null && !requestCreateLotDto.getUserEmail().trim().isEmpty()) {
+            User user = userRepository.findByEmail(requestCreateLotDto.getUserEmail())
+                    .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없음"));
+
+            if (user.getId() != null) {
+                usable = Bool.Y;
+            }
+            parkingLot.setName(requestCreateLotDto.getName());
+            parkingLot.setAddress(requestCreateLotDto.getAddress());
+            parkingLot.setTel(requestCreateLotDto.getTel());
+            parkingLot.setParkingType(requestCreateLotDto.getParkingType());
+            parkingLot.setLatitude(requestCreateLotDto.getLatitude());
+            parkingLot.setLongitude(requestCreateLotDto.getLongitude());
+            parkingLot.setWeekdaysOpenTime(requestCreateLotDto.getWeekdaysOpenTime());
+            parkingLot.setWeekdaysCloseTime(requestCreateLotDto.getWeekdaysCloseTime());
+            parkingLot.setWeekendOpenTime(requestCreateLotDto.getWeekendOpenTime());
+            parkingLot.setWeekendCloseTime(requestCreateLotDto.getWeekendCloseTime());
+            parkingLot.setWash(requestCreateLotDto.getWash());
+            parkingLot.setMaintenance(requestCreateLotDto.getMaintenance());
+            parkingLot.setParkingCenterId("-1");
+            parkingLot.setUser(user);
+            parkingLot.setUsable(usable);
+
+            parkingLotRepository.save(parkingLot);
+            return 1;
+        } else {
+            parkingLot.setName(requestCreateLotDto.getName());
+            parkingLot.setAddress(requestCreateLotDto.getAddress());
+            parkingLot.setTel(requestCreateLotDto.getTel());
+            parkingLot.setParkingType(requestCreateLotDto.getParkingType());
+            parkingLot.setLatitude(requestCreateLotDto.getLatitude());
+            parkingLot.setLongitude(requestCreateLotDto.getLongitude());
+            parkingLot.setWeekdaysOpenTime(requestCreateLotDto.getWeekdaysOpenTime());
+            parkingLot.setWeekdaysCloseTime(requestCreateLotDto.getWeekdaysCloseTime());
+            parkingLot.setWeekendOpenTime(requestCreateLotDto.getWeekendOpenTime());
+            parkingLot.setWeekendCloseTime(requestCreateLotDto.getWeekendCloseTime());
+            parkingLot.setWash(requestCreateLotDto.getWash());
+            parkingLot.setMaintenance(requestCreateLotDto.getMaintenance());
+            parkingLot.setParkingCenterId("-1");
+            parkingLot.setUser(null);
+            parkingLot.setUsable(usable);
+
+            parkingLotRepository.save(parkingLot);
+            return 1;
+        }
+    }
 
     /**
      * @Author 김경민
      * @Date 2024.09.24
-     *
+     * <p>
      * 주차장 데이터 수정
-     * */
+     */
     @Override
     @Transactional
     public int modifyLotData(ParkingLotDto.RequestModifyLotDto requestModifyLotDto) {
@@ -61,11 +113,11 @@ public class ParkingLotServiceImpl implements ParkingLotService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 주차장을 찾을 수 없습니다."));
 
         Bool usable = N;
-        if(requestModifyLotDto.getUserEmail()!=null) {
+        if (requestModifyLotDto.getUserEmail() != null && !requestModifyLotDto.getUserEmail().trim().isEmpty()) {
             User user = userRepository.findByEmail(requestModifyLotDto.getUserEmail())
                     .orElseThrow(() -> new EntityNotFoundException("해당 유저를 찾을 수 없음"));
 
-            if(user.getId()!=null){
+            if (user.getId() != null) {
                 usable = Bool.Y;
             }
             parkingLot.setName(requestModifyLotDto.getName());
@@ -84,7 +136,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
             parkingLotRepository.save(parkingLot);
             return 1;
-        }else {
+        } else {
             parkingLot.setName(requestModifyLotDto.getName());
             parkingLot.setTel(requestModifyLotDto.getTel());
             parkingLot.setParkingType(requestModifyLotDto.getParkingType());

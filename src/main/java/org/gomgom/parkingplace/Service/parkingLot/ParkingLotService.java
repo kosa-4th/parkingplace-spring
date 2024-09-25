@@ -8,6 +8,13 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 
 public interface ParkingLotService {
+    /***
+     * @Author 김경민
+     * @Date 2024.09.25
+     *
+     * 주차장 데이터 수정
+     */
+    int createLotData(ParkingLotDto.RequestCreateLotDto requestCreateLotDto);
 
     /***
      * @Author 김경민
@@ -16,7 +23,6 @@ public interface ParkingLotService {
      * 주차장 데이터 수정
      */
     int modifyLotData(ParkingLotDto.RequestModifyLotDto requestModifyLotDto);
-
 
     /**
      * @Author 김경민
