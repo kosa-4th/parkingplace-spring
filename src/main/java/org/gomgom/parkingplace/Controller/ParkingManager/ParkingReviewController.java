@@ -6,6 +6,8 @@ import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.ReviewDto;
 import org.gomgom.parkingplace.Service.Review.ReviewService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +26,7 @@ public class ParkingReviewController {
     @GetMapping("/reviews/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<ReviewDto.ParkingReviewsResponseDto> getParkingReviews(ReviewDto.ParkingReviewsRequestDto requestDto,
-                                                                                 Pageable pageable,
+                                                                                 @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 목록 불러오기");
         System.out.println();

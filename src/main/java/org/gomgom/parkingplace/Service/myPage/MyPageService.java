@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Service.myPage;
 
+import org.gomgom.parkingplace.Dto.InquiryDto;
 import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Entity.User;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,9 @@ public interface MyPageService {
 
     // 내 문의 목록 가져오기
     MyPageDto.MyInquiryResponseDto getMyInquiries(User user, Pageable pageable);
+
+
+    //문의 상세 가져오기
+    MyPageDto.ResponseInquiryDto getInquiryDetails(User user, Long inquiryId);
 
 }

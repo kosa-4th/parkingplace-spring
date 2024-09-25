@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.gomgom.parkingplace.Entity.Inquiry;
+import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.enums.Bool;
@@ -170,6 +171,30 @@ public class MyPageDto {
 //            this.answerDate = Optional.ofNullable(inquiry.getAnswer()).orElse("");
 //            this.answer = Optional.ofNullable(inquiry.getAnswer()).orElse("");
             this.isIfAnswer = Optional.ofNullable(inquiry.getAnswerCreatedAt()).isPresent();
+        }
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024-09-25: 마이페이지 문의 상세 정보에 보내는 정보
+     */
+//    @AllArgsConstructor
+    @Getter
+    public static class ResponseInquiryDto {
+        private long parkinglotId;
+        private String parkinglotName;
+        private String inquiryDate;
+        private String answerDate;
+        private String inquiry;
+        private String answer;
+
+        public ResponseInquiryDto(Inquiry inquiry) {
+            this.parkinglotId = inquiry.getParkingLot().getId();
+            this.parkinglotName = inquiry.getParkingLot().getName();
+            this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
+            this.answerDate = inquiry.getAnswerCreatedAt() == null? "" : inquiry.getAnswerCreatedAt().toLocalDate().toString();
+            this.inquiry = inquiry.getInquiry();
+            this.answer = inquiry.getAnswer() == null ? "" : inquiry.getAnswer();
         }
     }
 }

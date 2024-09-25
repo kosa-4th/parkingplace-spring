@@ -37,9 +37,11 @@ public class User {
     private String email;
 
     @Size(max = 100)
-    @NotNull
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", length = 100)
     private String password;
+
+    @Column(name = "google_id")
+    private String googleId;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ROLE_USER'")
@@ -55,19 +57,25 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
+    @ColumnDefault("'Y'")
     @Column(name = "usable", nullable = false)
     private Bool usable;
 
     @Builder
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, String googleId, Role role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.googleId = googleId;
+        this.auth = role == null ? Role.ROLE_USER : role;
     }
 
     public void updatePassword(String encryptedPassword) {
         this.password = encryptedPassword;
+    }
+
+    public void deleteUser() {
+        this.usable = Bool.N;
     }
 
     // 회원 정보 수정

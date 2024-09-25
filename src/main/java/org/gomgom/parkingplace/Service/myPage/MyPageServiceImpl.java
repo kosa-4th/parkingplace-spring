@@ -1,12 +1,14 @@
 package org.gomgom.parkingplace.Service.myPage;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Dto.ReservationDto;
 import org.gomgom.parkingplace.Entity.Inquiry;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.InquiryRepository;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Repository.ReviewRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class MyPageServiceImpl implements MyPageService {
     private final ReviewRepository reviewRepository;
     private final ReservationRepository reservationRepository;
@@ -92,5 +95,25 @@ public class MyPageServiceImpl implements MyPageService {
 
         return new MyPageDto.MyInquiryResponseDto(inquiries.hasNext(),
                 inquiries.stream().map(MyPageDto.MyInquiry::new).toList());
+    }
+
+    /**
+     * 작성자: 오지수
+     * 2024-09-25: 마이페이지 문의 상세 목록
+     * @param inquiryId
+     * @return
+     */
+    @Override
+    public MyPageDto.ResponseInquiryDto getInquiryDetails(User user, Long inquiryId) {
+        log.info("myPageService: 상세 문의 요청");
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 문의 정보입니다."));
+
+        if (!inquiry.getUser().getId().equals(user.getId())) {
+            log.info("error: 작성 유저 불일치");
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        return new MyPageDto.ResponseInquiryDto(inquiry);
     }
 }
