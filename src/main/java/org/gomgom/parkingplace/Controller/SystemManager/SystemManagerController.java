@@ -31,24 +31,51 @@ public class SystemManagerController {
 
     /**
      * @Author 김경민
+     * @Date 2024.09.25
+     */
+
+    @PostMapping("/parkingLotData/create/protected")
+    public ResponseEntity<?> createLotData(
+            @RequestBody ParkingLotDto.RequestCreateLotDto requestCreateLotDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        String auth = customUserDetails.getUser().getAuth().toString();
+
+        // 관리자 권한만 허용
+        if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("생성 권한이 없습니다.");
+        }
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!" + requestCreateLotDto.getUserEmail());
+        // 수정 작업 수행
+        int result = parkingLotService.createLotData(requestCreateLotDto);
+
+        if (result == 1) {
+            return ResponseEntity.status(HttpStatus.OK).body("생성 완료");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("생성 실패");
+        }
+    }
+
+    /**
+     * @Author 김경민
      * @Date 2024.09.24
      * <p>
      * 주차장 수정 여부
      */
-//    @PutMapping("/parkLotData/modify/protected")
-    @PutMapping("/parkLotData/modify")
+    @PutMapping("/parkingLotData/modify/protected")
     public ResponseEntity<?> modifyLotData(
-            @RequestBody ParkingLotDto.RequestModifyLotDto requestModifyLotDto){
-//            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+            @RequestBody ParkingLotDto.RequestModifyLotDto requestModifyLotDto,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-//        String auth = customUserDetails.getUser().getAuth().toString();
-//
-//        // 관리자 권한만 허용
-//        if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
-//        }
+        String auth = customUserDetails.getUser().getAuth().toString();
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!"+requestModifyLotDto.getUserEmail());
+        // 관리자 권한만 허용
+        if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
+        }
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!" + requestModifyLotDto.getUserEmail());
         // 수정 작업 수행
         int result = parkingLotService.modifyLotData(requestModifyLotDto);
 

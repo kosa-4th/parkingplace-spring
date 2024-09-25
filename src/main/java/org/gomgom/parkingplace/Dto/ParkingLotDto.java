@@ -18,7 +18,48 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ParkingLotDto {
+    /**@Author 김경민
+     * @Date 2024.09.24
+     * 주차장 데이터 생성
+     */
+    @Data
+    public static class RequestCreateLotDto{
+        private String name;             // 주차장 이름
+        private String address;
+        private String tel;              // 전화번호
+        private String parkingType;      // 주차장 타입
+        private Double latitude;
+        private Double longitude;
+        private LocalTime weekdaysOpenTime;  // 평일 오픈 시간
+        private LocalTime weekdaysCloseTime; // 평일 닫는 시간
+        private LocalTime weekendOpenTime;   // 주말 오픈 시간
+        private LocalTime weekendCloseTime;  // 주말 닫는 시간
+        private Bool wash;               // 세차 서비스 여부
+        private Bool maintenance;        // 정비 서비스 여부
+        private String userEmail;
 
+        // 빈 문자열을 null로 변환하는 메서드
+        public void trimFields() {
+            if (name != null && name.trim().isEmpty()) {
+                name = null;
+            }
+            if (tel != null && tel.trim().isEmpty()) {
+                tel = null;
+            }
+            if (parkingType != null && parkingType.trim().isEmpty()) {
+                parkingType = null;
+            }
+            if (userEmail != null && userEmail.trim().isEmpty()) {
+                userEmail = null;
+            }
+            if (latitude == 0.0) {
+                this.latitude = -1.0;
+            }
+            if (longitude == 0.0) {
+                this.longitude = -1.0;
+            }
+        }
+    }
 
     /**@Author 김경민
      * @Date 2024.09.24
