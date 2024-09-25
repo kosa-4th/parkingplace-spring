@@ -10,6 +10,7 @@ import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.InquiryRepository;
 import org.gomgom.parkingplace.Repository.ParkingLotRepository;
 import org.gomgom.parkingplace.Service.Common.CommonParkingValidService;
+import org.gomgom.parkingplace.Service.notification.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class InquiryServiceImpl implements InquiryService{
     private final InquiryRepository inquiryRepository;
     private final ParkingLotRepository parkingLotRepository;
     private final CommonParkingValidService validService;
+    private final NotificationService notificationService;
 
     /**
      * 작성자: 오지수
@@ -187,6 +189,9 @@ public class InquiryServiceImpl implements InquiryService{
         Inquiry inquiry = getInquiryByParking(user.getId(), parkinglotId, inquiryId);
         inquiry.addAnswer(answer);
         inquiryRepository.save(inquiry);
+        notificationService.createNotification(inquiry.getUser().getId(),
+                "'" + inquiry.getParkingLot().getName() + "에 문의하신 내용에 대한 답변이 도착했습니다.",
+                "/lot/" + parkinglotId + "/inquiry");
     }
 
     /**
