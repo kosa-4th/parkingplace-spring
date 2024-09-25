@@ -13,7 +13,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @EntityGraph(attributePaths = {"user"})
     @Query("SELECT new org.gomgom.parkingplace.Dto.NotificationDto$NotificationDefaultDto(" +
-            "noti.id, noti.description, noti.notificationLink, noti.checked, noti.createdAt" +
+            "noti.id, noti.user.id, noti.description, noti.notificationLink, noti.checked, noti.createdAt" +
             ") " +
             "FROM Notification noti " +
             "WHERE noti.user.id = :userId " +
