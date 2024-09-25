@@ -1,6 +1,5 @@
 package org.gomgom.parkingplace.Service.user;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.gomgom.parkingplace.Dto.AuthDto;
@@ -17,11 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -163,6 +161,45 @@ public class UserServiceImpl implements UserService {
 
         String newAccessToken = jwtService.createAccessToken(user);
         return new AuthDto.AuthResponseDto(newAccessToken, refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public AuthDto.AuthResponseDto googleSignIn(String googleToken) {
+        String url = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=" + googleToken;
+
+            RestTemplate restTemplate = new RestTemplate();
+            UserDto.GoogleUser googleUser = restTemplate.getForObject(url, UserDto.GoogleUser.class);
+            //
+            User user = userRepository.findByEmail(googleUser.getEmail())
+                    .orElse(null);
+
+
+            if (user == null) {
+                // 회원가입
+                User newUser = User.builder()
+                        .name(googleUser.getName())
+                        .email(googleUser.getEmail())
+                        .googleId(googleUser.getId())
+                        .build();
+                userRepository.save(newUser);
+                user = newUser;
+            }
+
+            // 비밀번호 일치 여부 확인
+            if (user.getPassword() != null && user.getGoogleId() == null) {
+                throw new CustomExceptions.ValidationException("이미 존재하는 사용자입니다.");
+            }
+
+            String accessToken = jwtService.createAccessToken(user);
+            String refreshToken = jwtService.createRefreshToken(user);
+
+            // refresh Token 저장
+            saveRefreshToken(user, refreshToken);
+
+            // dto 생성 및 반환
+            return new AuthDto.AuthResponseDto(accessToken, refreshToken);
+
     }
 
     private User authenticate(UserDto.requestSignInDto user) {

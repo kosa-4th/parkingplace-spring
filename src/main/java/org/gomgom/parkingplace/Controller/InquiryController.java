@@ -5,6 +5,8 @@ import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.InquiryDto;
 import org.gomgom.parkingplace.Service.inquriy.InquiryService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +29,7 @@ public class InquiryController {
      */
     @GetMapping()
     public ResponseEntity<InquiryDto.ResponseInquiriesDto> getInquiries(@PathVariable Long parkingLotId,
-                                          Pageable pageable) {
+                                                                        @PageableDefault(sort = "inquiryCreatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(inquiryService.getInquiries(parkingLotId, pageable));
     }
 

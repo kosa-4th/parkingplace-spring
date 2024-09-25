@@ -56,6 +56,14 @@ public class UserController {
         return ResponseEntity.ok(userService.signIn(user));
     }
 
+    @PostMapping("/google-authorize")
+    public ResponseEntity<?> signInUserWithGoogle(@RequestBody UserDto.requestSignInWithGoogleDto user) {
+        System.out.println(user.getAccessToken());
+        System.out.println(user.getTokenType());
+        System.out.println(user.getExpiresIn());
+        return ResponseEntity.ok(userService.googleSignIn(user.getAccessToken()));
+    }
+
     /**
      * 작성자: 오지수
      * ? : 리프레시 토큰

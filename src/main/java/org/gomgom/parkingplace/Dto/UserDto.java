@@ -171,6 +171,21 @@ public class UserDto {
         private String message;
     }
 
+    @NoArgsConstructor
+    @Getter
+     public static class requestSignInWithGoogleDto {
+        private String accessToken;
+        private String tokenType;
+        private String expiresIn;
+     }
+
+     @Getter
+     public static class GoogleUser {
+        private String id;
+        private String name;
+        private String email;
+     }
+
     /**
      * 이거 사용하나?
      */

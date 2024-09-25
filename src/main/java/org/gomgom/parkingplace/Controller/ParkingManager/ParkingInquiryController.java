@@ -6,6 +6,8 @@ import org.gomgom.parkingplace.Configure.CustomUserDetails;
 import org.gomgom.parkingplace.Dto.InquiryDto;
 import org.gomgom.parkingplace.Service.inquriy.InquiryService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +34,7 @@ public class ParkingInquiryController {
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<InquiryDto.ParkingInquiryResponseDto> getParkingInquiries(@PathVariable Long parkinglotId,
                                                                                     InquiryDto.ParkingInquiryRequestDto requestDto,
-                                                                                    Pageable pageable,
+                                                                                    @PageableDefault(sort = "inquiryCreatedAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 문의 목록 불러오기");
         return ResponseEntity.ok(inquiryService.getInquiriesByParking(userDetails.getUser(), parkinglotId, requestDto, pageable));

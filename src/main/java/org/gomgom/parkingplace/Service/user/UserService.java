@@ -33,4 +33,6 @@ public interface UserService {
 
     // 리프레시 토큰
     AuthDto.AuthResponseDto refreshToken(String refreshToken);
+
+    AuthDto.AuthResponseDto googleSignIn(String googleToken);
 }
