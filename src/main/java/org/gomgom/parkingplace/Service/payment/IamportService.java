@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Service.payment;
 
 import org.gomgom.parkingplace.Dto.PaymentDto;
 import org.gomgom.parkingplace.enums.Bool;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,12 @@ import static org.gomgom.parkingplace.Dto.PaymentCancelDto.ResponsePaymentCancel
 public class IamportService {
 
     private final WebClient webClient = WebClient.builder().baseUrl("https://api.iamport.kr").build();
+
+    @Value("${iamport.apiKey}")
+    private String apiKey;
+
+    @Value("${iamport.apiSecret}")
+    private String secretKey;
 
 
     /**
@@ -73,6 +80,7 @@ public class IamportService {
     /**
      * @Author 김경민
      * @Date 2024.09.12
+     * @Date 하드코딩 -> 시크릿키 보안
      * IamportAccessToken 발급
      * AceessToken 발급 후 문자열 처리
      */
@@ -80,7 +88,8 @@ public class IamportService {
 
         String tokenResponse = webClient.post()
                 .uri("/users/getToken")
-                .bodyValue(Map.of("imp_key", "7711023827288188", "imp_secret", "YDZc3JidwbJRBgjv0Nrr1rfdXQ32ijp81NI7KWuwmnSI4s5TUC54TfF5iJaRQo6Jqg3AXGe5wv8qSzTa"))
+                .header("Content-Type", "application/json")
+                .bodyValue(Map.of("imp_key", apiKey, "imp_secret", secretKey))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

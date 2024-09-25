@@ -1,6 +1,7 @@
 package org.gomgom.parkingplace.Configure;
 
 import com.siot.IamportRestClient.IamportClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,9 +15,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class AppConfig {
 
     //IamPort API 사용을 위한 API 키와 Secret Key
-    String apiKey = "7711023827288188"; //API 발급키
+    @Value("${iamport.apiKey}")
+    String apiKey; //API 발급키
     //시크릿키
-    String secretKey = "YDZc3JidwbJRBgjv0Nrr1rfdXQ32ijp81NI7KWuwmnSI4s5TUC54TfF5iJaRQo6Jqg3AXGe5wv8qSzTa";
+    @Value("${iamport.apiSecret}")
+    String secretKey;
 
     @Bean
     public IamportClient iamportClient() {
