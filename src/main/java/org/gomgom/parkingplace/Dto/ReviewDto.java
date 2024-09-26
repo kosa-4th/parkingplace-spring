@@ -63,7 +63,7 @@ public class ReviewDto {
     @Getter
     @AllArgsConstructor
     public static class ParkingReviewsRequestDto {
-        private Long parkinglotId;
+//        private Long parkinglotId;
 //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDateTime from;
@@ -82,8 +82,8 @@ public class ReviewDto {
     @AllArgsConstructor
     @Getter
     public static class ParkingReviewsResponseDto {
-        private boolean nextPage;
-        private int pageNum;
+        private int totalPages;
+        private int currentPage;
         List<ParkingReviewsDto> parkingReviews;
     }
 

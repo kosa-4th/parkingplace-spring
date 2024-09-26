@@ -115,8 +115,8 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable) {
-        ParkingLot parkingLot = parkingLotRepository.findById(dto.getParkinglotId())
+    public ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, Long parkinglotId, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable) {
+        ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
 
         if (!parkingLot.getUser().getId().equals(user.getId())) {
@@ -125,7 +125,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         Page<Review> reviewPage = reviewRepository.findReviewsByParkingLotAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(parkingLot, dto.getFrom(), dto.getTo().plusDays(1), pageable);
 
-        return new ReviewDto.ParkingReviewsResponseDto(reviewPage.hasNext(), reviewPage.getTotalPages(),
+        return new ReviewDto.ParkingReviewsResponseDto(reviewPage.getTotalPages(), reviewPage.getNumber(),
                 reviewPage.stream().map(ReviewDto.ParkingReviewsDto::new).toList());
     }
 }

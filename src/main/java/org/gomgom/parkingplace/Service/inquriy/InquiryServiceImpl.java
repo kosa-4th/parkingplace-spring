@@ -149,7 +149,7 @@ public class InquiryServiceImpl implements InquiryService{
             throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
         }
 
-        return new InquiryDto.ParkingInquiryResponseDto(inquiries.hasNext(), inquiries.getTotalPages(),
+        return new InquiryDto.ParkingInquiryResponseDto(inquiries.getTotalPages(), inquiries.getNumber(),
                 inquiries.stream().map(InquiryDto.ParkingInquiryDto::new).toList());
     }
 

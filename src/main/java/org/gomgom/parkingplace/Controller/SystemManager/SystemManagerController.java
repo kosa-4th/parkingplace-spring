@@ -45,8 +45,6 @@ public class SystemManagerController {
         if (!auth.equals("ROLE_SYSTEM_MANAGER")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("생성 권한이 없습니다.");
         }
-
-        System.out.println("!!!!!!!!!!!!!!!!!!!" + requestCreateLotDto.getUserEmail());
         // 수정 작업 수행
         int result = parkingLotService.createLotData(requestCreateLotDto);
 
@@ -75,7 +73,6 @@ public class SystemManagerController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("수정 권한이 없습니다.");
         }
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!" + requestModifyLotDto.getUserEmail());
         // 수정 작업 수행
         int result = parkingLotService.modifyLotData(requestModifyLotDto);
 

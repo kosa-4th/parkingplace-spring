@@ -1,27 +1,19 @@
 package org.gomgom.parkingplace.Dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.gomgom.parkingplace.Entity.CarType;
-import org.gomgom.parkingplace.Entity.ParkingLot;
-import org.gomgom.parkingplace.Entity.ParkingSpace;
 import org.gomgom.parkingplace.enums.CarTypeEnum;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class ParkingSpaceDto {
     /**
      * 작성자: 양건모
      * 시작 일자: 2024.09.07
      * 설명 : 주차장 간략 정보 제공을 위한 주차 구역 DTO
-     *  ---------------------
+     * ---------------------
      * 2024.09.07 양건모 | 기능 구현
      * 2024.09.07 양건모 | CarType.carType 타입 변경에 대한 수정
      * 2024.09.09 양건모 | carType 반환타입 carTypeEnum -> String 변경
-     * */
+     */
     @Getter
     public static class ParkingSpacesPreviewDto {
         //private final String spaceName;
@@ -45,10 +37,10 @@ public class ParkingSpaceDto {
      * 작성자: 양건모
      * 시작 일자: 2024.09.21
      * 설명 : 주차 구역 값 입력을 위한 DTO
-     *  ---------------------
+     * ---------------------
      * 2024.09.21 양건모 | 기능 구현
      * 2024.09.21 양건모 | 세차서비스, 정비 서비스 지원 여부 확인을 위한 washService, maintenanceService 필드 추가
-     * */
+     */
     @RequiredArgsConstructor
     @Getter
     public static class InputParkingSpaceValuesDto {
@@ -69,10 +61,10 @@ public class ParkingSpaceDto {
      * 작성자: 양건모
      * 시작 일자: 2024.09.20
      * 설명 : 주차 구역 추가를 위한 요청 DTO
-     *  ---------------------
+     * ---------------------
      * 2024.09.20 양건모 | 기능 구현
      * 2024.09.21 양건모 | 수정 요청 DTO와 중복되는 핃드들을 별도의 DTO로 분리
-     * */
+     */
     @Getter
     public static class InsertParkingSpaceRequestDto extends InputParkingSpaceValuesDto {
         private final long parkingLotId;
@@ -81,7 +73,19 @@ public class ParkingSpaceDto {
                                             long carTypeId, int weekdaysPrice, int weekAllDayPrice,
                                             int weekendPrice, int weekendAllDayPrice, boolean washService,
                                             Integer washPrice, boolean maintenanceService, Integer maintenancePrice) {
-            super(spaceName, availableSpaceNum, carTypeId, weekdaysPrice, weekAllDayPrice, weekendPrice, weekendAllDayPrice, washService, washPrice, maintenanceService, maintenancePrice);
+            super(
+                    spaceName,
+                    availableSpaceNum,
+                    carTypeId,
+                    weekdaysPrice,
+                    weekAllDayPrice,
+                    weekendPrice,
+                    weekendAllDayPrice,
+                    washService,
+                    (washPrice != null) ? washPrice : 0, // washPrice가 null이면 0을 기본값으로 설정
+                    maintenanceService,
+                    (maintenancePrice != null) ? maintenancePrice : 0 // maintenancePrice가 null이면 0을 기본값으로 설정
+            );
             this.parkingLotId = parkingLotId;
         }
     }
@@ -90,9 +94,10 @@ public class ParkingSpaceDto {
      * 작성자: 양건모
      * 시작 일자: 2024.09.21
      * 설명 : 주차 구역 수정을 위한 요청 DTO
-     *  ---------------------
+     * ---------------------
      * 2024.09.21 양건모 | 기능 구현
-     * */
+     * 2024.09.26 DTO 수정 -> 정비 세차가격 NULL 값처리
+     */
     @Getter
     public static class ModifyParkingSpaceRequestDto extends InputParkingSpaceValuesDto {
         private final long parkingSpaceId;
@@ -102,7 +107,19 @@ public class ParkingSpaceDto {
                                             long carTypeId, int weekdaysPrice, int weekAllDayPrice,
                                             int weekendPrice, int weekendAllDayPrice, boolean washService,
                                             Integer washPrice, boolean maintenanceService, Integer maintenancePrice) {
-            super(spaceName, availableSpaceNum, carTypeId, weekdaysPrice, weekAllDayPrice, weekendPrice, weekendAllDayPrice, washService, washPrice, maintenanceService, maintenancePrice);
+            super(
+                    spaceName,
+                    availableSpaceNum,
+                    carTypeId,
+                    weekdaysPrice,
+                    weekAllDayPrice,
+                    weekendPrice,
+                    weekendAllDayPrice,
+                    washService,
+                    (washPrice != null) ? washPrice : 0, // washPrice가 null이면 0을 기본값으로 설정
+                    maintenanceService,
+                    (maintenancePrice != null) ? maintenancePrice : 0 // maintenancePrice가 null이면 0을 기본값으로 설정
+            );
             this.parkingSpaceId = parkingSpaceId;
         }
     }

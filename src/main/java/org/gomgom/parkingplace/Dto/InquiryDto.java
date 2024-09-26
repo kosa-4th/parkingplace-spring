@@ -80,16 +80,16 @@ public class InquiryDto {
 //        private Long parkinglotId;
         private String actionType;
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDateTime from;
+        private LocalDate from;
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDateTime to;
+        private LocalDate to;
 
         public LocalDateTime getFrom() {
-            return from != null ? from : LocalDateTime.of(2000, 1, 1, 0, 0);
+            return from != null ? from.atStartOfDay() : LocalDateTime.of(2000, 1, 1, 0, 0);
         }
 
         public LocalDateTime getTo() {
-            return to != null ? to : LocalDateTime.now().plusDays(30);
+            return to != null ? to.atStartOfDay() : LocalDateTime.now().plusDays(30);
         }
 
     }
@@ -101,8 +101,8 @@ public class InquiryDto {
     @AllArgsConstructor
     @Getter
     public static class ParkingInquiryResponseDto {
-        private boolean nextPage;
-        private int pageNum;
+        private int totalPages;
+        private int currentPage;
         List<ParkingInquiryDto> inquiries;
     }
 
