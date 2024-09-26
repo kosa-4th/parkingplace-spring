@@ -12,18 +12,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/notifications/")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping("/protedted")
+    @GetMapping("/protected")
     public ResponseEntity<NotificationDto.getNotificationsResponseDto> getNotifications(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam long page,
-            @PageableDefault(page=0, size=10) Pageable pageable
+            @PageableDefault(page=0, size=2) Pageable pageable
     ) {
         return ResponseEntity.ok(notificationService.getNotifications(userDetails.getUser().getId(), pageable));
     }
