@@ -1,4 +1,4 @@
-package org.gomgom.parkingplace.Controller;
+package org.gomgom.parkingplace.Controller.ParkingManager;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -14,7 +14,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+/***
+ * @Date 2024.09.26
+ * Contrller폴더 이동 및 @어노테이션 재설정
+ * URL 재설정
+ */
+
+@RestController
+@RequestMapping("/api/parking-manager")
 @RequiredArgsConstructor
 public class ParkingSpaceController {
 
@@ -26,8 +33,9 @@ public class ParkingSpaceController {
      * 설명 : 주차 구역 추가
      *  ---------------------
      * 2024.09.20 양건모 | 기능 구현
+     * 2024.09.25 김경민 | 주소 수정 및 DTO 수정
      * */
-    @PostMapping("/api/parking-manager/info/parkingarea/protected")
+    @PostMapping("/info/parkingArea/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<?> insertParkingSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -45,13 +53,15 @@ public class ParkingSpaceController {
      * 설명 : 주차 구역 수정
      *  ---------------------
      * 2024.09.21 양건모 | 기능 구현
+     * 2024.09.26 김경민 | 주소 수정
      * */
-    @PutMapping("/api/parking-manager/info/parkingarea/protected")
+    @PutMapping("/info/parkingArea/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<?> modifyParkingSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @ModelAttribute ParkingSpaceDto.ModifyParkingSpaceRequestDto request
+            @RequestBody ParkingSpaceDto.ModifyParkingSpaceRequestDto request
     ) throws BadRequestException {
+
         parkingSpaceService.modifyParkingSpace(userDetails.getUser().getId(), request);
         return ResponseEntity.ok().build();
     }
@@ -63,7 +73,7 @@ public class ParkingSpaceController {
      *  ---------------------
      * 2024.09.22 양건모 | 기능 구현
      * */
-    @DeleteMapping("/api/parking-manager/info/parkingarea/protected")
+    @DeleteMapping("/info/parkingArea/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<?> deleteParkingSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
