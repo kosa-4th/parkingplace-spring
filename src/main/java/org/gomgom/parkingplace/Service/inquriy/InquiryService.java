@@ -10,11 +10,14 @@ public interface InquiryService {
     //문의 목록 가져오기
     InquiryDto.ResponseInquiriesDto getInquiries(Long parkinglotId, Pageable pageable);
 
+    //문의 1개 가져오기
+    InquiryDto.ResponseInquiryDto getInquiry(Long userId, Long parkinglotId, Long inquiryId);
+
     //문의 작성하기
-    void registerInquiry(User user, Long parkinglotId, String inquiry);
+    void registerInquiry(User user, Long parkinglotId, InquiryDto.RequestInquiriesDto inquiry);
 
     //문의 수정하기
-    void modifyInquiry(User user, Long parkinglotId, InquiryDto.RequestInquiryModifyDto requestDto);
+    void modifyInquiry(User user, Long parkinglotId, Long inquiryId, InquiryDto.RequestInquiryModifyDto requestDto);
 
     //문의 삭제하기
     void deleteInquiry(User user, Long parkinglotId, Long inquiryId);

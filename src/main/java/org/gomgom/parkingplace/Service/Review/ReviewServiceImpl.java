@@ -116,10 +116,12 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, Long parkinglotId, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable) {
+        log.info("Service: 주차장 관리자 리뷰 목록 가져오기");
         ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
 
         if (!parkingLot.getUser().getId().equals(user.getId())) {
+            log.info("사용자 불일치");
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 

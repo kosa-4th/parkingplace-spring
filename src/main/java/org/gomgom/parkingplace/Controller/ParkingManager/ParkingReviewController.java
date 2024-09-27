@@ -31,8 +31,6 @@ public class ParkingReviewController {
                                                                                  @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 목록 불러오기");
-        System.out.println();
-        System.out.println(pageable.getPageNumber() + " " + pageable.getPageSize());
         return ResponseEntity.ok(reviewService.getReviewsByParking(userDetails.getUser(), parkinglotId, requestDto, pageable));
     }
 }

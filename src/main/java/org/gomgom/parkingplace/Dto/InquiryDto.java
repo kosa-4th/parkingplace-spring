@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gomgom.parkingplace.Entity.Inquiry;
 import org.gomgom.parkingplace.Entity.ParkingLot;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -38,16 +39,20 @@ public class InquiryDto {
     public static class InquiriesDto {
         private Long id; // 문의 id
         private String inquirer; // 문의 작성자 이름
+        private String iqnuirerEmail;
         private String inquiry; // 문의 내용
         private String answer; // 답변
+        private boolean isSecret;
         private LocalDate inquiryDate; // 문의 날짜
         private LocalDate answerDate; // 답변 날짜
 
         public InquiriesDto(Inquiry inquiry) {
             this.id = inquiry.getId();
             this.inquirer = inquiry.getUser().getName();
+            this.iqnuirerEmail = inquiry.getUser().getEmail();
             this.inquiry = inquiry.getInquiry();
             this.answer = inquiry.getAnswer() == null ? "" : inquiry.getAnswer();
+            this.isSecret = inquiry.getIsSecret().equals(Bool.Y);
             this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate();
             this.answerDate = inquiry.getAnswerCreatedAt() == null ? null : inquiry.getAnswerCreatedAt().toLocalDate();
         }
@@ -56,16 +61,30 @@ public class InquiryDto {
     /**
      * 작성자: 오지수
      * 2024.09.12 : 문의 요청
+     * 새로 작성할 거 받아옴
      */
     @Getter
     public static class RequestInquiriesDto {
+        private Boolean secret;
+        private String inquiry; // 문의ㅣ
+    }
+
+    @Getter
+    public static class ResponseInquiryDto {
+        private Boolean isSecret;
         private String inquiry; // 문의
+
+        public ResponseInquiryDto(Inquiry inquiry) {
+            this.isSecret = inquiry.getIsSecret().equals(Bool.Y);
+            this.inquiry = inquiry.getInquiry();
+        }
     }
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class RequestInquiryModifyDto {
-        private Long inquiryId;
+        private Boolean isSecret;
         private String newInquiry;
     }
 
@@ -133,6 +152,7 @@ public class InquiryDto {
         public String inquirer;
         public String inquiryDate;
         public String inquiryUpdateDate;
+        public String answer;
         public String answerDate;
         public String answerUpdateDate;
 
@@ -141,7 +161,8 @@ public class InquiryDto {
             this.inquiry = inquiry.getInquiry();
             this.inquirer = inquiry.getUser().getName();
             this.inquiryDate = inquiry.getInquiryCreatedAt().toLocalDate().toString();
-            this.inquiryUpdateDate = inquiry.getInquiryUpdatedAt().toLocalDate().toString();
+            this.inquiryUpdateDate = inquiry.getInquiryUpdatedAt() != null ? inquiry.getInquiryUpdatedAt().toLocalDate().toString() : "";
+            this.answer = inquiry.getAnswer() == null ? "" : inquiry.getAnswer();
             this.answerDate = inquiry.getAnswerCreatedAt() != null ? inquiry.getAnswerCreatedAt().toLocalDate().toString() : "";
             this.answerUpdateDate = inquiry.getAnswerUpdatedAt() != null ? inquiry.getAnswerUpdatedAt().toLocalDate().toString() : "";
         }
