@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class NotificationDto {
 
@@ -22,6 +23,6 @@ public class NotificationDto {
     @RequiredArgsConstructor
     @Getter
     public static class getNotificationsResponseDto {
-        private final Page<NotificationDefaultDto> notifications;
+        private final List<NotificationDefaultDto> notifications;
     }
 }

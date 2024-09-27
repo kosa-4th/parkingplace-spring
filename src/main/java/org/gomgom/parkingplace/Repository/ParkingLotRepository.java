@@ -161,70 +161,73 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
      * @return 주차장 상세 정보
      *  ---------------------
      * 2024.09.23 양건모 | 기능 구현
+     * 2024.09.26 양건모 | 쿼리 수정
      * */
-    @Query(value = "SELECT " +
-                "pl.parking_lot_id, " +
-                "pl.name AS parking_lot_name, " +
-                "pl.address, " +
-                "ps.parking_space_id, " +
-                "MIN(LEAST( " +
-                    "CASE " +
-                        "WHEN DAYOFWEEK(:startDateTime) IN (1, 7) THEN " +
-                            "LEAST(ps.weekend_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price) " +
-                        "ELSE " +
-                            "LEAST(ps.week_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price) " +
-                        "END, " +
-                    "IFNULL(ps.week_all_day_price, ps.weekend_all_day_price) " +
-                ")) AS price, " +
-                "ROUND(ST_Distance_Sphere( " +
-                    "point(:longitude, :latitude), " +
-                    "POINT(pl.longitude, pl.latitude) " +
-                ")) AS distance_m, " +
-                "ROUND((0.7 * MIN(LEAST( " +
-                    "CASE " +
-                        "WHEN DAYOFWEEK(:startDateTime) IN (1, 7) THEN " +
-                            "LEAST(ps.weekend_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price) " +
-                        "ELSE " +
-                            "LEAST(ps.week_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price) " +
-                        "END, " +
-                    "IFNULL(ps.week_all_day_price, ps.weekend_all_day_price) " +
-                "))) + " +
-                "(0.3 * ST_Distance_Sphere(point(:longitude, :latitude), POINT(pl.longitude, pl.latitude)))) AS weighted_score " +
-            "FROM " +
-                "tbl_parking_lot pl " +
-            "JOIN " +
-                "tbl_parking_space ps ON pl.parking_lot_id = ps.parking_lot_id " +
-            "LEFT JOIN " +
-                "(SELECT " +
-                    "r.parking_lot_id AS parking_lot_id, " +
-                    "r.parking_space_id AS parking_space_id, " +
-                    "COUNT(1) AS reservation_count " +
-                "FROM " +
-                    "TBL_RESERVATION r " +
-                "WHERE " +
-                    "(r.start_time BETWEEN :startDateTime AND :endDateTime " +
-                    "OR r.end_time BETWEEN :startDateTime AND :endDateTime) " +
-                    "  AND r.reservation_confirmed != 'D' " +
-                "GROUP BY " +
-                    "r.parking_lot_id, r.parking_space_id " +
-            ") AS res ON res.parking_space_id = ps.parking_space_id " +
-                "AND res.parking_lot_id = pl.parking_lot_id " +
-            "WHERE " +
-                "ps.car_type_id IN (1, :carTypeId) " +
-                "AND ST_Distance_Sphere(POINT(:longitude, :latitude), POINT(pl.longitude, pl.latitude)) <= :maxDistance " +
-                "AND ps.usable = 1 " +
-                "AND pl.user_id IS NOT NULL " +
-                "AND ps.available_space_num > COALESCE(res.reservation_count, 0) " +
-                "AND ( " +
-                    "(DAYOFWEEK(:startDateTime) NOT IN (1, 7) AND " +
-                    "TIME(:startDateTime) >= pl.weekdays_open_time AND TIME(:endDateTime) <= pl.weekdays_close_time) " +
-                    "OR " +
-                    "(DAYOFWEEK(:startDateTime) IN (1, 7) AND " +
-                    "TIME(:startDateTime) >= pl.weekend_open_time AND TIME(:endDateTime) <= pl.weekend_close_time) " +
-                ") " +
-            "GROUP BY pl.parking_lot_id, pl.name, pl.address, ps.parking_space_id " +
-            "ORDER BY " +
-                "weighted_score",
-    nativeQuery = true)
+    @Query(value = "WITH ranked_distances AS (\n" +
+            "    SELECT \n" +
+            "        pl.parking_lot_id, \n" +
+            "        ps.parking_space_id, \n" +
+            "        ROUND(ST_Distance_Sphere(point(:longitude, :latitude), POINT(pl.longitude, pl.latitude))) AS distance_m,\n" +
+            "        PERCENT_RANK() OVER (ORDER BY ST_Distance_Sphere(point(:longitude, :latitude), POINT(pl.longitude, pl.latitude))) AS distance_percentile\n" +
+            "    FROM tbl_parking_lot pl\n" +
+            "    JOIN tbl_parking_space ps ON pl.parking_lot_id = ps.parking_lot_id\n" +
+            "    WHERE ST_Distance_Sphere(point(:longitude, :latitude), POINT(pl.longitude, pl.latitude)) <= :maxDistance\n" +
+            "      AND ps.car_type_id IN (1, :carTypeId)  -- 주차 공간의 car_type_id 조건 추가\n" +
+            "),\n" +
+            "ranked_prices AS (\n" +
+            "    SELECT \n" +
+            "        pl.parking_lot_id, \n" +
+            "        ps.parking_space_id, \n" +
+            "        MIN(CASE \n" +
+            "                WHEN DAYOFWEEK('2024-09-24 14:30:00.000000') IN (1, 7) THEN \n" +
+            "                    CASE \n" +
+            "                        WHEN ps.weekend_all_day_price = 0 THEN \n" +
+            "                            CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price\n" +
+            "                        ELSE \n" +
+            "                            LEAST(ps.weekend_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price)\n" +
+            "                    END\n" +
+            "                ELSE \n" +
+            "                    CASE \n" +
+            "                        WHEN ps.week_all_day_price = 0 THEN \n" +
+            "                            CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price\n" +
+            "                        ELSE \n" +
+            "                            LEAST(ps.week_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price)\n" +
+            "                    END\n" +
+            "            END) AS price,\n" +
+            "        PERCENT_RANK() OVER (ORDER BY MIN(CASE \n" +
+            "                WHEN DAYOFWEEK(:startDateTime) IN (1, 7) THEN \n" +
+            "                    CASE \n" +
+            "                        WHEN ps.weekend_all_day_price = 0 THEN \n" +
+            "                            CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price\n" +
+            "                        ELSE \n" +
+            "                            LEAST(ps.weekend_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekend_price)\n" +
+            "                    END\n" +
+            "                ELSE \n" +
+            "                    CASE \n" +
+            "                        WHEN ps.week_all_day_price = 0 THEN \n" +
+            "                            CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price\n" +
+            "                        ELSE \n" +
+            "                            LEAST(ps.week_all_day_price, CEIL(TIMESTAMPDIFF(MINUTE, :startDateTime, :endDateTime) / 30.0) * ps.weekdays_price)\n" +
+            "                    END\n" +
+            "            END)) AS price_percentile\n" +
+            "    FROM tbl_parking_lot pl\n" +
+            "    JOIN tbl_parking_space ps ON pl.parking_lot_id = ps.parking_lot_id\n" +
+            "    WHERE ST_Distance_Sphere(point(:longitude, :latitude), POINT(pl.longitude, pl.latitude)) <= :maxDistance\n" +
+            "      AND ps.car_type_id IN (1, :carTypeId)\n" +
+            "    GROUP BY pl.parking_lot_id, ps.parking_space_id\n" +
+            ")\n" +
+            "SELECT \n" +
+            "    pl.parking_lot_id, \n" +
+            "    pl.name AS parking_lot_name, \n" +
+            "    pl.address, \n" +
+            "    ps.parking_space_id,\n" +
+            "    rp.price, \n" +
+            "    rd.distance_m, \n" +
+            "    (0.5 * (1 - rd.distance_percentile)) + (0.5 * (1 - rp.price_percentile)) AS weighted_score\n" +
+            "FROM tbl_parking_lot pl\n" +
+            "JOIN tbl_parking_space ps ON pl.parking_lot_id = ps.parking_lot_id\n" +
+            "JOIN ranked_distances rd ON rd.parking_lot_id = pl.parking_lot_id AND rd.parking_space_id = ps.parking_space_id\n" +
+            "JOIN ranked_prices rp ON rp.parking_lot_id = pl.parking_lot_id AND rp.parking_space_id = ps.parking_space_id\n" +
+            "ORDER BY weighted_score DESC", nativeQuery = true)
     List<Object[]> getRecommendedParkingLots(double longitude, double latitude, int maxDistance, LocalDateTime startDateTime, LocalDateTime endDateTime, long carTypeId);
 }

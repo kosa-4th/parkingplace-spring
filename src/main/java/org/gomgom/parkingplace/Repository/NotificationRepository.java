@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     @EntityGraph(attributePaths = {"user"})
@@ -18,7 +20,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             "FROM Notification noti " +
             "WHERE noti.user.id = :userId " +
             "ORDER BY noti.createdAt DESC")
-    Page<NotificationDto.NotificationDefaultDto> getNotifications(long userId, Pageable pageable);
+    List<NotificationDto.NotificationDefaultDto> getNotifications(long userId);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Notification noti SET noti.checked = true " +
