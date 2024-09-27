@@ -112,7 +112,7 @@ public class MyPageDto {
             this.endDate = reservation.getEndTime().toString();
             this.carNumber = reservation.getPlateNumber();
             this.carType = reservation.getParkingSpace().getCarType().getCarTypeEnum().getKor();
-            this.status = reservation.getReservationConfirmed().name().equals("Y") ? "예약확정" : "예약취소";
+            this.status = reservation.getReservationConfirmed().getString();
         }
     }
 
