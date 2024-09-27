@@ -46,6 +46,22 @@ public class InquiryServiceImpl implements InquiryService{
                 inquiries.stream().map(InquiryDto.InquiriesDto::new).toList());
     }
 
+    @Override
+    public InquiryDto.ResponseInquiryDto getInquiry(Long userId, Long parkinglotId, Long inquiryId) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 문의입니다."));
+        if (!inquiry.getParkingLot().getId().equals(parkinglotId)) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        if (!inquiry.getUser().getId().equals(userId)) {
+            throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
+        }
+
+        return new InquiryDto.ResponseInquiryDto(inquiry);
+
+    }
+
     /**
      * 작성자: 오지수
      * 2024.09.11 : 사용자가 특정 주차장에 문의 등록
@@ -55,17 +71,22 @@ public class InquiryServiceImpl implements InquiryService{
      */
     @Override
     @Transactional
-    public void registerInquiry(User user, Long parkinglotId, String inquiry) {
+    public void registerInquiry(User user, Long parkinglotId, InquiryDto.RequestInquiriesDto dto) {
         // 주차장 확인
+        System.out.println("service단 시작");
+        System.out.println("secret: " + dto.getSecret());
         ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 주차장입니다."));
         Inquiry inquiryEntity = Inquiry.builder()
                 .user(user)
                 .parkingLot(parkingLot)
-                .inquiry(inquiry)
+                .inquiryDto(dto)
                 .build();
+        System.out.println("저장된: " +inquiryEntity.getIsSecret().name());
         inquiryRepository.save(inquiryEntity);
     }
+
+
 
     /**
      * 작성자: 오지수
@@ -76,8 +97,8 @@ public class InquiryServiceImpl implements InquiryService{
      */
     @Override
     @Transactional
-    public void modifyInquiry(User user, Long parkinglotId, InquiryDto.RequestInquiryModifyDto requestDto) {
-        Inquiry inquiry = vaildInquiry(user, parkinglotId, requestDto.getInquiryId());
+    public void modifyInquiry(User user, Long parkinglotId, Long inquiryId, InquiryDto.RequestInquiryModifyDto requestDto) {
+        Inquiry inquiry = vaildInquiry(user, parkinglotId, inquiryId);
         inquiry.modifyInquiry(requestDto.getNewInquiry());
     }
 
@@ -108,11 +129,11 @@ public class InquiryServiceImpl implements InquiryService{
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 문의입니다."));
 
-        if (!inquiry.getParkingLot().equals(parkingLot)) {
+        if (!inquiry.getParkingLot().getId().equals(parkinglotId)) {
             throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
         }
 
-        if (!inquiry.getUser().equals(user)) {
+        if (!inquiry.getUser().getId().equals(user.getId())) {
             throw new CustomExceptions.ValidationException("유효하지 않은 접근입니다.");
         }
         return inquiry;
