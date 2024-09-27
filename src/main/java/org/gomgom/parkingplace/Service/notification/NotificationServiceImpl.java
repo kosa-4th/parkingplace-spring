@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -30,8 +32,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDto.getNotificationsResponseDto getNotifications(long userId, Pageable pageable) {
-        Page<NotificationDto.NotificationDefaultDto> notifications  = notificationRepository.getNotifications(userId, pageable);
+    public NotificationDto.getNotificationsResponseDto getNotifications(long userId) {
+        List<NotificationDto.NotificationDefaultDto> notifications  = notificationRepository.getNotifications(userId);
        return new NotificationDto.getNotificationsResponseDto(notifications);
     }
 

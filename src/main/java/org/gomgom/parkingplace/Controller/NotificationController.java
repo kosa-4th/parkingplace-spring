@@ -22,10 +22,9 @@ public class NotificationController {
     @GetMapping("/protected")
     public ResponseEntity<NotificationDto.getNotificationsResponseDto> getNotifications(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam long page,
-            @PageableDefault(page=0, size=2) Pageable pageable
+            @RequestParam long page
     ) {
-        return ResponseEntity.ok(notificationService.getNotifications(userDetails.getUser().getId(), pageable));
+        return ResponseEntity.ok(notificationService.getNotifications(userDetails.getUser().getId()));
     }
 
     @PutMapping("/{notificationId}/protected")

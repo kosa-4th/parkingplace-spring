@@ -7,7 +7,7 @@ public interface NotificationService {
 
     long createNotification(long userId, String description, String notificationLink);
 
-    NotificationDto.getNotificationsResponseDto getNotifications(long userId, Pageable pageable);
+    NotificationDto.getNotificationsResponseDto getNotifications(long userId);
 
     void checkNotification(long userId, long notificationId);
 
