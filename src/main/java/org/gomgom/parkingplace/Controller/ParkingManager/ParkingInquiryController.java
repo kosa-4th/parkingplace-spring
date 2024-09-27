@@ -44,22 +44,23 @@ public class ParkingInquiryController {
     // inquiries/{inquiryId}/protected
     @GetMapping("/inquiries/{inquiryId}/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
-    public ResponseEntity<InquiryDto.ParkingInquiryDetailDto> getParkingInquiryDetails(@PathVariable Map<String, String> path,
+    public ResponseEntity<InquiryDto.ParkingInquiryDetailDto> getParkingInquiryDetails(@PathVariable Long parkinglotId,
+                                                                                       @PathVariable Long inquiryId,
                                                                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 문의 상세 불러오기");
 
-        System.out.println(path.get("parkinglotId"));
-        return ResponseEntity.ok(inquiryService.getInquiryByParking(userDetails.getUser(), Long.parseLong(path.get("parkinglotId")), Long.parseLong(path.get("inquiryId"))));
+        return ResponseEntity.ok(inquiryService.getInquiryByParking(userDetails.getUser(), parkinglotId, inquiryId));
     }
 
     // 관리자 문의 답변 등록하기
     //inquiries/protected
     @PostMapping("/inquiries/{inquiryId}/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
-    public ResponseEntity<Void> registerParkingAnswer(@PathVariable Map<String, String> path,
+    public ResponseEntity<Void> registerParkingAnswer(@PathVariable Long parkinglotId,
+                                                      @PathVariable Long inquiryId,
                                                       @RequestBody InquiryDto.ParkingInquiryAnswerRequest requestDto,
                                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
-        inquiryService.registerAnswerByParking(userDetails.getUser(), Long.parseLong(path.get("parkinglotId")), Long.parseLong(path.get("inquiryId")), requestDto.getAnswer());
+        inquiryService.registerAnswerByParking(userDetails.getUser(), parkinglotId, inquiryId, requestDto.getAnswer());
         return ResponseEntity.ok().build();
     }
 

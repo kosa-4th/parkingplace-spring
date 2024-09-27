@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.gomgom.parkingplace.Dto.InquiryDto;
+import org.gomgom.parkingplace.enums.Bool;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +27,10 @@ public class Inquiry {
 
     @Column(name = "answer")
     private String answer;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_secret", nullable = false)
+    private Bool isSecret;
 
     @Column(name = "inquiry_created_at", nullable = false)
     private LocalDateTime inquiryCreatedAt;
@@ -46,10 +53,13 @@ public class Inquiry {
     private ParkingLot parkingLot;
 
     @Builder
-    public Inquiry(User user, ParkingLot parkingLot, String inquiry) {
+    public Inquiry(User user, ParkingLot parkingLot, InquiryDto.RequestInquiriesDto inquiryDto) {
         this.user = user;
         this.parkingLot = parkingLot;
-        this.inquiry = inquiry;
+        this.inquiry = inquiryDto.getInquiry();
+        System.out.println("inquiry에서 뽑아보자");
+        System.out.println(inquiryDto.getSecret());
+        this.isSecret = inquiryDto.getSecret() ? Bool.Y : Bool.N;
         this.inquiryCreatedAt = LocalDateTime.now();
         this.inquiryUpdatedAt = LocalDateTime.now();
     }

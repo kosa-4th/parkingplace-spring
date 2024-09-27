@@ -14,5 +14,5 @@ public interface ReviewService {
 
     void modifyReview(Long userId, Long parkinglotId, Long reviewId, String review);
 
-    ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable);
+    ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, Long parkinglotId, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable);
 }

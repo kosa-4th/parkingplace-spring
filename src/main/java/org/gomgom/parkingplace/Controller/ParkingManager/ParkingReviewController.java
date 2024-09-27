@@ -12,12 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/parking-manager")
+@RequestMapping("/api/parking-manager/parkinglots/{parkinglotId}")
 @RequiredArgsConstructor
 @Log4j2
 public class ParkingReviewController {
@@ -25,12 +26,11 @@ public class ParkingReviewController {
 
     @GetMapping("/reviews/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
-    public ResponseEntity<ReviewDto.ParkingReviewsResponseDto> getParkingReviews(ReviewDto.ParkingReviewsRequestDto requestDto,
+    public ResponseEntity<ReviewDto.ParkingReviewsResponseDto> getParkingReviews(@PathVariable Long parkinglotId,
+                                                                                 ReviewDto.ParkingReviewsRequestDto requestDto,
                                                                                  @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 목록 불러오기");
-        System.out.println();
-        System.out.println(pageable.getPageNumber() + " " + pageable.getPageSize());
-        return ResponseEntity.ok(reviewService.getReviewsByParking(userDetails.getUser(), requestDto, pageable));
+        return ResponseEntity.ok(reviewService.getReviewsByParking(userDetails.getUser(), parkinglotId, requestDto, pageable));
     }
 }
