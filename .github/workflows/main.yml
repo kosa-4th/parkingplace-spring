@@ -11,15 +11,20 @@ env:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
         java-version: '21'
         distribution: 'temurin'
-     - name: Grant Execute permission for gradlew
-       run: chmod +x gradlew
-     - Build with Gradle
-       run: ./gradlew clean build
+
+    - name: Grant Execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew clean build
