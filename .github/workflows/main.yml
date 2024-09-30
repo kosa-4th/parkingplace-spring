@@ -22,8 +22,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle
+        env:
+          APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET }}
         run: |
-          echo ${{secrets.APPLICATION_SECRET}} | base64 --decode > ./src/main/resources/application-secret.yml
+          echo $APPLICATION_SECRET | base64 --decode > ./src/main/resources/application-secret.yml
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
