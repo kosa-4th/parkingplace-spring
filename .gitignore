@@ -37,6 +37,6 @@ out/
 .vscode/
 
 ### settings ###
-*.yml
+application-secret.yml
 *.properties
 /src/test/java/org/gomgom/parkingplace/gaeng

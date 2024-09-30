@@ -52,6 +52,8 @@ public class SecurityConfiguration {
 //                        .requestMatchers("/api/parking/**").hasRole("PARKING_MANAGER")
 //                        .requestMatchers("/api/protected/**").hasRole("USER")
                         .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/hc", "env")
+                                .permitAll()
 
                         .anyRequest().denyAll()
                 )
