@@ -1,5 +1,5 @@
 FROM amazoncorretto:21-alpine-jdk
-ARG JAR_FILE=target/*.jar
+ARG JAR_FILE=build/libs/*.jar
 ARG PRFILES
 ARG ENV
 COPY ${JAR_FILE} app.jar
