@@ -1,0 +1,30 @@
+name: parking place CI/CD
+
+on:
+  push:
+    branches: develop
+  pull_request:
+    branches: develop
+
+env:
+  S3_BUCKET_NAME: S3-parking-place
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+     - name: Grant Execute permission for gradlew
+       run: chmod +x gradlew
+
+     - Build with Gradle
+       run: ./gradlew clean build
