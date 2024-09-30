@@ -38,5 +38,4 @@ out/
 
 ### settings ###
 application-secret.yml
-*.properties
 /src/test/java/org/gomgom/parkingplace/gaeng
