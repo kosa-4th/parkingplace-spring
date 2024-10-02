@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
 //                        .requestMatchers("/api/parking/**").hasRole("PARKING_MANAGER")
 //                        .requestMatchers("/api/protected/**").hasRole("USER")
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/**", "/**").permitAll()
                                 .requestMatchers("/hc", "env")
                                 .permitAll()
 
