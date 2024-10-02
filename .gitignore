@@ -39,3 +39,7 @@ out/
 ### settings ###
 application-secret.yml
 /src/test/java/org/gomgom/parkingplace/gaeng
+/src/main/resources/static
+/src/main/resources/static
+/src/main/resources/static
+/src/main/resources/static

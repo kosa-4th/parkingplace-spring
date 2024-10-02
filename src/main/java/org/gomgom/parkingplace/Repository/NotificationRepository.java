@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @EntityGraph(attributePaths = {"user"})
+//    @EntityGraph(attributePaths = {"user"})
     @Query("SELECT new org.gomgom.parkingplace.Dto.NotificationDto$NotificationDefaultDto(" +
             "noti.id, noti.user.id, noti.description, noti.notificationLink, noti.checked, noti.createdAt" +
             ") " +

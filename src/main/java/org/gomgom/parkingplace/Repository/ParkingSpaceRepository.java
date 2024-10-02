@@ -23,7 +23,7 @@ import java.util.Optional;
 public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long> {
 
     // 주차장과 차종을 기준으로 주차 공간 조회
-    @Query("SELECT ps FROM ParkingSpace ps WHERE ps.parkingLot.id = :parkingLotId AND ps.carType.id = :carTypeId")
+    @Query("SELECT ps FROM ParkingSpace ps WHERE ps.parkingLot.id = :parkingLotId AND ps.carType.id = :carTypeId AND ps.usable=true")
     Optional<ParkingSpace> findByParkingLotAndCarType(@Param("parkingLotId") Long parkingLotId, @Param("carTypeId") Long carTypeId);
 
     @Query("SELECT ps FROM ParkingSpace ps LEFT JOIN Reservation r " +
