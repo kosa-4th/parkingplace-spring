@@ -38,7 +38,6 @@ public class ReservationController {
             @PathVariable Long parkingLotId,
             @ModelAttribute RequestAvailableDto requestAvailableDto) {
 
-        System.out.println("#########"+requestAvailableDto.getWashService()+" "+requestAvailableDto.getMaintenanceService());
         ReservationAvailableResponseDto response = parkingSeatSearchService.isParkingSpaceAvailable(parkingLotId, requestAvailableDto);
         return ResponseEntity.ok(response);
     }
