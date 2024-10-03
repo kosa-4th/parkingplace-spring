@@ -35,7 +35,7 @@ public class ReviewController {
                                          @RequestBody ReviewDto.ReviewRequestDto reviewDto,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 리뷰 등록");
-        String result = reviewService.saveReview(userDetails.getUser(), parkinglotId, reviewDto.getNewReview());
+        String result = reviewService.saveReview(userDetails.getUser(), parkinglotId, reviewDto);
         log.info("Controller: 주차장 리뷰 등록 완료");
         return ResponseEntity.ok(result);
     }
