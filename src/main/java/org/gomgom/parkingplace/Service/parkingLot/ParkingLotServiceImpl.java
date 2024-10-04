@@ -288,6 +288,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * ---------------------
      * 2024.09.18 양건모 | 기능 구현
      * 2024.09.20 양건모 | 성능 향상을 위해 findById() 메서드를 findByIdIncludeImageSpace() 메서드로 대체
+     * 2024.10.04 양건모 | 이미지 경로 수정 : 상대경로 -> 절대경로
      */
     @Override
     @Transactional(readOnly = true)
@@ -297,7 +298,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         //주차장 이미지 가공
         List<ParkingLotDto.MyParkingLotImageDto> images = new ArrayList<>();
         for (ParkingImage image : parkingLot.getParkingImages()) {
-            images.add(new ParkingLotDto.MyParkingLotImageDto(image.getId(), uploadPath + File.separator + image.getThumbnailPath()));
+            images.add(new ParkingLotDto.MyParkingLotImageDto(image.getId(), image.getThumbnailPath()));
         }
 
         //주차구역 가공
@@ -357,10 +358,11 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * 설명 : 이미지 삽입
      *
      * @param parkingLot     이미지를 삽입할 주차장 엔티티
-     * @param multipartFiles 삽입할 이미지
+     * @param images 삽입할 이미지
      * @return void
      * ---------------------
      * 2024.09.19 양건모 | 기능 구현
+     * 2024.10.04 양건모 | S3를 이용해 로직 변경
      */
     @Transactional
     private void inputImages(ParkingLot parkingLot, MultipartFile[] images) throws BadRequestException {
@@ -385,8 +387,6 @@ public class ParkingLotServiceImpl implements ParkingLotService {
             String changedName = changeImageName(originName);
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/" + extension);
-
-            System.out.println("=======================================" + bucketName);
 
             try {
                 requests.add(new PutObjectRequest(
