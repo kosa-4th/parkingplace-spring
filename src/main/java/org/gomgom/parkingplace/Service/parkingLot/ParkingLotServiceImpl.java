@@ -52,7 +52,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     private final UserRepository userRepository;
     @Value("${parple.upload.virtual}")
     private String uploadPath;
-    @Value("$cloud.aws.s3.bucketName")
+    @Value("{$cloud.aws.s3.bucketName}")
     private String bucketName;
     private final AmazonS3 amazonS3;
 
