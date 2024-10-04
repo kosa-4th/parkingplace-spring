@@ -1,9 +1,15 @@
 package org.gomgom.parkingplace.Service.parkingLot;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.apache.coyote.BadRequestException;
 import org.gomgom.parkingplace.Dto.ParkingLotDto;
 import org.gomgom.parkingplace.Dto.UserDto;
 import org.gomgom.parkingplace.Entity.ParkingImage;
@@ -46,6 +52,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     private final UserRepository userRepository;
     @Value("${parple.upload.virtual}")
     private String uploadPath;
+    @Value("$cloud.aws.s3.bucketName")
+    private String bucketName;
+    private final AmazonS3 amazonS3;
 
     @Override
     @Transactional
@@ -354,33 +363,51 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * 2024.09.19 양건모 | 기능 구현
      */
     @Transactional
-    private void inputImages(ParkingLot parkingLot, MultipartFile[] multipartFiles) throws IOException {
-        if (multipartFiles != null && multipartFiles.length > 0) {
-            String folderPath = makeFolder();
-            List<ParkingImage> images = new ArrayList<>();
+    private void inputImages(ParkingLot parkingLot, MultipartFile[] images) throws BadRequestException {
+        if (images == null || images.length <= 0) {
+            return;
+        }
 
-            for (int i = 0; i < multipartFiles.length; i++) {
-                if (!multipartFiles[i].getContentType().startsWith("image") || multipartFiles[i].isEmpty()) {
-                    continue;
-                }
+        List<PutObjectRequest> requests = new ArrayList<>();
+        for (int i = 0; i < images.length; i++) {
 
-                String originalName = multipartFiles[i].getOriginalFilename();
-                String uuid = UUID.randomUUID().toString();
-                String saveName = folderPath + File.separator + uuid + "_" + originalName;
-                Path savePath = Paths.get(uploadPath + File.separator + saveName);
-
-                multipartFiles[i].transferTo(savePath);
-                String thumbnailSaveName = folderPath + File.separator + "s_" + uuid + "_" + originalName;
-                File thumbnailFile = new File(uploadPath + File.separator + thumbnailSaveName);
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 300, 300);
-                ParkingImage image = new ParkingImage(saveName, thumbnailSaveName, parkingLot);
-                images.add(image);
-                parkingLot.getParkingImages().add(image);
-
+            if (!images[i].getContentType().startsWith("image") || images[i].isEmpty()) {
+                continue;
             }
 
-            parkingImageRepository.saveAll(images);
+            String originName = images[i].getOriginalFilename();
+            String extension;
+            try {
+                extension = originName.substring(originName.lastIndexOf("."));
+            } catch (NullPointerException e) {
+                throw new BadRequestException();
+            }
+            String changedName = changeImageName(originName);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/" + extension);
+
+            try {
+                requests.add(new PutObjectRequest(
+                        bucketName, changedName, images[i].getInputStream(), metadata
+                ));
+            } catch (IOException e) {
+                throw new BadRequestException();
+            }
         }
+
+        for (PutObjectRequest request: requests) {
+            PutObjectResult putObjectResult = amazonS3.putObject(
+                    request.withCannedAcl(CannedAccessControlList.PublicRead)
+            );
+
+            String imageUrl = amazonS3.getUrl(bucketName, request.getKey()).toString();
+            parkingImageRepository.save(new ParkingImage(imageUrl, imageUrl, parkingLot));
+        }
+    }
+
+    public String changeImageName(String originName) {
+        String uuid = UUID.randomUUID().toString();
+        return uuid + originName;
     }
 
     /**
@@ -391,6 +418,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
      * @return 파일 경로
      * ---------------------
      * 2024.09.19 양건모 | 기능 구현
+     * 2024.10.14 양건모 | deprecated
      */
     private String makeFolder() throws FileNotFoundException {
         String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -411,8 +439,8 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         System.out.println(objs.size() + "=================================");
 
         List<ParkingLotDto.RecommendedParkingLotDto> recommendedParkingLots = new ArrayList<>();
-        for (Object[] obj: objs) {
-            ParkingLotDto.RecommendedParkingLotDto parkingLot = new ParkingLotDto.RecommendedParkingLotDto((Long) obj[0], (String) obj[1], (String) obj[2], (Long) obj[3], ((BigDecimal) obj[4]).longValue(), (Double)obj[5]);
+        for (Object[] obj : objs) {
+            ParkingLotDto.RecommendedParkingLotDto parkingLot = new ParkingLotDto.RecommendedParkingLotDto((Long) obj[0], (String) obj[1], (String) obj[2], (Long) obj[3], ((BigDecimal) obj[4]).longValue(), (Double) obj[5]);
             recommendedParkingLots.add(parkingLot);
         }
 
