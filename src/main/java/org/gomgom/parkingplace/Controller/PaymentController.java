@@ -62,7 +62,7 @@ public class PaymentController {
         RequestPaymentDto requestPaymentDto = iamportService.verifyPayment(impUid, merchantUid);
         if (requestPaymentDto == null) {
             // 실패 페이지로 리다이렉트
-            String failedRedirectUrl = "http://localhost:5173/reservation/detail/" + reservationId + "?message=결제 실패!";
+            String failedRedirectUrl = "https://www.parkingplace.store/reservation/detail/" + reservationId + "?message=결제 실패!";
             return ResponseEntity.status(HttpStatus.FOUND)  // 302 리다이렉트 상태 코드
                     .location(URI.create(failedRedirectUrl))
                     .build();
@@ -72,7 +72,7 @@ public class PaymentController {
         paymentService.completePayment(reservationId, requestPaymentDto);
 
         // 성공 메시지 반환
-        String redirectUrl = "http://localhost:5173/reservation/detail/" + reservationId;
+        String redirectUrl = "http://www.parkingplace.store/reservation/detail/" + reservationId;
         return ResponseEntity.status(HttpStatus.FOUND)  // 302 리다이렉트 상태 코드
                 .location(URI.create(redirectUrl))      // 리다이렉트할 URL 설정
                 .build();
