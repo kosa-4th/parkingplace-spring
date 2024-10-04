@@ -39,8 +39,11 @@ public class Review {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
-    @Column(name = "complaint", nullable = false)
+    @Column(name = "complaint")
     private Bool complaint;
+
+    @Column(name = "complaint_reason")
+    private String complaintReason;
 
     @NotNull
     @CreatedDate
@@ -72,7 +75,8 @@ public class Review {
         this.complaint = Bool.N;
     }
 
-    public void complainReview() {
+    public void complainReview(String reason) {
+        this.complaintReason = reason;
         this.complaint = Bool.C;
     }
 }

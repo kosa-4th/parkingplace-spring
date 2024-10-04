@@ -62,11 +62,14 @@ public class ReviewServiceImpl implements ReviewService{
      */
     @Override
     public String saveReview(User user, Long parkinglotId, ReviewDto.ReviewRequestDto reviewDto) {
+        log.info("Service: 사용자 리뷰 등록");
         // 주차장 정보
         ParkingLot parkingLot = parkingLotRepository.findById(parkinglotId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주차장을 찾을 수 없습니다."));
+        log.info("주차장 유효성");
 
         // 리뷰 생성 및 저장
+
         Review reviewEntity = Review.builder()
                 .user(user)
                 .parkingLot(parkingLot)
@@ -74,6 +77,7 @@ public class ReviewServiceImpl implements ReviewService{
                 .rating(reviewDto.getRating())
                 .build();
         reviewRepository.save(reviewEntity);
+        log.info("저장 완");
 
         return "리뷰가 성공적으로 등록되었습니다.";
     }
@@ -183,20 +187,23 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public void complaintReviewByParking(User user, Long parkinglotId, Long reviewId) {
+    public void complaintReviewByParking(User user, Long parkinglotId, Long reviewId, String complaintReason) {
         log.info("Service: 주차장 관리자 리뷰 신고");
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new CustomExceptions.ValidationException("존재하지 않는 리뷰입니다."));
+        log.info("1");
 
         if (!review.getParkingLot().getId().equals(parkinglotId)) {
             throw new CustomExceptions.ValidationException("권한이 없는 리뷰입니다.");
         }
+        log.info("2");
 
         if (!review.getComplaint().equals(Bool.N)) {
             throw new CustomExceptions.ValidationException("권한이 없는 리뷰입니다.");
         }
+        log.info("3");
 
-        review.complainReview();
+        review.complainReview(complaintReason);
         log.info("리뷰 신고 완료");
     }
 }

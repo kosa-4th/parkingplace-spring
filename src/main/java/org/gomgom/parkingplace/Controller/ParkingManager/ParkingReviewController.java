@@ -37,16 +37,18 @@ public class ParkingReviewController {
                                                 @PathVariable Long reviewId,
                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 상세 정보 불러오기");
-        return null;
+        return ResponseEntity.ok(reviewService.getReivewDatailsByParking(userDetails.getUser(), parkinglotId, reviewId));
     }
 
     @PutMapping("/reviews/{reviewId}/protected")
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<Void> complaintReview(@PathVariable Long parkinglotId,
                                                 @PathVariable Long reviewId,
+                                                @RequestBody ReviewDto.ParkingComplainReviewDto reviewDto,
                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 신고");
-        reviewService.complaintReviewByParking(userDetails.getUser(), parkinglotId, reviewId);
+        log.info(reviewDto.getComplaintReason());
+        reviewService.complaintReviewByParking(userDetails.getUser(), parkinglotId, reviewId, reviewDto.getComplaintReason());
         return ResponseEntity.ok().build();
     }
 }

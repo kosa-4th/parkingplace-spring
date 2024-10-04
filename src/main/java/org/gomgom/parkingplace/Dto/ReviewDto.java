@@ -93,6 +93,11 @@ public class ReviewDto {
         List<ParkingReviewsDto> parkingReviews;
     }
 
+    @Getter
+    public static class ParkingComplainReviewDto {
+        private String complaintReason;
+    }
+
     /**
      * 주차장 리뷰
      */
@@ -103,6 +108,7 @@ public class ReviewDto {
         public String review;
         public String reviewDate;
         public String complaint;
+        public String selectedReason;
 
         public ParkingReviewsDto(Review review, String reviewText) {
             this.reviewId = review.getId();
@@ -110,6 +116,7 @@ public class ReviewDto {
             this.review = reviewText;
             this.reviewDate = review.getCreatedAt().toLocalDate().toString();
             this.complaint = review.getComplaint().name();
+            this.selectedReason = review.getComplaintReason();
         }
     }
 }

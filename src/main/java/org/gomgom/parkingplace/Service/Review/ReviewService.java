@@ -18,5 +18,5 @@ public interface ReviewService {
 
     ReviewDto.ParkingReviewsDto getReivewDatailsByParking(User user, Long parkinglotId, Long reviewId);
 
-    void complaintReviewByParking(User user, Long parkinglotId, Long reviewId);
+    void complaintReviewByParking(User user, Long parkinglotId, Long reviewId, String complaintReason);
 }
