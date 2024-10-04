@@ -63,7 +63,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "WHERE p.id = :parkingLotId " +
             "AND DATE(r.startTime) = DATE(:now) " +  // 날짜가 오늘인 데이터
             "AND r.startTime > :now " +
-            "AND r.reservationConfirmed = 'C' " +  // 현재 시간 이후인 데이터
+            "AND r.reservationConfirmed = 'Y' " +  // 현재 시간 이후인 데이터
             "ORDER BY r.startTime ASC")
     Page<Reservation> findTodayUpcomingEntries(
             @Param("parkingLotId") Long parkingLotId,
