@@ -78,7 +78,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.startTime <= :now " +
             "AND r.endTime > :now " +
             "AND r.reservationConfirmed = 'Y' " +  // 현재 시간 이후인 데이터
-            "ORDER BY r.startTime ASC")
+            "ORDER BY r.endTime ASC")
     Page<Reservation> findTodayPendingExits(
             @Param("parkingLotId") Long parkingLotId,
             @Param("now") LocalDateTime now,
