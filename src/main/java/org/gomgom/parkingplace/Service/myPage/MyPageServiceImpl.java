@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.gomgom.parkingplace.Dto.MyPageDto;
 import org.gomgom.parkingplace.Dto.ReservationDto;
+import org.gomgom.parkingplace.Dto.ReviewDto;
 import org.gomgom.parkingplace.Entity.Inquiry;
 import org.gomgom.parkingplace.Entity.Reservation;
 import org.gomgom.parkingplace.Entity.Review;
@@ -12,9 +13,12 @@ import org.gomgom.parkingplace.Exception.CustomExceptions;
 import org.gomgom.parkingplace.Repository.InquiryRepository;
 import org.gomgom.parkingplace.Repository.ReservationRepository;
 import org.gomgom.parkingplace.Repository.ReviewRepository;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +38,21 @@ public class MyPageServiceImpl implements MyPageService {
      */
     @Override
     public MyPageDto.ResponseReviewsDto getMyReviews(User user, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findByUser(user, pageable);
-        return new MyPageDto.ResponseReviewsDto(reviews.hasNext(),
-                reviews.stream().map(MyPageDto.ReviewDto::new).toList());
+        Page<Review> reviewPage = reviewRepository.findByUser(user, pageable);
+
+        List<MyPageDto.ReviewDto> reviews = reviewPage.stream()
+                .map(review -> {
+                    String reviewText;
+                    if (review.getComplaint().equals(Bool.C)) {
+                        reviewText = "부적절한 내용으로 신고 요청된 리뷰입니다.";
+                    } else if (review.getComplaint().equals(Bool.Y)) {
+                        reviewText = "관리자에 의해 삭제된 리뷰입니다.";
+                    } else {
+                        reviewText = review.getReview();
+                    }
+                    return new MyPageDto.ReviewDto(review, reviewText);
+                }).toList();
+        return new MyPageDto.ResponseReviewsDto(reviewPage.hasNext(), reviews);
     }
 
     /**

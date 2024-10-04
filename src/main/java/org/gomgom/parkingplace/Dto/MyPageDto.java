@@ -43,13 +43,17 @@ public class MyPageDto {
         private Long parkinglotId;
         private String parkinglotName;
         private String review;
+        private Double rating;
         private LocalDate reviewDate;
+        private Boolean modifable;
 
-        public ReviewDto(Review review) {
+        public ReviewDto(Review review, String reviewText) {
             this.parkinglotId = review.getParkingLot().getId();
             this.parkinglotName = review.getParkingLot().getName();
-            this.review = review.getReview();
+            this.review = reviewText;
+            this.rating = review.getRating();
             this.reviewDate = review.getCreatedAt().toLocalDate();
+            this.modifable = review.getComplaint().equals(Bool.N) || review.getComplaint().equals(Bool.D);
         }
     }
 

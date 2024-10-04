@@ -11,10 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -32,5 +29,26 @@ public class ParkingReviewController {
                                                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("Controller: 주차장 관리자 리뷰 목록 불러오기");
         return ResponseEntity.ok(reviewService.getReviewsByParking(userDetails.getUser(), parkinglotId, requestDto, pageable));
+    }
+
+    @GetMapping("/reviews/{reviewId}/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
+    public ResponseEntity<ReviewDto.ParkingReviewsDto> getReviewDtails(@PathVariable Long parkinglotId,
+                                                @PathVariable Long reviewId,
+                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        log.info("Controller: 주차장 관리자 리뷰 상세 정보 불러오기");
+        return ResponseEntity.ok(reviewService.getReivewDatailsByParking(userDetails.getUser(), parkinglotId, reviewId));
+    }
+
+    @PutMapping("/reviews/{reviewId}/protected")
+    @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
+    public ResponseEntity<Void> complaintReview(@PathVariable Long parkinglotId,
+                                                @PathVariable Long reviewId,
+                                                @RequestBody ReviewDto.ParkingComplainReviewDto reviewDto,
+                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        log.info("Controller: 주차장 관리자 리뷰 신고");
+        log.info(reviewDto.getComplaintReason());
+        reviewService.complaintReviewByParking(userDetails.getUser(), parkinglotId, reviewId, reviewDto.getComplaintReason());
+        return ResponseEntity.ok().build();
     }
 }

@@ -8,11 +8,15 @@ import org.springframework.data.domain.Pageable;
 public interface ReviewService {
     ReviewDto.ReviewsResponseDto getReviews(Long parkingplotId, Pageable pageable);
 
-    String saveReview(User user, Long parkinglotId, String review);
+    String saveReview(User user, Long parkinglotId, ReviewDto.ReviewRequestDto reviewDto);
 
     void deleteReview(Long userId, Long parkinglotId, Long reviewId);
 
     void modifyReview(Long userId, Long parkinglotId, Long reviewId, String review);
 
     ReviewDto.ParkingReviewsResponseDto getReviewsByParking(User user, Long parkinglotId, ReviewDto.ParkingReviewsRequestDto dto, Pageable pageable);
+
+    ReviewDto.ParkingReviewsDto getReivewDatailsByParking(User user, Long parkinglotId, Long reviewId);
+
+    void complaintReviewByParking(User user, Long parkinglotId, Long reviewId, String complaintReason);
 }

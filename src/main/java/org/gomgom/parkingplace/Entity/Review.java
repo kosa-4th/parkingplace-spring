@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.gomgom.parkingplace.enums.Bool;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,6 +34,18 @@ public class Review {
     private String review;
 
     @NotNull
+    @Column(name = "rating", nullable = false)
+    private Double rating;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'N'")
+    @Column(name = "complaint")
+    private Bool complaint;
+
+    @Column(name = "complaint_reason")
+    private String complaintReason;
+
+    @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -53,9 +67,16 @@ public class Review {
     private ParkingLot parkingLot;
 
     @Builder
-    public Review(User user, ParkingLot parkingLot, String review) {
+    public Review(User user, ParkingLot parkingLot, String review, Double rating) {
         this.user = user;
         this.parkingLot = parkingLot;
         this.review = review;
+        this.rating = rating;
+        this.complaint = Bool.N;
+    }
+
+    public void complainReview(String reason) {
+        this.complaintReason = reason;
+        this.complaint = Bool.C;
     }
 }

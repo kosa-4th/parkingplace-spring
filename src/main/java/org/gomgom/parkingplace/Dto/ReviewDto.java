@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.gomgom.parkingplace.Entity.Review;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class ReviewDto {
      */
     @Getter
     public static class ReviewRequestDto {
+        private Double rating; // 별점
         private String newReview; //리뷰 내용
     }
 
@@ -43,16 +45,20 @@ public class ReviewDto {
     public static class ReviewsDto {
         public Long id; // 리뷰 id
         public String reviewer; // 리뷰 작성자 이름
+        public Double rating;
         public LocalDate reviewDate; // 리뷰 작성한 시간
         public String review; // 리뷰 내용
         public String email; // 리뷰 작성자 이메일
+        public Boolean modifiable;
 
-        public ReviewsDto(Review review) {
+        public ReviewsDto(Review review, String reviewText) {
             this.id = review.getId();
-            this.review = review.getReview();
+            this.review = reviewText;
+            this.rating = review.getRating();
             this.reviewDate = review.getCreatedAt().toLocalDate();
             this.reviewer = review.getUser().getName();
             this.email = review.getUser().getEmail();
+            this.modifiable = review.getComplaint().equals(Bool.N) || review.getComplaint().equals(Bool.D);
         }
     }
 
@@ -88,17 +94,29 @@ public class ReviewDto {
     }
 
     @Getter
+    public static class ParkingComplainReviewDto {
+        private String complaintReason;
+    }
+
+    /**
+     * 주차장 리뷰
+     */
+    @Getter
     public static class ParkingReviewsDto {
         public Long reviewId;
         public String reviewer;
         public String review;
         public String reviewDate;
+        public String complaint;
+        public String selectedReason;
 
-        public ParkingReviewsDto(Review review) {
+        public ParkingReviewsDto(Review review, String reviewText) {
             this.reviewId = review.getId();
             this.reviewer = review.getUser().getName();
-            this.review = review.getReview();
+            this.review = reviewText;
             this.reviewDate = review.getCreatedAt().toLocalDate().toString();
+            this.complaint = review.getComplaint().name();
+            this.selectedReason = review.getComplaintReason();
         }
     }
 }
