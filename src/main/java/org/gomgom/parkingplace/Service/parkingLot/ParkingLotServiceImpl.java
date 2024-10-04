@@ -386,6 +386,8 @@ public class ParkingLotServiceImpl implements ParkingLotService {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/" + extension);
 
+            System.out.println("=======================================" + bucketName);
+
             try {
                 requests.add(new PutObjectRequest(
                         bucketName, changedName, images[i].getInputStream(), metadata
