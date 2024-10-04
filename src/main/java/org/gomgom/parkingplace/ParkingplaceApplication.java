@@ -13,7 +13,7 @@ import java.util.TimeZone;
  * */
 @SpringBootApplication
 @EnableJpaAuditing
-//@EnableScheduling
+@EnableScheduling
 
 public class ParkingplaceApplication {
 

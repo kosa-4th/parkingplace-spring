@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
  * @date 2024-09-03
  */
 public interface ReservationService {
+    void updateReservationsOverTime();
     /**
      * @Date 2024.09.20
      * 입차 예정 / 출차 예정 / 출차 완료 서비스단
