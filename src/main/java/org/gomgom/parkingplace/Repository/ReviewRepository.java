@@ -4,12 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import org.gomgom.parkingplace.Entity.ParkingLot;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.Entity.User;
+import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
@@ -41,4 +44,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
      * @return
      */
     Page<Review> findReviewsByParkingLotAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(ParkingLot parkingLot, LocalDateTime from, LocalDateTime to, Pageable pageable);
+
+    // 1. 전체 리뷰 중에 complaintDate가 from과 to 사이에 있는 값들 (complaintDate가 null이면 안가져옴)
+    Page<Review> findAllByComplaintDateBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
+
+    // 2. 전체 리뷰 중에 complaint가 Bool.C 이고 complaintDate가 from과 to 사이에 있는 값들
+    Page<Review> findByComplaintAndComplaintDateBetween(Bool complaint, LocalDateTime from, LocalDateTime to, Pageable pageable);
+
+    // 3. 전체 리뷰 중에 complaint가 Bool.D이거나 Bool.Y이고 complaintDate가 from과 to 사이에 있는 값들
+    Page<Review> findByComplaintInAndComplaintDateBetween(List<Bool> complaints, LocalDateTime from, LocalDateTime to, Pageable pageable);
 }

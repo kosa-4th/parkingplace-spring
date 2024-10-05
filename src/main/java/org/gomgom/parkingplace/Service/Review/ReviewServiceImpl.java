@@ -1,5 +1,6 @@
 package org.gomgom.parkingplace.Service.Review;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -206,4 +208,48 @@ public class ReviewServiceImpl implements ReviewService{
         review.complainReview(complaintReason);
         log.info("리뷰 신고 완료");
     }
+
+    ///////////////////////////////////////////////// 시스템 관리자
+
+    @Override
+    public ReviewDto.SystemReviewsResponseDto getReviewsBySystem(ReviewDto.RequestSystemReviewDto requestDto, Pageable pageable) {
+        String complaint = requestDto.getActionType();
+        Page<Review> reviewPage;
+        if (complaint.equals("All")) {
+            reviewPage = reviewRepository.findAllByComplaintDateBetween(requestDto.getFrom(), requestDto.getTo(), pageable);
+        } else {
+            if (complaint.equals("Unprocessed")) {
+                reviewPage = reviewRepository.findByComplaintAndComplaintDateBetween(Bool.C, requestDto.getFrom(), requestDto.getTo(), pageable);
+            }else if (complaint.equals("Processed")) {
+                reviewPage = reviewRepository.findByComplaintInAndComplaintDateBetween(List.of(Bool.D, Bool.Y), requestDto.getFrom(), requestDto.getTo(), pageable);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        return new ReviewDto.SystemReviewsResponseDto(reviewPage.getTotalPages(), reviewPage.getNumber(),
+                reviewPage.stream().map(ReviewDto.SystemReviewsDto::new).toList());
+    }
+
+    @Override
+    public ReviewDto.SystemReviewDetailsResponseDto getReviewDetails(Long reviewId) {
+        return  reviewRepository.findById(reviewId)
+                .map(ReviewDto.SystemReviewDetailsResponseDto::new)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 리뷰입니다."));
+    }
+
+    @Override
+    @Transactional
+    public void completeComplaintReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 리뷰입니다."));
+        review.modifyComplaint(Bool.Y);
+    }
+
+    @Override
+    @Transactional
+    public void rejectComplaintReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 리뷰입니다."));
+        review.modifyComplaint(Bool.D);
+    }
+
 }
