@@ -33,4 +33,12 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             "WHERE noti.user.id = :userId " +
             "AND noti.usable = true")
     void deleteAllByUserId(long userId);
+
+    @Query("SELECT COUNT(n) " +
+            "FROM Notification n " +
+            "WHERE n.user.id = :userId " +
+            "AND n.checked = false " +
+            "AND n.usable = true")
+    long getUncheckedNotificationCount(long userId);
+
 }

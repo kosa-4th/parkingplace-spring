@@ -33,8 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationDto.getNotificationsResponseDto getNotifications(long userId) {
-        List<NotificationDto.NotificationDefaultDto> notifications  = notificationRepository.getNotifications(userId);
-       return new NotificationDto.getNotificationsResponseDto(notifications);
+        List<NotificationDto.NotificationDefaultDto> notifications = notificationRepository.getNotifications(userId);
+        NotificationDto.getNotificationsResponseDto response = new NotificationDto.getNotificationsResponseDto(notifications);
+        response.setUncheckedNotificationCount(notificationRepository.getUncheckedNotificationCount(userId));
+        return response;
     }
 
     @Override
@@ -61,6 +63,11 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void deleteAllNotifications(long userId) {
         notificationRepository.deleteAllByUserId(userId);
+    }
+
+    @Override
+    public NotificationDto.UncheckedNotificationCountResponseDto getUncheckedNotificationCount(long userId) {
+        return new NotificationDto.UncheckedNotificationCountResponseDto(notificationRepository.getUncheckedNotificationCount(userId));
     }
 
 }

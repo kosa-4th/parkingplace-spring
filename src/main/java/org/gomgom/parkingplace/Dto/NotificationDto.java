@@ -2,6 +2,7 @@ package org.gomgom.parkingplace.Dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,15 @@ public class NotificationDto {
 
     @RequiredArgsConstructor
     @Getter
+    @Setter
     public static class getNotificationsResponseDto {
         private final List<NotificationDefaultDto> notifications;
+        private long uncheckedNotificationCount;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static class UncheckedNotificationCountResponseDto {
+        private final long uncheckedNotificationCount;
     }
 }

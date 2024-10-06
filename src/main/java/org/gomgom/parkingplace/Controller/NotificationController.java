@@ -61,4 +61,11 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/count/protected")
+    public ResponseEntity<NotificationDto.UncheckedNotificationCountResponseDto> getUncheckedNotificationCount(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return ResponseEntity.ok(notificationService.getUncheckedNotificationCount(userDetails.getUser().getId()));
+    }
+
 }

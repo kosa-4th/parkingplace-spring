@@ -17,4 +17,6 @@ public interface NotificationService {
 
     void deleteAllNotifications(long userId);
 
+    NotificationDto.UncheckedNotificationCountResponseDto getUncheckedNotificationCount(long userId);
+
 }
