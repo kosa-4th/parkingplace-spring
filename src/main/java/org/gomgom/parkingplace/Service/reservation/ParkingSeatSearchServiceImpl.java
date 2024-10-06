@@ -66,7 +66,6 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
                 carType = carTypeRepository.findByCarTypeEnum(CarTypeEnum.ALL);
                 parkingSpace.setCarType(carType);  // ALL 차량 공간 설정
             }
-
             // 남은 주차 공간 수 설정
             parkingSpace.setAvailableSpaceNum(availableSpaceNum.intValue());
             // 결과 리스트에 추가
@@ -118,7 +117,6 @@ public class ParkingSeatSearchServiceImpl implements ParkingSeatSearchService {
             }
         }
         if (minTotalFee != 1000000000 && parkingSpaceId != null) {
-            System.out.println(parkingSpaceId + "test    "+ minTotalFee);
 
             return new ReservationAvailableResponseDto(true, minTotalFee, parkingSpaceId);
         } else {

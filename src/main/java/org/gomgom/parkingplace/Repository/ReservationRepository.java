@@ -157,18 +157,37 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r FROM Reservation r WHERE r.id = :reservationId")
     Optional<Reservation> findReservationById(@Param("reservationId") Long reservationId);
 
-    @Query(value = "SELECT p.car_type_id, " +
-            "(p.available_space_num - " +
-            "(SELECT COUNT(*) FROM TBL_RESERVATION r " +
-            "JOIN tbl_plate_number pl ON pl.plate_number = r.plate_number " +
-            "WHERE r.parking_lot_id = p.parking_lot_id " +
-            "AND pl.car_type_id = p.car_type_id " +
-            "AND (r.start_time BETWEEN :startDate AND :endDate " +
-            "OR r.end_time BETWEEN :startDate AND :endDate)) " +
-            ") AS available_spaces " +
-            "FROM TBL_PARKING_SPACE p " +
-            "JOIN TBL_PARKING_LOT l ON p.parking_lot_id = l.parking_lot_id " +
-            "WHERE l.parking_lot_id = :parkingLotId",
+//    @Query(value = "SELECT p.car_type_id, " +
+//            "(p.available_space_num - " +
+//            "(SELECT COUNT(*) FROM TBL_RESERVATION r " +
+//            "JOIN tbl_plate_number pl ON pl.plate_number = r.plate_number " +
+//            "WHERE r.parking_lot_id = p.parking_lot_id " +
+//            "AND pl.car_type_id = p.car_type_id " +
+//            "AND (r.start_time BETWEEN :startDate AND :endDate " +
+//            "OR r.end_time BETWEEN :startDate AND :endDate)) " +
+//            ") AS available_spaces " +
+//            "FROM TBL_PARKING_SPACE p " +
+//            "JOIN TBL_PARKING_LOT l ON p.parking_lot_id = l.parking_lot_id " +
+//            "WHERE l.parking_lot_id = :parkingLotId " +
+//            "AND p.usable = 1",  // usable이 1인 조건 추가
+//            nativeQuery = true)
+    @Query(value = "SELECT ps.car_type_id, " +
+            "(ps.available_space_num - " +
+            "(SELECT COUNT(*) " +
+            "FROM TBL_RESERVATION r " +
+            "WHERE r.parking_space_id = ps.parking_space_id " +
+            "AND ( " +
+            "( " +
+            "(r.start_time > :startDate AND r.start_time < :endDate) " +
+            "OR (r.end_time > :startDate AND r.end_time < :endDate) " +
+            "OR (r.start_time = :startDate AND r.end_time = :endDate) " +
+            ")" +
+            ")" +
+            ")) AS available_spaces " +
+            "FROM TBL_PARKING_SPACE ps " +
+            "JOIN TBL_PARKING_LOT pl ON ps.parking_lot_id = pl.parking_lot_id " +
+            "WHERE pl.parking_lot_id = :parkingLotId " +
+            "AND ps.usable = 1",  // usable이 1인 조건 추가
             nativeQuery = true)
     List<Object[]> findAvailableSpaces(@Param("parkingLotId") Long parkingLotId,
                                        @Param("startDate") LocalDateTime startDate,
