@@ -77,7 +77,7 @@ public class ParkingSpaceController {
     @PreAuthorize("hasRole('ROLE_PARKING_MANAGER')")
     public ResponseEntity<?> deleteParkingSpace(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestHeader("parkingSpaceId") long parkingSpaceId
+            @RequestParam("parkingSpaceId") long parkingSpaceId
     ) throws BadRequestException {
         parkingSpaceService.deleteParkingSpace(userDetails.getUser().getId(), parkingSpaceId);
         return ResponseEntity.ok().build();
