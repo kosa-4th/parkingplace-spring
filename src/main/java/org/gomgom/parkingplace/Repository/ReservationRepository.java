@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,12 @@ import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+
+    /*@Date 2024.10.04
+    * 예약은 했으나 관리자 허가 안햇을 시 취소
+    * */
+    @Query("SELECT r FROM Reservation r WHERE r.reservationConfirmed = :confirmedStatus AND r.startTime <= :now")
+    List<Reservation> findConfirmedReservations(@Param("confirmedStatus") Bool confirmedStatus, @Param("now") LocalDateTime now);
 
     /**
      * @DATE 2024.09.30

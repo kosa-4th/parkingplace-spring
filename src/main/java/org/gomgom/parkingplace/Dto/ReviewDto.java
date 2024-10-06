@@ -3,6 +3,7 @@ package org.gomgom.parkingplace.Dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.gomgom.parkingplace.Entity.Review;
 import org.gomgom.parkingplace.enums.Bool;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -117,6 +118,81 @@ public class ReviewDto {
             this.reviewDate = review.getCreatedAt().toLocalDate().toString();
             this.complaint = review.getComplaint().name();
             this.selectedReason = review.getComplaintReason();
+        }
+    }
+
+
+
+    ////////////////////// 시스템 관리자
+
+    @Getter
+    @AllArgsConstructor
+    public static class RequestSystemReviewDto {
+        private String actionType;
+
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDate from;
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        private LocalDate to;
+
+        public LocalDateTime getFrom() {
+            return from != null ? from.atStartOfDay() : LocalDateTime.of(2000, 1, 1, 0, 0);
+        }
+
+        public LocalDateTime getTo() {
+            return to != null ? to.atStartOfDay() : LocalDateTime.now().plusDays(30);
+        }
+
+    }
+
+    // 전체 리뷰 목록
+    @AllArgsConstructor
+    @Getter
+    public static class SystemReviewsResponseDto {
+        private int totalPages;
+        private int currentPage;
+        List<SystemReviewsDto> reviews;
+    }
+
+    @Getter
+    public static class SystemReviewsDto {
+        public Long reviewId;
+        public String reviewer;
+        public String review;
+        public String reviewDate;
+        public String complaintReason;
+        public String parkingLot;
+        public String complaintDate;
+
+        public SystemReviewsDto(Review review) {
+            this.reviewId = review.getId();
+            this.review = review.getReview();
+            this.reviewer = review.getUser().getName();
+            this.reviewDate = review.getCreatedAt().toLocalDate().toString();
+            this.complaintReason = review.getComplaintReason();
+            this.parkingLot = review.getParkingLot().getName();
+            this.complaintDate = review.getComplaintDate().toLocalDate().toString();
+        }
+    }
+
+    // 리뷰 상세 디테일
+    public static class SystemReviewDetailsResponseDto {
+        public Long reviewId;
+        public String reviewer;
+        public String review;
+        public String reviewDate;
+        public String complaintReason;
+        public String parkingLot;
+        public String complaintDate;
+
+        public SystemReviewDetailsResponseDto(Review review) {
+            this.reviewId = review.getId();
+            this.review = review.getReview();
+            this.reviewer = review.getUser().getName();
+            this.reviewDate = review.getCreatedAt().toLocalDate().toString();
+            this.complaintReason = review.getComplaintReason();
+            this.parkingLot = review.getParkingLot().getName();
+            this.complaintDate = review.getComplaintDate().toLocalDate().toString();
         }
     }
 }

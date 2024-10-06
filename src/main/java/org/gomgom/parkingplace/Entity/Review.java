@@ -45,6 +45,9 @@ public class Review {
     @Column(name = "complaint_reason")
     private String complaintReason;
 
+    @Column(name = "complaint_date")
+    private LocalDateTime complaintDate;
+
     @NotNull
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -78,5 +81,10 @@ public class Review {
     public void complainReview(String reason) {
         this.complaintReason = reason;
         this.complaint = Bool.C;
+        this.complaintDate = LocalDateTime.now();
+    }
+
+    public void modifyComplaint(Bool complaint) {
+        this.complaint = complaint;
     }
 }

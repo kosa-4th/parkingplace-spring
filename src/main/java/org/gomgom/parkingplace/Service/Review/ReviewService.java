@@ -19,4 +19,12 @@ public interface ReviewService {
     ReviewDto.ParkingReviewsDto getReivewDatailsByParking(User user, Long parkinglotId, Long reviewId);
 
     void complaintReviewByParking(User user, Long parkinglotId, Long reviewId, String complaintReason);
+
+    ReviewDto.SystemReviewsResponseDto getReviewsBySystem(ReviewDto.RequestSystemReviewDto requestDto, Pageable pageable);
+
+    ReviewDto.SystemReviewDetailsResponseDto getReviewDetails(Long reviewId);
+
+    void completeComplaintReview(Long reviewId);
+
+    void rejectComplaintReview(Long reviewId);
 }

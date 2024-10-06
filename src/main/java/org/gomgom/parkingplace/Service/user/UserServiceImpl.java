@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             // 일반 사용자일 경우 PlateNumber와 CarType 데이터를 가져옴
             List<UserDto.PlateInfoDto> plateInfoList = plateNumberRepository.findByUserId(userId).stream()
                     .map(plateNumber -> new UserDto.PlateInfoDto(
-                            plateNumber.getPlateNumber(),
+                            obfuscatePlateNumber(plateNumber.getPlateNumber()),
                             plateNumber.getCarType().getCarTypeEnum().name()
                     ))
                     .collect(Collectors.toList());
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             return List.of(new UserDto.ResponseUserDto(
                     user.getId(),
                     user.getAuth(),
-                    user.getEmail(),
+                    obfuscateEmail(user.getEmail()),
                     user.getName(),
                     plateInfoList
             ));
@@ -76,13 +76,37 @@ public class UserServiceImpl implements UserService {
             return List.of(new UserDto.ResponseParkingManagerDto(
                     user.getId(),
                     user.getAuth(),
-                    user.getEmail(),
+                    obfuscateEmail(user.getEmail()),
                     user.getName(),
                     parkingLotDtos
             ));
         }
 
         return Collections.emptyList(); // 해당하는 경우가 없을 때
+    }
+
+    // 이메일 변환
+    private String obfuscateEmail(String email) {
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domain = parts[1];
+
+        if (localPart.length() > 3) {
+            localPart = localPart.substring(0, 3) + "*".repeat(localPart.length() - 3);
+        } else {
+            localPart = localPart.substring(0, 1) + "*".repeat(localPart.length() - 1);
+        }
+
+        return localPart + "@" + domain;
+    }
+
+    // 차량 번호 변환
+    private String obfuscatePlateNumber(String plateNumber) {
+        if (plateNumber.length() > 4) {
+            return plateNumber.substring(0, plateNumber.length() - 4) + "****";
+        } else {
+            return "****"; // In case plate number is 4 or fewer characters
+        }
     }
 
     /**
@@ -99,7 +123,7 @@ public class UserServiceImpl implements UserService {
         return usersPage.map(user -> new ResponseAllUserDto(
                 user.getId(),
                 user.getAuth(),
-                user.getEmail(),
+                obfuscateEmail(user.getEmail()),
                 user.getName()
         ));
     }

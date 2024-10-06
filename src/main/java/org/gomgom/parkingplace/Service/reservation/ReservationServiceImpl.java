@@ -46,13 +46,39 @@ public class ReservationServiceImpl implements ReservationService {
     private final ParkingSpaceRepository parkingSpaceRepository;
     private final NotificationService notificationService;
 
+    /**
+     * @Date 2024.10.04
+     * 스케쥴러로 예약은 했으나,
+     * 매 5분마다 예약 상태가 'C'인 예약들을 확인하고,
+     * 시작 시간을 현재 시간보다 5분 전으로 설정하고 상태를 'D'로 변경합니다.
+     */
+    @Override
+    @Scheduled(fixedDelay = 300000)  // 매 분마다 실행해야하나, aws와 서버 과부하를 방지하기 위해 5분
+    @Transactional
+    public void updateReservationsOverTime() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Reservation> reservations = reservationRepository.findConfirmedReservations(Bool.C, now);
+
+        for (Reservation reservation : reservations) {
+            reservation.setStartTime(now);  // 시작 시간을 현재 시간보다 5분 전으로 설정
+            reservation.setReservationConfirmed(Bool.D);  // 상태를 'D'로 변경
+            reservationRepository.saveAndFlush(reservation);  // 변경 사항 저장 즉시 반영
+
+            /***사업자라면 결제 취소 넣어야하지만, 결제취소는 당일 11시에 취소됨으로 별의미가 없음*/
+
+            // 알림 메시지 생성
+            String notificationMessage = "'" + reservation.getLotName() + "'에 대한 예약이 자동 취소되었습니다.";
+            notificationService.createNotification(reservation.getUser().getId(), notificationMessage, "/my/reservations/" + reservation.getId());
+
+            System.out.println("######++예약취소: " + notificationMessage);
+        }
+    }
+
 
     /**
      * @DATE 2024.09.20
      * 오늘의 예약 조회
      */
-
-
     @Override
     @Transactional
     public Page<ResponseOwnerReservationStatusDto> getTodayUpcomingEntries(Long parkingLotId, LocalDateTime now, Pageable pageable) {
@@ -87,7 +113,8 @@ public class ReservationServiceImpl implements ReservationService {
                 reservation.getEndTime(),
                 reservation.getWash(),
                 reservation.getMaintenance()
-        ));    }
+        ));
+    }
 
     @Transactional
 
@@ -105,7 +132,8 @@ public class ReservationServiceImpl implements ReservationService {
                 reservation.getEndTime(),
                 reservation.getWash(),
                 reservation.getMaintenance()
-        ));    }
+        ));
+    }
 
     /**
      * @Date 2024.09.20
@@ -124,7 +152,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         if (reservationConfirmed == Bool.Y) {
             notificationMessage = "'" + parkingLotName + "'에 대한 예약이 확정되었습니다.";
-            int resultValue =  reservationRepository.updateReservationStatus(reservationId, Bool.Y);
+            int resultValue = reservationRepository.updateReservationStatus(reservationId, Bool.Y);
             notificationService.createNotification(reservation.getUser().getId(), notificationMessage, "/my/reservations/" + reservationId);
             return resultValue;
         } else if (reservationConfirmed == Bool.D) {
