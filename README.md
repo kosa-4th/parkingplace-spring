@@ -120,8 +120,9 @@
 ### CI/CD
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-%232671E5?style=for-the-badge&logo=github-actions&logoColor=white)
 
-### 배포
+### Deployment
 **Frontend**: ![AWS Amplify](https://img.shields.io/badge/AWS%20Amplify-%23FF9900?style=for-the-badge&logo=aws-amplify&logoColor=white)
+<br>
 **Backend**: ![AWS EC2](https://img.shields.io/badge/AWS%20EC2-%23FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white), ![Nginx](https://img.shields.io/badge/Nginx-%23009639?style=for-the-badge&logo=nginx&logoColor=white), ![AWS RDS](https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=amazon-rds&logoColor=white), ![AWS S3](https://img.shields.io/badge/AWS%20S3-%23F79400?style=for-the-badge&logo=amazon-s3&logoColor=white)
 
 ### IDE
@@ -135,7 +136,6 @@
 ### Collaboration
 ![Notion](https://img.shields.io/badge/Notion-%23000000?style=for-the-badge&logo=notion&logoColor=white)
 ![Figma](https://img.shields.io/badge/Figma-%23F24E1E?style=for-the-badge&logo=figma&logoColor=white)
-
 ---
 
 ### 데이터베이스 구조 (ERD)
