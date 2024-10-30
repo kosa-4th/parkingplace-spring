@@ -99,9 +99,42 @@
 <img src="https://github.com/user-attachments/assets/a1eb4fcc-9d4c-4ed7-940a-4987b221b8e0" alt="ParkingPlace 시스템 아키텍처" width="700" />
 
 ---
+## 기술 스택
+### Backend
+![Java](https://img.shields.io/badge/Java-21-007396?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.9-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![JPA](https://img.shields.io/badge/JPA-%233C7EBB?style=for-the-badge)
+![JWT](https://img.shields.io/badge/JWT-%23000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-%236DB33F?style=for-the-badge&logo=spring-security&logoColor=white)
 
-### 기술 스택
-<img src="https://github.com/user-attachments/assets/7d755b1d-8ce6-4043-b7c8-0d5eb01b553a" alt="ParkingPlace 기술 스택" width="800" />
+### Database
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### Frontend
+![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-%23E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-%231572B6?style=for-the-badge&logo=css3&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-%23323330?style=for-the-badge&logo=axios&logoColor=white)
+
+### CI/CD
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-%232671E5?style=for-the-badge&logo=github-actions&logoColor=white)
+
+### 배포
+**Frontend**: ![AWS Amplify](https://img.shields.io/badge/AWS%20Amplify-%23FF9900?style=for-the-badge&logo=aws-amplify&logoColor=white)
+**Backend**: ![AWS EC2](https://img.shields.io/badge/AWS%20EC2-%23FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white), ![Nginx](https://img.shields.io/badge/Nginx-%23009639?style=for-the-badge&logo=nginx&logoColor=white), ![AWS RDS](https://img.shields.io/badge/AWS%20RDS-527FFF?style=for-the-badge&logo=amazon-rds&logoColor=white), ![AWS S3](https://img.shields.io/badge/AWS%20S3-%23F79400?style=for-the-badge&logo=amazon-s3&logoColor=white)
+
+### IDE
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white)
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+
+### Version Control
+![Git](https://img.shields.io/badge/Git-%23F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-%23181717?style=for-the-badge&logo=github&logoColor=white)
+
+### Collaboration
+![Notion](https://img.shields.io/badge/Notion-%23000000?style=for-the-badge&logo=notion&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-%23F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 
 ---
 
